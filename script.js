@@ -39,29 +39,38 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const loadingScreen = () => {
-  const screen = document.createElement('section');
-  screen.className = 'loading';
-  const box = document.createElement('span');
-  box.innerHTML = 'Loading...';
-  screen.appendChild(box);
-  const body = document.querySelector('body');
-  body.appendChild(screen);
+// ajuda de matheus set, da turma 11
+let loadingElement = null;
+
+function toggleLoadingText(visible) {
+  if (visible) {
+    const loadingScreen = document.createElement('section');
+    loadingScreen.className = 'loading';
+    const loadingBox = document.createElement('span');
+    loadingBox.innerText = 'Loading...';
+    loadingScreen.appendChild(loadingBox);
+    const body = document.querySelector('body');
+    body.appendChild(loadingScreen);
+    loadingElement = loadingScreen;
+  } else {
+    loadingElement.remove();
+  }
+}
+
+const loadProducts = (query) => {
+  toggleLoadingText(true);
+  return new Promise((pass, fail) => {
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((result) => result.json())
+    .then((json) => {
+      toggleLoadingText(false);
+      pass(json.results);
+    })
+    .catch((error) => fail(error));
+  });
 };
 
-const loadProducts = (query) => new Promise((pass, fail) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-  .then((result) => result.json())
-  .then((json) => {
-    const loading = document.querySelector('.loading');
-    loading.className = 'hide';
-    pass(json.results);
-  })
-  .catch((error) => fail(error));
-});
-
 window.addEventListener('load', async () => {
-  loadingScreen();
   const itemsSection = document.querySelector('.items');
   const productsList = await loadProducts('computador');
   productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product))); 
