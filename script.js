@@ -1,5 +1,7 @@
 const api = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const apiRequest = () => fetch(api).then((response) => response.json());
+const cartItems = '.cart__items';
+const apiItemId = 'https://api.mercadolibre.com/items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -29,6 +31,32 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+// Requisito 2
+const addToCart = () => {
+  const cartItem = document.querySelector(cartItems);
+  const addToCartBtn = document.querySelectorAll('.item__add');
+  addToCartBtn.forEach((item) => {
+    item.addEventListener('click', () => {
+      const itemId = item.parentNode.firstChild.innerText;
+      fetch(`${apiItemId}/${itemId}`)
+      .then((response) => response.json())
+      .then((product) => {
+        const productInfo = { sku: product.id, name: product.title, salePrice: product.price };
+        const productToCart = createCartItemElement(productInfo);
+        cartItem.appendChild(productToCart);
+      });
+    });
+  });
+};
+
 // Requisito 1
 const listItens = async () => {
   try {
@@ -42,19 +70,11 @@ const listItens = async () => {
       const productElement = createProductItemElement(productDetails);
       return productContainer.appendChild(productElement);    
   });
-  });
+  }).then(() => addToCart());
 } catch (err) {
   console.log('Erro na requisição');
   }
 };
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
 
 window.onload = function onload() {
   listItens(); 
