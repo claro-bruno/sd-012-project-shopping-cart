@@ -28,8 +28,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
-function cartItemClickListener(/* event */) {
+function cartItemClickListener(event) {
   // coloque seu código aqui
+  const cartList = document.querySelector('.cart__items');
+  cartList.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
