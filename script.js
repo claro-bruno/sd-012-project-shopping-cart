@@ -43,11 +43,11 @@ function createCartItemElement({ sku, name, salePrice }) {
 const getResult = (results) => {
   const getItems = document.querySelector('.items');
   const objeto = {};
-  console.log(results);
-  results.forEach((result) => {
-    objeto.sku = result.id;
-    objeto.name = result.title;
-    objeto.image = result.thumbnail;
+  //console.log(results);
+  results.forEach(({id, title, thumbnail}) => {
+    objeto.sku = id;
+    objeto.name = title;
+    objeto.image = thumbnail;
     const product = createProductItemElement(objeto);
     getItems.appendChild(product);
   })
@@ -56,7 +56,34 @@ const getResult = (results) => {
 const getProducts = () => {
   const url = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
   fetch(url).then((response) => response.json())
-  .then((result) => getResult(result.results));
+  .then((result) => getResult(result.results))
+  .then(() => getButton());
+}
+
+const addCarrinho = (results) => {
+  const getListItems = document.querySelector('.cart__items');
+  const objeto = {};
+  objeto.sku = results.id;
+  objeto.name = results.title;
+  objeto.salePrice = results.price;
+  const product = createCartItemElement(objeto);
+  getListItems.appendChild(product);
+}
+
+const getItem = (ID) => {
+  const url = `https://api.mercadolibre.com/items/${ID}`;
+  fetch(url).then((response) => response.json())
+  .then((result) => addCarrinho(result)/*console.log(result)*/);
+}
+
+const getButton = () => {
+  const getAllButtons = document.querySelectorAll('.item__add');
+  getAllButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const ID = event.target.parentElement.firstChild.innerText;
+      getItem(ID);
+    })
+  })
 }
 
 window.onload = function onload() {
