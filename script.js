@@ -20,27 +20,27 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
   );
 
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function cartItemClickListener(event) {
+//   // coloque seu código aqui
+// }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
 
 function getItem(item) {
   return new Promise((resolve, reject) => {
@@ -48,16 +48,16 @@ function getItem(item) {
       fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
         .then((res) => res.json())
         .then((json) => {
-          json.results.forEach((curr, index) => {
+          json.results.forEach((curr) => {
             const { id: sku, title: name, thumbnail: image } = curr;
             const itemSection = document.querySelector('.items');
             itemSection.appendChild(
-              createProductItemElement({ sku, name, image })
+              createProductItemElement({ sku, name, image }),
             );
           });
         });
     } else {
-      reject;
+      reject();
     }
   });
 }
