@@ -1,3 +1,5 @@
+const total = '.total-price';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,8 +30,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function removingTotalToStorage(li) {
+  const totalPrice = document.querySelector(total);
+  const valor = li.innerText.split('$')[1];
+  let somaProdutos;
+  const price = 'shopPrice';
+  somaProdutos = Number(localStorage.getItem(price));
+  somaProdutos -= Number(valor);
+  localStorage.setItem(price, somaProdutos);
+  totalPrice.innerText = localStorage.getItem(price);
+}
+
 function cartItemClickListener(event) {
   const lista = document.querySelector('ol');
+  removingTotalToStorage(event.target);
   lista.removeChild(event.target);
   localStorage.setItem('shopCart', lista.innerHTML);
 }
@@ -43,7 +57,7 @@ function createCartItemElement({ id, title, price }) {
 }
 
 function addingTotalToStorage(product) {
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.querySelector(total);
   if (!product) {
     totalPrice.innerText = localStorage.getItem('shopPrice');
     return;
@@ -103,7 +117,6 @@ async function fetchingProducts() {
     });
     removeLoading();
   });
-
   itemClickListener();
 }
 
@@ -114,7 +127,7 @@ function clearingCart() {
     listaCarrinho.innerHTML = '';
     localStorage.setItem('shopCart', listaCarrinho.innerHTML);
     localStorage.setItem('shopPrice', 0);
-    const totalPrice = document.querySelector('.total-price');
+    const totalPrice = document.querySelector(total);
     totalPrice.innerText = localStorage.getItem('shopPrice');
   });
 }
