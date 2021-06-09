@@ -1,14 +1,8 @@
 const apiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 
-const fetchAPI = (url) => {
-  const promise = new Promise((resolve, reject) => {
-    if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=$computador') {
-      fetch(url).then((response) => response.json().then((itemsList) => resolve(itemsList)));
-    } else {
-      reject(new Error('Incorrect API Endpoint'));
-    }
-  });
-  return promise;
+const getApiObject = async (url) => {
+  const response = await fetch(url);
+  return response.json();
 };
 
 function appendItem(item) {
@@ -42,17 +36,29 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// n
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
+
+// function cartItemClickListener(event) {
+//   // coloque seu código aqui
+// }
+
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
 
 const addItems = async () => {
   try {
-    fetchAPI(apiUrl).then((response) => {
-      const itemsList = response.results;
-      for (let itemIndex = 0; itemIndex < itemsList.length; itemIndex += 1) {
-        const { id, title, thumbnail } = itemsList[itemIndex];
-        const item = { sku: id, name: title, image: thumbnail };
-        appendItem(createProductItemElement(item));
-      }
+    const itemsList = (await getApiObject(apiUrl)).results;
+    itemsList.forEach((itemObj) => {
+      const { id, title, thumbnail } = itemObj;
+      const item = { sku: id, name: title, image: thumbnail };
+      appendItem(createProductItemElement(item));
     });
   } catch (error) {
     console.log(error);
@@ -60,5 +66,5 @@ const addItems = async () => {
 };
 
 window.onload = function onload() { 
-  addItems();
+  getApiObject(apiUrl).then(addItems);
 };
