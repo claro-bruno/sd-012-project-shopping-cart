@@ -1,4 +1,27 @@
-window.onload = function onload() { };
+window.onload = function onload() { 
+  fetchInfo();
+};
+
+const apiLink = "https://api.mercadolibre.com/sites/MLB/search?q=computador";
+const results = [];
+const itemExample = {
+  id: "MLB1218701240",
+  title: "Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10",
+  thumbnail: "http://http2.mlstatic.com/D_817225-MLB45400911410_032021-I.jpg",
+}
+
+const fetchInfo = () => {
+  const list = {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' }
+  };
+
+  return fetch(apiLink, list)
+    .then(response => response.json())
+    .then(data => {
+      return data.results.map((item) => createProductItemElement(item)); // results.push(item)
+    });
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +37,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -23,7 +46,10 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
-  return section;
+  const items = document.querySelector('.items');
+  items.appendChild(section);
+
+  // return section;
 }
 
 function getSkuFromProductItem(item) {
