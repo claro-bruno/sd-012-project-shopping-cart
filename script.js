@@ -43,10 +43,24 @@ function removeItemStorage(item) {
   localStorage.setItem('cart', JSON.stringify(newList));
 }
 
+function sumTotal() {
+  const totalPrice = document.querySelector('.total-price');
+  const cartItems = document.querySelectorAll('.cart__item');
+  const priceItems = Array.prototype.map.call(cartItems, 
+    (item) => Number(item
+      .innerHTML
+      .split('|')
+      .reverse()[0]
+      .replace(/[^\d.]+/g, '')))
+    .reduce((total, price) => total + price, 0);
+  totalPrice.innerText = priceItems;
+}
+
 function cartItemClickListener(event) {
   const item = event.target;
   item.parentElement.removeChild(item);
   removeItemStorage(item);
+  sumTotal();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -71,6 +85,7 @@ function addItemInCart(event) {
     .then(({ id: sku, title: name, price: salePrice }) => {
       cartItem.appendChild(createCartItemElement({ sku, name, salePrice }));
       addInLocalStorage({ sku, name, salePrice });
+      sumTotal();
     })
     .catch((err) => console.log(err));
 }   
@@ -90,6 +105,16 @@ function addItems(results) {
   addBtnEvent();
 }
 
+function createTotalPriceContainer() {
+  const cart = document.querySelector('.cart');
+  const totalContainer = createCustomElement('section', 'total-container', ' ');
+  cart.appendChild(totalContainer);
+  const text = createCustomElement('p', 'text-price', 'TOTAL R$');
+  totalContainer.appendChild(text);
+  const totalPrice = createCustomElement('p', 'total-price', 0);
+  totalContainer.appendChild(totalPrice);
+}
+
 function loadCart() {
   const cartItem = document.querySelector('.cart__items');
   const items = localStorage.getItem('cart') || '[]';
@@ -97,9 +122,11 @@ function loadCart() {
   listItems.forEach((item) => {
     cartItem.appendChild(createCartItemElement(item));
   });
+  sumTotal();
 }
 
 window.onload = function onload() { 
+  createTotalPriceContainer();
   loadCart();
   fetchApi('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then(({ results }) => addItems(results))
