@@ -87,7 +87,20 @@ function loadProducts() {
     .catch((e) => console.log(e));
 }
 
+function eraseCart() {
+  while (document.querySelector('ol').firstChild) {
+    document
+      .querySelector('ol')
+      .removeChild(document.querySelector('ol').lastChild);
+  }
+  while (totalPrice.length > 0) {
+    totalPrice.pop();
+  }
+  totalCalc();
+}
+
 window.onload = function onload() {
   loadProducts();
   totalCalc();
+  document.querySelector('.empty-cart').addEventListener('click', eraseCart);
 };
