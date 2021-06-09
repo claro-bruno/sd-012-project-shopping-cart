@@ -76,9 +76,15 @@ const addCartItem = (event) => {
   }
 };
 
+const emptyCart = () => {
+  localStorage.clear();
+  document.querySelector('.cart__items').innerHTML = '';
+  document.querySelector('.total-price').innerHTML = '';
+};
+
   window.onload = function onload() { 
 // Iniciando códigos para a Seção HTML do carrinho de Compras
-  const cartSection = document.getElementsByClassName('cart__items')[0];
+  const cartSection = document.querySelector('.cart__items');
   console.log(cartSection);
   if (localStorage.getItem('shop')) {
     cartSection.innerHTML = localStorage.getItem('shop');
@@ -89,6 +95,8 @@ const addCartItem = (event) => {
   const itemsSection = document.querySelector('.items');
   getComputerItems('computador', itemsSection);
   itemsSection.addEventListener('click', addCartItem);
-
-
-  };
+// Botão de esvaziar carrinho de compra
+  const emptyCartBtn = document.querySelector('.empty-cart');
+  console.log(emptyCartBtn);
+  emptyCartBtn.addEventListener('click', emptyCart);
+};
