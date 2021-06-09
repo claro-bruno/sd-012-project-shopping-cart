@@ -43,7 +43,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 const getResult = (results) => {
   const getItems = document.querySelector('.items');
   const objeto = {};
-  //console.log(results);
   results.forEach(({id, title, thumbnail}) => {
     objeto.sku = id;
     objeto.name = title;
