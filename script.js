@@ -76,6 +76,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function clear() {
+  const limparTudo = document.querySelector('.empty-cart');
+  limparTudo.addEventListener('click', () => {
+    const numberChild = document.querySelectorAll('li').length;
+    const olList = document.querySelector('ol');
+    for (let i = 0; i < numberChild; i += 1) {
+      const child = document.querySelector('li');
+      olList.removeChild(child);
+    }
+    const price = document.querySelector('div span.total-price');
+    price.innerHTML = 0;
+    saveLocalStorage();
+  });
+}
+
 const activateButtons = () => {
   const allSectionsProducts = document.querySelectorAll('.item');
   allSectionsProducts.forEach((item) => {
@@ -94,6 +109,7 @@ const activateButtons = () => {
       });
     });
   });
+  clear();
 };
 
 window.onload = async function computers() {
