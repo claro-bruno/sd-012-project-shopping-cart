@@ -50,7 +50,7 @@ const addItemsInCart = () => {
         await fetch(`https://api.mercadolibre.com/items/${id}`)
         .then((response) => response.json())
         .then((item) => carItems.appendChild(createCartItemElement(item)));
-        localStorage.setItem('carList', document.querySelector('.cart__items').innerHTML);
+        localStorage.setItem('carList', carItems.innerHTML);
       } catch (error) {
         console.log(error);
       }
