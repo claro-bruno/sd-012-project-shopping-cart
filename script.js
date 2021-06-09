@@ -28,6 +28,18 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// Requisito 6
+const clearCart = () => {
+  const clearBtn = document.querySelector('.empty-cart');
+  const priceTotal = document.querySelector('.total-price');
+  const cartProducts = document.querySelector(cartItems);
+  clearBtn.addEventListener('click', () => {
+    cartProducts.innerHTML = '';
+    priceTotal.innerHTML = 0;
+    localStorage.clear();
+  });
+};
+
 // Requisito 5
 const sumPrice = async () => {
   try {
@@ -116,4 +128,5 @@ window.onload = function onload() {
     sumPrice();
   }
   listItens();
+  clearCart();
 };
