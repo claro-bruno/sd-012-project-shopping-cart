@@ -56,18 +56,28 @@ function addingTotalToStorage(product) {
   totalPrice.innerText = localStorage.getItem('shopPrice');
 }
 
+function addingLoading() {
+  const body = document.querySelector('body');
+  const loading = document.createElement('h1');
+  loading.classList.add('loading');
+  loading.innerText = 'loading...';
+  body.appendChild(loading);
+}
 
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+  const body = document.querySelector('body');
+  body.removeChild(loading);
+}
 
 function itemClickListener() {
-  const loading = document.querySelector('.loading');
   const items = document.querySelectorAll('.item');
   items.forEach((item) => {
     const button = item.querySelector('button');
     const id = getSkuFromProductItem(item);
     button.addEventListener('click', async () => {
-     await fetch(`https://api.mercadolibre.com/items/${id}`)
-      .then((response) => {
-        loading.style.display = 'inline';
+     await fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
+        addingLoading();
         return response.json();
       }).then((product) => {
         const lista = document.querySelector('.cart__items');
@@ -76,25 +86,22 @@ function itemClickListener() {
         localStorage.setItem('shopCart', lista.innerHTML);
         addingTotalToStorage(product);
       });
-      loading.style.display = 'none';
+      removeLoading();
     });
   });
 }
 
 async function fetchingProducts() {
-  const loading = document.querySelector('.loading');
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => {
-     loading.style.display = 'inline';
-   return response.json();
-  }).then((data) => data.results)
+  .then((response) => response.json())
+  .then((data) => data.results)
   .then((results) => {
     results.forEach((product) => {
       const items = document.querySelector('.items');
       const newItem = createProductItemElement(product);
       items.appendChild(newItem);
     });
-    loading.style.display = 'none';
+    removeLoading();
   });
 
   itemClickListener();
