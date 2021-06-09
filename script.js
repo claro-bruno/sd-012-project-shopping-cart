@@ -56,7 +56,7 @@ function getPrice(target) {
     response.json().then((computer) => {
       totalPrice += computer.price;
       const price = document.getElementsByClassName('total-price')[0];
-      price.innerText = `Preço total: $${totalPrice}`;
+      price.innerText = totalPrice;
     }));
 }
 
