@@ -122,6 +122,8 @@ window.onload = async function computers() {
     const newItem = createProductItemElement({ sku, name, image });
     allItemsList.appendChild(newItem);
   });
+  const load = document.querySelector('.loading');
+  load.remove();
   checkIfSaved();
   activateButtons();
 };
