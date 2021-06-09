@@ -1,5 +1,5 @@
-const cartItemsClass = '.cart__items';
-let cartData = [];
+// const cartItemsClass = '.cart__items';
+const cartData = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -72,7 +72,7 @@ async function addToCart(event) {
   const sku = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${sku}`);
   const { title, price } = await response.json();
-  cartData.push({ sku, name: title, salePrice: price});
+  cartData.push({ sku, name: title, salePrice: price });
   insertCartItem();
 }
 
