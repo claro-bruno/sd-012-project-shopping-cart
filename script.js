@@ -1,40 +1,33 @@
 const itemsList = document.querySelector('.items');
 const emptyCart = document.querySelector('.empty-cart');
-// const cart = document.querySelector('.cart');
-const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
 let total = 0;
+const cartItems = document.querySelector('.cart__items');
+let cartIds = [];
 
-emptyCart.addEventListener('click', () => {
-  cartItems.innerHTML = '';
-});
+const saveCart = (id) => {
+  const index = cartIds.indexOf(id);
+  if (index > -1) {
+    cartIds.splice(index, 1);
+  }
+  if (!cartIds) {
+    localStorage.clear();
+  }
+  localStorage.setItem('cartStorage', cartIds);
+  localStorage.setItem('total', total);
+};
 
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
-
-// const saveCart = () => {
-//   const cartItem = document.getElementsByClassName('cart__item');
-//   // console.log(cartItem);
-//   const cartObj = [];
-//   for (let i = 0; i <= cartItem.length; i += 1) {
-//     cartObj.push({
-//       cartItem: [cartItem[i]],
-//     });
-//   }
-//   const cartSave = JSON.stringify(cartObj);
-//   console.log(cartObj);
-//   console.log(cartSave);
-//   localStorage.setItem('cartStorage', cartSave);
-// };
+const saveIds = (id) => {
+  cartIds.push(id);
+};
 
 function cartItemClickListener(event) {
   event.target.remove();
-  console.log(event.target);
-  // saveCart();
+  saveCart(event.target.id);
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
 }
 
 const subtractTotal = (price) => {
@@ -45,31 +38,54 @@ const subtractTotal = (price) => {
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = id;
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
   li.addEventListener('click', () => subtractTotal(price));
+  li.addEventListener('click', cartItemClickListener);
   total += price;
   totalPrice.innerHTML = total;
   return li;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 const addProduct = (id) => new Promise((resolve, reject) => {
-    fetch(`https://api.mercadolibre.com/items/${id}`)
-    .then((result) => result.json())
-    .then((resultJson) => resolve(cartItems.appendChild(createCartItemElement(resultJson))))
-    .catch((err) => reject(err));
-  });
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+  .then((result) => result.json())
+  .then((resultJson) => resolve(cartItems.appendChild(createCartItemElement(resultJson))))
+  .then(() => saveCart())
+  .catch((err) => reject(err));
+});
 
 const addToCart = (evt) => {
-  const item = evt.target.parentElement;
-  const id = getSkuFromProductItem(item);
-  addProduct(id);
-  // saveCart();
+const item = evt.target.parentElement;
+const id = getSkuFromProductItem(item);
+saveIds(id);
+addProduct(id);
 };
+
+const loadCart = () => {
+  if (!localStorage.length) { 
+    cartItems.innerHTML = ''; 
+    return;
+  }
+  const ids = localStorage.getItem('cartStorage').split(',');
+  cartIds = ids;
+  ids.forEach((product) => addProduct(product));
+  console.log(ids);
+};
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
+}
+
+emptyCart.addEventListener('click', () => {
+  cartItems.innerHTML = '';
+  total = 0;
+  totalPrice.innerHTML = '';
+  localStorage.clear();
+});
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -102,10 +118,7 @@ const getProduct = (search) => new Promise((resolve, reject) => {
 });
 
 window.onload = async () => {
-  // if (Storage) {
-  //   // const savedCart = JSON.parse(localStorage.cartStorage);
-  //   // cartItems.innerHTML = savedCart;
-  // }
+  loadCart();
   const products = await getProduct('computador');
   return products.forEach((product) => itemsList.appendChild(createProductItemElement(product)));
 };
