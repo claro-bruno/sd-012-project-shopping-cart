@@ -1,4 +1,5 @@
 const listURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const cartItem = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,10 +31,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const setLocalStorage = () => {
+  const cartItems = document.querySelector(cartItem);
+
+  if (localStorage.length !== 0) localStorage.clear();
+
+  localStorage.setItem('cartList', cartItems.innerHTML);
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  const parentElement = document.querySelector('.cart__items');
+  const parentElement = document.querySelector(cartItem);
   parentElement.removeChild(event.target);
+  setLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -67,15 +77,24 @@ const addButtonEvent = async () => {
   
   itemList.forEach((item) => {
     const button = item.querySelector('button');
-    // console.log(button);
-    // addItemToCart(item);
     button.addEventListener('click', async () => {
       const itemID = getSkuFromProductItem(item);
       const itemObj = await fetchSomething(`https://api.mercadolibre.com/items/${itemID}`);
       const itemLi = createCartItemElement(itemObj);
-      appendItem(itemLi, '.cart__items');
+      appendItem(itemLi, cartItem);
+      setLocalStorage();
     });
   });
+};
+
+const getCartFromLocalStorage = async () => {
+  const cartItems = document.querySelector(cartItem); 
+  let cartContent;
+
+  if (localStorage.length !== 0) {
+    cartContent = localStorage.getItem('cartList');
+    cartItems.innerHTML = cartContent;
+  }
 };
 
 const asyncFuncList = async () => {
@@ -84,6 +103,7 @@ const asyncFuncList = async () => {
     const productList = fetchedObject.results;
     await createItemList(productList);
     await addButtonEvent();
+    await getCartFromLocalStorage();
   } catch (error) {
     console.log('Error');
   }
