@@ -1,5 +1,5 @@
+let cartData = [];
 // const cartItemsClass = '.cart__items';
-const cartData = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,9 +30,14 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+// REQUISITO 4.1
+function localStorageCart() {
+  localStorage.setItem('cart-data', JSON.stringify(cartData));
+}
+// REQUISITO 3
 function cartItemClickListener(event) {
   event.target.remove();
+  localStorageCart();
 }
 
 // REQUISITO 5
@@ -42,13 +47,6 @@ function cartItemClickListener(event) {
 
 //   const sum = list.reduce((acc, value) => acc + Number(value.innerText.split('PRICE: $')[1]), 0);
 //   payout.innerText = sum;
-// }
-
-// REQUISITO 1
-// function productList() {
-//   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-//   .then((response) => response.json())
-//   .then((response) => response.results)
 // }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -67,15 +65,24 @@ function insertCartItem() {
     cartItem.appendChild(cartItemElement);
   });
 }
-
+// REQUISITO 2
 async function addToCart(event) {
   const sku = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${sku}`);
   const { title, price } = await response.json();
   cartData.push({ sku, name: title, salePrice: price });
   insertCartItem();
+  localStorageCart();
 }
-
+// REQUISITO 4.2
+function retrieveLocalStorage() {
+  const dataToRetrieve = JSON.parse(localStorage.getItem('cart-data'));
+  if (dataToRetrieve) {
+    cartData = [...dataToRetrieve];
+    insertCartItem();
+  }
+}
+// REQUISITO 1
 async function productList() {
   const itemSection = document.querySelector('section .items');
   
@@ -94,4 +101,6 @@ async function productList() {
 
 window.onload = async function onload() {
   await productList();
+  // localStorageCart();
+  retrieveLocalStorage();
 };
