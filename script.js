@@ -1,4 +1,5 @@
 const cartList = document.getElementsByClassName('cart__items');
+// const totalPriceElement = document.getElementsByClassName('total-price');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,6 +26,29 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+const GetPrices = async () => {
+  const keys = Object.keys(localStorage);
+  const items = keys.filter((key) => key.startsWith('MLB'));
+  const prices = [];
+  const promise = new Promise((resolve, /* reject */) => {
+    items.forEach((item) => {
+      fetch(`https://api.mercadolibre.com/items/${item}`).then((response) => {
+        response.json().then(({ price }) => {
+          prices.push(price);
+        });
+      });
+    });
+    console.log(`Array dentro da promise ${prices}`);
+    resolve(prices);
+  });
+  return promise;
+};
+
+/* const calculateTotal = (prices) => {
+  const total = prices.reduce((acc, curr) => acc + curr);
+  console.log(total);
+} */
+
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 } */
@@ -33,8 +57,8 @@ function cartItemClickListener(event) {
   // coloque seu código aqui  
   const words = event.target.innerHTML.split(' ');
   const id = words.filter((word) => word.startsWith('MLB'));  
-  localStorage.removeItem(id);
-  cartList[0].removeChild(event.target);
+  localStorage.removeItem(id);  
+  cartList[0].removeChild(event.target);  
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -58,7 +82,7 @@ const addCartItem = (event) => {
   const id = section.firstElementChild.innerHTML;  
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
     response.json().then((item) => {      
-      cartList[0].appendChild(createCartItemElement(item));
+      cartList[0].appendChild(createCartItemElement(item));      
     });
   });
 };
@@ -81,10 +105,15 @@ const getCartItems = () => {
   const items = keys.filter((key) => key.startsWith('MLB'));  
   items.forEach((item) => {
     fetch(`https://api.mercadolibre.com/items/${item}`).then((response) => {
-      response.json().then((itemAPI) => {
+      response.json().then((itemAPI) => {        
         cartList[0].appendChild(createCartItemElement(itemAPI));
       });
     });
+  });
+  GetPrices().then((priceArray) => {
+    console.log(`Array retornada da promise: ${priceArray}`);
+    // console.log(`Tamanho da array: ${priceArray.length}`);
+    // calculateTotal(priceArray);
   });
 };
 
