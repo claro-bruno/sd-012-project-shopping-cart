@@ -28,17 +28,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 const items = document.getElementsByClassName('items');
 
@@ -50,6 +50,20 @@ const FreeMarket = async () => {
     items[0].appendChild(createProductItemElement(element));
   });
 };
+
+const selectComputer = async (event) => {
+  let endpoint = await fetch(`https://api.mercadolibre.com/items/${event}`);
+  endpoint = await endpoint.json();
+  const cart = document.getElementsByClassName('cart__items')[0];
+  cart.appendChild(createCartItemElement(endpoint));
+};
+
+document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('item__add')) {
+    const IdItem = event.target.parentElement.firstChild.innerText;
+    selectComputer(IdItem);
+  }
+});
 
 window.onload = function onload() { 
   FreeMarket();
