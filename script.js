@@ -1,5 +1,32 @@
 const listURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const cartItem = '.cart__items';
+const total = '.total-price';
+
+const addTotalPrice = (price) => {
+  const totalElement = document.querySelector(total);
+  let totalPrice;
+
+  if (localStorage.getItem('totalPrice') !== null) {
+    totalPrice = Number(localStorage.getItem('totalPrice'));
+  } else {
+    totalPrice = 0;
+  }
+
+  totalPrice += price;
+
+  localStorage.setItem('totalPrice', totalPrice);
+  totalElement.innerHTML = totalPrice;
+};
+
+const subTotalPrice = (price) => {
+  const totalElement = document.querySelector(total);
+  let totalPrice = Number(localStorage.getItem('totalPrice'));
+
+  totalPrice -= price;
+
+  localStorage.setItem('totalPrice', totalPrice);
+  totalElement.innerHTML = totalPrice;
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,24 +60,24 @@ function getSkuFromProductItem(item) {
 
 const setLocalStorage = () => {
   const cartItems = document.querySelector(cartItem);
-
-  if (localStorage.length !== 0) localStorage.clear();
+  
+  if (localStorage.length !== 0) {
+    localStorage.removeItem('cartList');
+  }
 
   localStorage.setItem('cartList', cartItems.innerHTML);
 };
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  const parentElement = document.querySelector(cartItem);
-  parentElement.removeChild(event.target);
-  setLocalStorage();
-}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    const parentElement = document.querySelector(cartItem);
+    parentElement.removeChild(event.target);
+    subTotalPrice(salePrice);
+    setLocalStorage();
+  });
   return li;
 }
 
@@ -83,17 +110,23 @@ const addButtonEvent = async () => {
       const itemLi = createCartItemElement(itemObj);
       appendItem(itemLi, cartItem);
       setLocalStorage();
+      addTotalPrice(itemObj.price);
     });
   });
 };
 
-const getCartFromLocalStorage = async () => {
-  const cartItems = document.querySelector(cartItem); 
+const getCartFromLocalStorage = () => {
+  const cartItems = document.querySelector(cartItem);
+  const totalElement = document.querySelector(total);
+
   let cartContent;
+  let totalPrice;
 
   if (localStorage.length !== 0) {
     cartContent = localStorage.getItem('cartList');
+    totalPrice = localStorage.getItem('totalPrice');
     cartItems.innerHTML = cartContent;
+    totalElement.innerHTML = totalPrice;
   }
 };
 
@@ -103,7 +136,7 @@ const asyncFuncList = async () => {
     const productList = fetchedObject.results;
     await createItemList(productList);
     await addButtonEvent();
-    await getCartFromLocalStorage();
+    getCartFromLocalStorage();
   } catch (error) {
     console.log('Error');
   }
