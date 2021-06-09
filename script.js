@@ -66,7 +66,8 @@ function getItem(item) {
 function appendCartItem(itemObj) {
   const cartContainer = document.getElementsByClassName('cart__items')[0];
   const { id: sku, title: name, price: salePrice } = itemObj;
-  cartContainer.appendChild(createCartItemElement({ sku, name, salePrice }));
+  const cartItem = createCartItemElement({ sku, name, salePrice });
+  cartContainer.appendChild(cartItem);
 }
 
 function addItemCart(event) {
@@ -78,9 +79,17 @@ function addItemCart(event) {
   }
 }
 
+function clearCart() {
+  const cartContainer = document.getElementsByClassName('cart__items')[0];
+  cartContainer.innerHTML = '';
+}
+
 window.onload = function onload() {
   getItem('computador');
   document
     .getElementsByClassName('items')[0]
     .addEventListener('click', addItemCart);
+  document
+    .getElementsByClassName('empty-cart')[0]
+    .addEventListener('click', clearCart);
 };
