@@ -13,7 +13,7 @@ function createProductImageElement(imageSource) {
 
 // adiciona localstorage nos itens do carrinho
 function storeListItems() {
-  window.localStorage.myList = items.innerHTML;
+  window.localStorage.mlList = items.innerHTML;
 }
 
 // -----------------------------------------------------------------------------------------------------
