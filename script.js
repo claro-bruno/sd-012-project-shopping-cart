@@ -1,3 +1,5 @@
+const listURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,21 +26,21 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
 
-// function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement ({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 const appendItem = (element, parentClass) => {
   const parentElement = document.querySelector(parentClass);
@@ -46,10 +48,10 @@ const appendItem = (element, parentClass) => {
   parentElement.appendChild(element);
 };
 
-const fetchItemList = async () => {
-  const productURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const fetchSomething = async (URL) => {
+  // const productURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
-  const fetchObject = fetch(productURL)
+  const fetchObject = fetch(URL)
     .then((response) => response
       .json()
       .then((object) => object));
@@ -57,17 +59,52 @@ const fetchItemList = async () => {
   return fetchObject;
 };
 
-const createItemList = async () => {
+// const fetchItemObject = (id) => {
+//   const itemURL = `https://api.mercadolibre.com/items/${id}`;
+
+//   const fetchObject = fetch(itemURL)
+//     .then((response) => response
+//       .json()
+//       .then((object) => object));
+// }
+
+const createItemList = async (itemList) => itemList
+  .forEach((item) => appendItem(createProductItemElement(item), '.items'));
+
+// const addItemToCart = async (item) => {
+//   const itemID = getSkuFromProductItem(item);
+//   const itemObj = await fetchSomething(`https://api.mercadolibre.com/items/${itemID}`);
+//   const itemLi = createCartItemElement(itemObj);
+//   appendItem(itemLi, 'cart__items');
+// };
+
+const addButtonEvent = async () => {
+  const itemList = document.querySelectorAll('.item');
+  
+  itemList.forEach((item) => {
+    const button = item.querySelector('button');
+    // console.log(button);
+    // addItemToCart(item);
+    button.addEventListener('click', async () => {
+      const itemID = getSkuFromProductItem(item);
+      const itemObj = await fetchSomething(`https://api.mercadolibre.com/items/${itemID}`);
+      const itemLi = createCartItemElement(itemObj);
+      appendItem(itemLi, '.cart__items');
+    });
+  });
+};
+
+const asyncFuncList = async () => {
   try {
-    const fetchedObject = await fetchItemList();
+    const fetchedObject = await fetchSomething(listURL);
     const productList = fetchedObject.results;
-    // console.log(productList);
-    productList.forEach((item) => appendItem(createProductItemElement(item), '.items'));
+    await createItemList(productList);
+    await addButtonEvent();
   } catch (error) {
     console.log('Error');
   }
 };
 
 window.onload = function onload() {
-  createItemList();
+  asyncFuncList();
 };
