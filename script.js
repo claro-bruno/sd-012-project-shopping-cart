@@ -36,7 +36,8 @@
   }
 
    function cartItemClickListener(event) {
-    console.log(event);
+    const item = event.target;
+    item.parentElement.removeChild(item);
   }
   
   function createCartItemElement({ sku, name, salePrice }) {
