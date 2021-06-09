@@ -71,6 +71,14 @@ document.addEventListener('click', (event) => {
   }
 });
 
+// const selectLi = document.getElementsByTagName('li')
+
+document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('cart__item')) {
+    event.target.remove();
+  }
+});
+
 window.onload = function onload() {
   getAPI();
 };
