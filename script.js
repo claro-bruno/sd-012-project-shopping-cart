@@ -73,7 +73,7 @@ const addCarrinho = (results) => {
 const getItem = (ID) => {
   const url = `https://api.mercadolibre.com/items/${ID}`;
   fetch(url).then((response) => response.json())
-  .then((result) => addCarrinho(result)/*console.log(result)*/);
+  .then((result) => addCarrinho(result));
 }
 
 const getButton = () => {
@@ -88,4 +88,10 @@ const getButton = () => {
 
 window.onload = function onload() {
   getProducts();
+
+  addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      event.target.remove();
+    }
+  })
 };
