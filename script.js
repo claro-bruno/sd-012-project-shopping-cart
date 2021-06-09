@@ -7,6 +7,16 @@ function updateTotalPrice() {
   getTotalPrice.innerText = totalPrice;
 }
 
+function emptyCart() {
+  const { length } = document.querySelector('.cart > ol').childNodes;
+  const getOl = document.querySelector('ol');
+  for (let index = 0; index < length; index += 1) {
+    getOl.firstChild.remove();
+  }
+  totalPrice = 0;
+  updateTotalPrice();
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -81,6 +91,8 @@ async function catchMercadoLivreAPI() {
 }
 
 window.onload = function onload() {
+  const getEmptyCartBtn = document.querySelector('.empty-cart');
+  getEmptyCartBtn.addEventListener('click', emptyCart);
   catchMercadoLivreAPI();
   if (localStorage.length !== 0) {
     const localStorageKeys = Object.keys(localStorage);
