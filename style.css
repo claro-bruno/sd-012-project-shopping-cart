@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Neon80s;
+  src: url('fonts/Neon80S-8jL2.ttf');
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -6,10 +11,18 @@ body {
 .top-bar {
   align-items: center;
   display: flex;
-  height: 100px;
+  height: 80px;
   justify-content: space-around;
   margin-bottom: 10px;
   width: 100%;
+  background-color: blue;
+  color: white;
+}
+
+.top-bar-title {
+  font-weight: 400;
+  font-size: 40pt;
+  font-family: Neon80s;
 }
 
 .top-bar .input-name-group {
@@ -37,7 +50,7 @@ body {
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgba(0, 0, 255, 0);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -45,6 +58,12 @@ body {
   height: auto;
   margin: 5px;
   width: 200px;
+  transition: all 0.3s;
+}
+
+.item:hover {
+  transition: all 0.3s;
+  border: 2px solid blue;
 }
 
 .item .item__sku {
@@ -58,7 +77,13 @@ body {
 }
 
 .item .item__image {
-  width: 100%;
+  width: 80%;
+  align-self: center;
+}
+
+.item .item__price {
+  text-align: center;
+  font-weight: 600;
 }
 
 .item .item__add {
