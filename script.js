@@ -51,11 +51,18 @@ const FreeMarket = async () => {
   });
 };
 
+const setLocalStorage = () => {
+  const cartItems = document.getElementsByClassName('cart__items');
+  localStorage.setItem('item', cartItems[0].innerHTML);
+};
+
+const cart = document.getElementsByClassName('cart__items');
+
 const selectComputer = async (event) => {
   let endpoint = await fetch(`https://api.mercadolibre.com/items/${event}`);
   endpoint = await endpoint.json();
-  const cart = document.getElementsByClassName('cart__items')[0];
-  cart.appendChild(createCartItemElement(endpoint));
+  cart[0].appendChild(createCartItemElement(endpoint));
+  setLocalStorage();
 };
 
 document.addEventListener('click', (event) => {
@@ -67,4 +74,6 @@ document.addEventListener('click', (event) => {
 
 window.onload = function onload() { 
   FreeMarket();
+  cart[0].innerHTML = localStorage.getItem('item');
+  cart[0].childNodes.forEach((e) => e.addEventListener('click', cartItemClickListener));
 };
