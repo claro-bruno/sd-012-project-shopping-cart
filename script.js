@@ -50,6 +50,16 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 let totalPrice = 0;
 
+function getPrice(target) {
+  const id = getSkuFromProductItem(target.path[1]);
+  fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
+    response.json().then((computer) => {
+      totalPrice += computer.price;
+      const price = document.getElementsByClassName('total-price')[0];
+      price.innerText = `Preço total: $${totalPrice}`;
+    }));
+}
+
 function addItemToCart(target) {
   const id = getSkuFromProductItem(target.path[1]);
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
@@ -62,9 +72,6 @@ function addItemToCart(target) {
       const item = createCartItemElement(computerFunc);
       items.appendChild(item);
       saveCart();
-      const price = document.getElementsByClassName('total-price')[0];
-      totalPrice += computerFunc.price;
-      price.innerText = `Preço total: $${totalPrice}`;
     }));
 }
 
@@ -79,7 +86,10 @@ const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=co
         const items = document.getElementsByClassName('items')[0];
         const item = createProductItemElement(computerFunc);
         items.appendChild(item);
-        item.addEventListener('click', addItemToCart);
+        item.addEventListener('click', (event) => {
+          addItemToCart(event);
+          getPrice(event);
+        });
       });
     }));
 
