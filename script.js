@@ -83,6 +83,8 @@ async function catchMercadoLivreAPI() {
   const responseList = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseListJSON = await responseList.json();
   const productsList = responseListJSON.results;
+  const getLoadingMsg = document.querySelector('.loading');
+  getLoadingMsg.remove();
   productsList.forEach((item, index) => {
     const product = createProductItemElement(item);
     sectionItems.appendChild(product);
