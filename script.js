@@ -28,18 +28,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function cartItemClickListener(event, salePrice) {
+function cartItemClickListener(event, price) {
   cartItems.removeChild(event.target);
-  allitemsPrice.innerText = parseFloat(Number(allitemsPrice.innerText) - salePrice);
+  allitemsPrice.innerText = parseFloat(Number(allitemsPrice.innerText) - Number(price));
 }
 
-function createCartItemElement({ id: sku, title: name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  localStorage.setItem(`Produto${cartItems.childElementCount}`, `${sku}|${name}|${salePrice}`);
-  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
-  allitemsPrice.innerText = parseFloat(Number(allitemsPrice.innerText) + salePrice);
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${price}`;
+  localStorage.setItem(`Produto${cartItems.childElementCount}`, `${sku}|${name}|${price}`);
+  li.addEventListener('click', (event) => cartItemClickListener(event, price));
+  allitemsPrice.innerText = parseFloat(Number(allitemsPrice.innerText) + Number(price));
   return li;
 }
 
