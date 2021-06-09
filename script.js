@@ -1,3 +1,7 @@
+const cartItems = document.getElementsByClassName('cart__items');
+
+const items = document.getElementsByClassName('items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,8 +15,6 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
-const items = document.getElementsByClassName('items');
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
@@ -35,8 +37,6 @@ async function pegaAPI() {
 }
 
 pegaAPI();
-
-const cartItems = document.getElementsByClassName('cart__items');
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -65,6 +65,8 @@ async function botaoDeClick(event) {
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('item__add')) {
     botaoDeClick(event);
+  } else if (event.target.classList.contains('empty-cart')) {
+    cartItems[0].innerHTML = '';
   }
 });
 
