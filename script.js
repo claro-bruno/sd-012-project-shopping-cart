@@ -39,33 +39,33 @@ function createCartItemElement(sku, name, salePrice) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-setTimeout(function () {
-  const botoes = document.querySelector('.items');
-  botoes.addEventListener('click', function (event) {
-    if (event.target.innerText === 'Adicionar ao carrinho!') {
-      const itemCarrinho = event.target.previousSibling.previousSibling.previousSibling.innerText;
-      fetch(`https://api.mercadolibre.com/items/${itemCarrinho}`)
-      .then((saida1) => saida1.json())
-      .then((saida) => {
-       const criaItemCarrinho = createCartItemElement(saida.id, saida.title, saida.price);
-       document.querySelector('.cart__items').appendChild(criaItemCarrinho);
+function adicionaAoCar() {
+    const botoes = document.querySelector('.items');
+      botoes.addEventListener('click', function (event) {
+        if (event.target.innerText === 'Adicionar ao carrinho!') {
+          const itemCar = event.target.previousSibling.previousSibling.previousSibling.innerText;
+          fetch(`https://api.mercadolibre.com/items/${itemCar}`)
+            .then((saida1) => saida1.json())
+            .then((saida) => {
+              const criaItemCarrinho = createCartItemElement(saida.id, saida.title, saida.price);
+              document.querySelector('.cart__items').appendChild(criaItemCarrinho);
+            });
+        }
       });
-    }
-  });
-}, 2000);
+  }
 
 window.onload = function onload() {
   function selecionaResults() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';  
   fetch(url)
-  .then((saida1) => saida1.json())
-  .then((saida) => {
-    saida.results.forEach((elemento) => {
-       const criaItem = createProductItemElement(elemento.id, elemento.title, elemento.thumbnail);
-       document.querySelector('.items').appendChild(criaItem);
-    });
-  });  
+    .then((saida1) => saida1.json())
+    .then((saida) => {
+      saida.results.forEach((elemento) => {
+        const criaItem = createProductItemElement(elemento.id, elemento.title, elemento.thumbnail);
+        document.querySelector('.items').appendChild(criaItem);
+      });
+      })
+    .then(() => adicionaAoCar());
 }
 selecionaResults();
 };
