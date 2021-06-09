@@ -105,6 +105,16 @@ const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=co
       });
     }));
 
+function emptyCart() {
+  const ol = document.getElementsByClassName('cart__items')[0];
+  ol.innerHTML = '';
+  totalPrice = 0;
+  const price = capturePrice();
+  price.innerText = '';
+  localStorage.removeItem('price');
+  saveCart();
+}
+    
 window.onload = function onload() {
   getItems();
   const cart = localStorage.getItem('cart');
@@ -118,4 +128,7 @@ window.onload = function onload() {
   }
   const price = capturePrice();
   price.innerText = localStorage.getItem('price');
+
+  const emptyButton = document.getElementsByClassName('empty-cart')[0];
+  emptyButton.addEventListener('click', emptyCart); 
 };
