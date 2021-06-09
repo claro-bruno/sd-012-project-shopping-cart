@@ -40,6 +40,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const saveCarrinho = () => {
+  const allItems = document.querySelectorAll('.cart__item');
+  const array = [];
+  for (let i = 0; i < allItems.length; i += 1) {
+    array.push(allItems[i].outerHTML);
+  }
+
+  localStorage.setItem('produtos', JSON.stringify(array));
+}
+
 const getResult = (results) => {
   const getItems = document.querySelector('.items');
   const objeto = {};
@@ -67,6 +77,7 @@ const addCarrinho = (results) => {
   objeto.salePrice = results.price;
   const product = createCartItemElement(objeto);
   getListItems.appendChild(product);
+  saveCarrinho();
 }
 
 const getItem = (ID) => {
@@ -85,9 +96,19 @@ const getButton = () => {
   })
 }
 
+const loadCarrinho = () => {
+  const getListItems = document.querySelector('.cart__items');
+  const array = JSON.parse(localStorage.getItem('produtos'));
+  if (array !== null) {
+    for (let i = 0; i < array.length; i += 1) {
+      getListItems.innerHTML += array[i];
+    }
+  }
+}
+
 window.onload = function onload() {
   getProducts();
-
+  loadCarrinho();
   addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') {
       event.target.remove();
