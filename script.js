@@ -93,7 +93,6 @@ function clearCart() {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     document.querySelector('.cart__items').innerHTML = ' ';
-    document.querySelector('.total-price').innerHTML = 0;
     localStorage.clear();
   });
 }
