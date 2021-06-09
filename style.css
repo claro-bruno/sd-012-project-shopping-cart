@@ -17,6 +17,11 @@
   display: flex;
 }
 
+.loading {
+  text-align: center;
+  display:none;
+}
+
 .container {
   display: flex;
   justify-content: space-around;
