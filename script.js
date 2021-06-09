@@ -1,10 +1,10 @@
 /* eslint-disable max-lines-per-function */
-/* function createProductImageElement(imageSource) {
+function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-} */
+}
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -20,13 +20,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
-  // section.appendChild(createProductImageElement(image));
-  // section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   const sectionItems = document.querySelector('.items');
   sectionItems.appendChild(section);
-
-  // return section;
 }
 
 /* function getSkuFromProductItem(item) {
