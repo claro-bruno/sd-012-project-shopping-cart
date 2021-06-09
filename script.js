@@ -2,13 +2,20 @@ const API = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
 const URL_PROD = "https://api.mercadolibre.com/items/";
 
 // CARREGA LISTA DO LOCALSTORAGE
-const temp = JSON.parse(localStorage.getItem('saved cart'));
-if (temp != null){
-  document.getElementById('cart').outerHTML = temp;
+const storageContent = JSON.parse(localStorage.getItem('saved cart'));
+if (storageContent != null){
+  document.getElementById('cart').outerHTML = storageContent;
+  const lista = document.getElementById('cart');
+  for (let i = 0; i < lista.children.length; i += 1){
+    lista.children[i].addEventListener('click', cartItemClickListener)
+  }
+  console.log(lista.children.length);
 }
 
+// ESVAZIAR CARRINHO
 document.getElementById('emtpy-cart').addEventListener('click', () => {
   document.getElementById('cart').innerHTML = '';
+  saveList();
 });
 
 // COLOCA OS PRODUTOS NA TELA
@@ -42,14 +49,16 @@ const fetchProduct = (url) => (
 );
 
 // FUNCAO USADA AO CLICAR NO BOTAO 'ADICIONAR AO CART'
-const addToCart = async (targetParent) => {
+const addToCart = (targetParent) => {
   const item = getSkuFromProductItem(targetParent);
   const url = URL_PROD + item;
-  const product = await fetchProduct(url);
-  document
-  .querySelector('.cart__items')
-  .appendChild(createCartItemElement(product));
-  saveList();
+  const product = fetchProduct(url)
+  .then((product) => {
+    document
+    .querySelector('.cart__items')
+    .appendChild(createCartItemElement(product));
+  })
+  .then(() => {saveList();});
 }
 
 // FUNCAO QUE SALVA O ESTADO ATUAL DA LISTA
