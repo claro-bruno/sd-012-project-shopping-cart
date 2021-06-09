@@ -5,12 +5,22 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const cart = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
+
+const saveCart = () => {
+  // console.log(cart.innerHTML);
+  localStorage.setItem('Cart', JSON.stringify(cart.innerHTML));
+  localStorage.setItem('Total', JSON.stringify(totalPrice.innerHTML));
+};
+
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const totalPrice = document.querySelector('.total-price');
 const updateTotal = (value) => {
+  if (value === 0) totalPrice.innerHTML = 0;
   const currentPrice = Number(totalPrice.innerHTML);
   totalPrice.innerHTML = Math.round((value + currentPrice) * 100) / 100;
 };
@@ -21,7 +31,18 @@ function cartItemClickListener(event) {
   const value = Number(string.split('$')[1]);
   updateTotal(-value);
   event.target.remove();
+  saveCart();
 }
+
+const loadCart = () => {
+  const savedCart = localStorage.getItem('Cart');
+  cart.innerHTML = JSON.parse(savedCart);
+  Object.values(cart.children).forEach((child) => {
+    child.addEventListener('click', cartItemClickListener);
+  });
+  const loadedPrice = localStorage.getItem('Total');
+  totalPrice.innerHTML = Number(JSON.parse(loadedPrice));
+};
 
 function createCartItemElement({
   id: sku,
@@ -31,21 +52,12 @@ function createCartItemElement({
   const li = document.createElement('li');
   li.className = `cart__item ${salePrice}`;
   updateTotal(salePrice);
+  console.log(salePrice);
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-const cart = document.querySelector('.cart__items');
-
-const saveStorage = (item) => {
-  localStorage.setItem('Cart', JSON.stringify(item.innerHTML));
-};
-
-const loadStorage = () => {
-  const stored = localStorage.getItem('Cart');
-  console.log(typeof stored);
-};
 
 const addButton = (e) => {
   const addedId = getSkuFromProductItem(e.target.parentElement);
@@ -55,7 +67,7 @@ const addButton = (e) => {
     .then((result) => result.json())
     .then((json) => {
       pass(cart.appendChild(createCartItemElement(json)));
-      saveStorage(cart);
+      saveCart();
     })
     .catch((error) => fail(error));
   });
@@ -119,14 +131,15 @@ const loadProducts = (query) => {
 
 const emptyCart = () => {
   cart.innerHTML = '';
-  totalPrice.innerHTML = 0;
+  updateTotal(0);
   localStorage.clear();
 };
+
 const emptyCartBtn = document.querySelector('.empty-cart');
 emptyCartBtn.addEventListener('click', emptyCart);
 
 window.addEventListener('load', async () => {
-  loadStorage();
+  loadCart();
   const productsList = await loadProducts('computador');
   const itemsSection = document.querySelector('.items');
   productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product)));
