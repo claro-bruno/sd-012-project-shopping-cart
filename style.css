@@ -21,6 +21,7 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
+  background-color: blueviolet;
 }
 
 .items {
@@ -28,6 +29,7 @@
   flex-basis: 70%;
   flex-wrap: wrap;
   justify-content: center;
+  background-color: brown;
 }
 
 .item {
@@ -39,6 +41,7 @@
   height: auto;
   margin: 5px;
   width: 200px;
+  background-color: cyan;
 }
 
 .item .item__sku {
@@ -67,10 +70,17 @@
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  border: 2px solid green;
 }
 
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+  border: 2px solid yellow;
+}
+
+.cart__items {
+  background-color: burlywood;
+  border: 2px solid red;
 }

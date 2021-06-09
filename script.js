@@ -1,5 +1,5 @@
-// window.onload = function onload() { };
-// // inicio de projeto!
+window.onload = function onload() { };
+// inicio de projeto!
 // function createProductImageElement(imageSource) {
 //   const img = document.createElement('img');
 //   img.className = 'item__image';
