@@ -1,5 +1,3 @@
-window.onload = function onload() { };
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,6 +24,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+
+createProductItemElement({});
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -41,4 +42,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// Requisito 1
 
+const query = 'computador';
+window.onload = function onload() { 
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((response) => response.json())
+    .then((r) => r.results.forEach((item) => {
+      const itemFind = { sku: item.id, name: item.title, image: item.thumbnail };
+      document.querySelectorAll('.items')[0].appendChild(createProductItemElement(itemFind));
+    }));
+  throw new Error('endpoint não existe');
+};
