@@ -1,4 +1,4 @@
-window.onload = function onload() { };
+// window.onload = function onload() { };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,7 +40,9 @@ const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=co
       });
     }));
 
-getItems();
+window.onload = function onload() {
+  getItems();
+};
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
