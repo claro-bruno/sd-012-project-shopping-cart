@@ -1,10 +1,19 @@
 const olItems = document.querySelector('.cart__items');
 let cartItemsCounter = 0;
 let totalPrice = 0;
-
 function updateTotalPrice() {
   const getTotalPrice = document.querySelector('.total-price');
   getTotalPrice.innerText = totalPrice;
+}
+
+function emptyCart() {
+  const { length } = document.querySelector('.cart > ol').childNodes;
+  const getOl = document.querySelector('ol');
+  for (let index = 0; index < length; index += 1) {
+    getOl.firstChild.remove();
+  }
+  totalPrice = 0;
+  updateTotalPrice();
 }
 
 function createProductImageElement(imageSource) {
@@ -22,19 +31,15 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
 function cartItemClickListener(event) {
   const savedItemLi = event.target.innerText;
   const dolarIndex = savedItemLi.indexOf('$');
@@ -43,7 +48,6 @@ function cartItemClickListener(event) {
   updateTotalPrice();
   olItems.removeChild(event.target);
 }
-
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -77,7 +81,10 @@ async function catchMercadoLivreAPI() {
     clickToAddItems(item, index);
   });
 }
+
 window.onload = function onload() {
+  const getEmptyCartBtn = document.querySelector('.empty-cart');
+  getEmptyCartBtn.addEventListener('click', emptyCart);
   catchMercadoLivreAPI();
   if (localStorage.length !== 0) {
     const localStorageKeys = Object.keys(localStorage);
@@ -91,4 +98,4 @@ window.onload = function onload() {
       olItems.innerHTML += `<li class="cart__items" ${setOnClick}>${savedLi}</li>`;
     });
   }
-}; 
+};
