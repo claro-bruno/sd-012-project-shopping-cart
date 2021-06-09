@@ -56,17 +56,31 @@ const fetchForId = async (id) => {
    ol.appendChild(createCartItemElement(computer));
 };
 
+const saveLocalStorage = () => {
+  setTimeout(() => localStorage.setItem('cart', ol.innerHTML), 500);
+};
+
+document.addEventListener('click', () => saveLocalStorage());
 const addCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.parentNode.firstChild.innerText;
-      fetchForId(id);      
+      fetchForId(id); 
     });
   });
 };
 
+const loadLocalStorage = () => {
+  const cartSaved = localStorage.getItem('cart');
+  if (cartSaved) {
+    ol.innerHTML = cartSaved;
+    ol.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
+  }
+};
+
 window.onload = function onload() {
   fetchProductList()
-  .then(() => addCart());
-};
+  .then(() => addCart())
+  .then(() => loadLocalStorage());
+  };
