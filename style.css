@@ -52,6 +52,10 @@
 }
 
 .item .item__image {
+  width: 50%;
+}
+
+.item .item__image:hover {
   width: 100%;
 }
 
