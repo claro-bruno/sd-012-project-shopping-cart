@@ -115,19 +115,32 @@ function createTotalPriceContainer() {
   totalContainer.appendChild(totalPrice);
 }
 
-function loadCart() {
-  const cartItem = document.querySelector('.cart__items');
+function loadCart(cartItems) {
   const items = localStorage.getItem('cart') || '[]';
   const listItems = JSON.parse(items); 
   listItems.forEach((item) => {
-    cartItem.appendChild(createCartItemElement(item));
+    cartItems.appendChild(createCartItemElement(item));
   });
   sumTotal();
 }
 
+function clearItems(cartItems) {
+  const items = cartItems;
+  items.innerHTML = '';
+  localStorage.setItem('cart', '[]');
+  sumTotal();
+}
+
+function addEventEmptyCart(cartItems) {
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', () => clearItems(cartItems));
+}
+
 window.onload = function onload() { 
+  const cartItems = document.querySelector('.cart__items');
   createTotalPriceContainer();
-  loadCart();
+  loadCart(cartItems);
+  addEventEmptyCart(cartItems);
   fetchApi('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then(({ results }) => addItems(results))
     .catch((err) => console.log(err));
