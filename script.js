@@ -1,5 +1,3 @@
-
-
 window.onload = function onload() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computer';
   fetch(url)
@@ -9,7 +7,11 @@ window.onload = function onload() {
 const getProducts = (array) => {
   const sectionItems = document.querySelector('.items');
   array.results.forEach((current) => {
-  const { id: sku, title: name, thumbnail: image } = current;
+  const { 
+    id: sku, 
+    title: name, 
+    thumbnail: image 
+  } = current;
   sectionItems.appendChild(createProductItemElement({ sku, name, image }));
   });
 };
