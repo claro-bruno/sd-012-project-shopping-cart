@@ -53,7 +53,7 @@ function listagemItems() {
   return listagemPc;
 }
 
-setTimeout(function () {
+function attachButtonsEvents() {
   const itensAdds = document.querySelectorAll('.item__add');
   for (let index = 0; index < itensAdds.length; index += 1) {
     itensAdds[index].addEventListener('click', () => {
@@ -67,13 +67,17 @@ setTimeout(function () {
       });
     });
   }
-}, 1000);
+}
 
-const noCarrinho = document.querySelectorAll('.cart__item');
-for (let i = 0; i < noCarrinho.length; i += 1) {
+function apagaClicado() {
+  const noCarrinho = document.querySelectorAll('.cart__item');
+
+  for (let i = 0; i < noCarrinho.length; i += 1) {
   noCarrinho[i].addEventListener('click', cartItemClickListener);
+  }
 }
 
 window.onload = function onload() { 
-  listagemItems(); 
+  listagemItems().then(() => attachButtonsEvents());
+  apagaClicado();
 };
