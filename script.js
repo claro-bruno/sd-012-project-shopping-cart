@@ -90,6 +90,8 @@ function addItemToCart(target) {
 const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json()
     .then((computers) => {
+      const loading = document.getElementsByClassName('loading')[0];
+      loading.remove();
       computers.results.forEach((computer) => {
         const computerFunc = computer;
         computerFunc.sku = computerFunc.id;
