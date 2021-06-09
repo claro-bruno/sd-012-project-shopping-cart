@@ -47,11 +47,17 @@ const fat = async () => {
   objAPI.results.forEach((API) => sec[0].appendChild(createProductItemElement(API)));
 };
 
+const toLocalStorage = () => {
+  const LocalOl = document.getElementsByClassName('cart__items');
+  localStorage.setItem('item', LocalOl[0].innerHTML);
+};
+
 const ol = document.getElementsByClassName('cart__items');
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
   itemAPI = await itemAPI.json();
   ol[0].appendChild(createCartItemElement(itemAPI));
+  toLocalStorage();
 }
 
 document.addEventListener('click', function ({ target }) {
@@ -61,4 +67,8 @@ document.addEventListener('click', function ({ target }) {
   }
 });
 
-window.onload = function onload() { fat(); };
+window.onload = function onload() {
+  fat();
+  ol[0].innerHTML = localStorage.getItem('item');
+  ol[0].childNodes.forEach((elm) => elm.addEventListener('click', cartItemClickListener));
+};
