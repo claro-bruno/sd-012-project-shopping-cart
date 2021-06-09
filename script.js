@@ -1,5 +1,5 @@
 window.onload = function onload() {
-  createItemsList('milka');
+  createItemsList('computador');
   loadLocalStorage();
 };
 
@@ -35,15 +35,19 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  total = total - Number(event.target.id) / 2;
   event.target.remove();
-  updateLocalStorage();
+  updateTotal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = `${salePrice}`
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  total = total + salePrice;
+  updateTotal();
   return li;
 }
 
@@ -65,6 +69,12 @@ document.addEventListener('click', (event) => {
   if (event.target.className === 'cart__item') {
     cartItemClickListener(event);
   };
+  if (event.target.className === 'empty-cart') {
+    document.querySelector('.cart__items').innerHTML = '';
+    total = 0
+    updateTotal();
+    updateLocalStorage;
+  };
 });
 
 const fetchItemPrice = (sku) => {
@@ -78,9 +88,16 @@ const fetchItemPrice = (sku) => {
 }
 
 const updateLocalStorage = () => {
-  localStorage.setItem('backup', document.querySelector('.cart__items').innerHTML);
+  localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+  localStorage.setItem('total', total);
 }
 
 const loadLocalStorage = () => {
-  document.querySelector('.cart__items').innerHTML = localStorage.getItem('backup')
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+  document.querySelector('.total-price').innerHTML = localStorage.getItem('total');
+}
+
+const updateTotal = () => {
+  document.querySelector('.total-price').innerHTML = total;
+  updateLocalStorage();
 }
