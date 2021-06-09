@@ -1,4 +1,8 @@
-window.onload = function onload() { };
+window.onload = function onload() {};
+
+
+      
+        
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
