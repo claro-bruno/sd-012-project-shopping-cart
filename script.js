@@ -1,10 +1,9 @@
-
-
 window.onload = function onload() {
-  createItemsList('computador');
+  createItemsList('milka');
+  loadLocalStorage();
 };
 
-
+let total = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,10 +35,11 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
+  updateLocalStorage();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -56,4 +56,31 @@ const createItemsList = (searchTerm) => {
       });
     });
   });
+}
+
+document.addEventListener('click', (event) => {
+  if (event.target.className === 'item__add') {
+    fetchItemPrice(getSkuFromProductItem(event.target.parentElement));
+  };
+  if (event.target.className === 'cart__item') {
+    cartItemClickListener(event);
+  };
+});
+
+const fetchItemPrice = (sku) => {
+  fetch(`https://api.mercadolibre.com/items/${sku}`).then((response) => {
+    response.json().then((item) => {
+      const cartSection = document.querySelector('.cart__items');
+      cartSection.appendChild(createCartItemElement(item));
+      updateLocalStorage();
+    });
+  });
+}
+
+const updateLocalStorage = () => {
+  localStorage.setItem('backup', document.querySelector('.cart__items').innerHTML);
+}
+
+const loadLocalStorage = () => {
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('backup')
 }
