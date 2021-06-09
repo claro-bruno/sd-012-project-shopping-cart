@@ -26,11 +26,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-const GetPrices = async () => {
+/* const GetPrices = async () => {
   const keys = Object.keys(localStorage);
   const items = keys.filter((key) => key.startsWith('MLB'));
   const prices = [];
-  const promise = new Promise((resolve, /* reject */) => {
+  const promise = new Promise((resolve, reject) => {
     items.forEach((item) => {
       fetch(`https://api.mercadolibre.com/items/${item}`).then((response) => {
         response.json().then(({ price }) => {
@@ -42,7 +42,7 @@ const GetPrices = async () => {
     resolve(prices);
   });
   return promise;
-};
+}; */
 
 /* const calculateTotal = (prices) => {
   const total = prices.reduce((acc, curr) => acc + curr);
@@ -109,11 +109,6 @@ const getCartItems = () => {
         cartList[0].appendChild(createCartItemElement(itemAPI));
       });
     });
-  });
-  GetPrices().then((priceArray) => {
-    console.log(`Array retornada da promise: ${priceArray}`);
-    // console.log(`Tamanho da array: ${priceArray.length}`);
-    // calculateTotal(priceArray);
   });
 };
 
