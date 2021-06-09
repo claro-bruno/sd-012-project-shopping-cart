@@ -48,6 +48,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+let totalPrice = 0;
+
 function addItemToCart(target) {
   const id = getSkuFromProductItem(target.path[1]);
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
@@ -60,6 +62,9 @@ function addItemToCart(target) {
       const item = createCartItemElement(computerFunc);
       items.appendChild(item);
       saveCart();
+      const price = document.getElementsByClassName('total-price')[0];
+      totalPrice += computerFunc.price;
+      price.innerText = `Preço total: $${totalPrice}`;
     }));
 }
 
