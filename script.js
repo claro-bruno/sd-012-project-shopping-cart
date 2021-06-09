@@ -1,4 +1,5 @@
 const olItems = document.querySelector('.cart__items');
+let cartItemsCounter = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -50,6 +51,8 @@ async function clickToAddItems(item, index) {
     const responseItemJSON = await responseItem.json();
     const liItem = createCartItemElement(responseItemJSON);
     olItems.appendChild(liItem);
+    cartItemsCounter += 1;
+    localStorage.setItem(`${cartItemsCounter}º Saved Item`, liItem.innerHTML);
   });
 }
 
@@ -67,4 +70,11 @@ async function catchMercadoLivreAPI() {
 
 window.onload = function onload() {
   catchMercadoLivreAPI();
+  if (localStorage.length !== 0) {
+    const localStorageKeys = Object.keys(localStorage);
+    localStorageKeys.forEach((key) => {
+      const savedLi = localStorage.getItem(key);
+      olItems.innerHTML += `<li class="cart__items" onclick="itemListener(event)">${savedLi}</li>`;
+    });
+  }
 };
