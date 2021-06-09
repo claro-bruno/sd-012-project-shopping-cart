@@ -1,7 +1,9 @@
+// Remove Item do cart
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
+// Cria o elemento para adicionar ao carrinho
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
