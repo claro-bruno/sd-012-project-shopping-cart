@@ -24,32 +24,46 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 // function cartItemClickListener(event) {
 //   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function cartAdd(endpoint) {
+  const cartItems = document.querySelector('.cart__items');
+  const addButtons = document.querySelectorAll('.item__add');
+  addButtons.forEach((button) => button.addEventListener('click', () => {
+    const item = button.parentNode;
+    const itemId = getSkuFromProductItem(item);
+    const product = endpoint.filter((getProduct) => getProduct.id === itemId)[0];
+    const { id: sku, title: name, price: salePrice } = product;
+    const cartItem = createCartItemElement({ sku, name, salePrice });
+    cartItems.appendChild(cartItem);
+  }));
+}
 
 window.onload = function onload() {
-  const itemsSection = document.querySelector('.items');
+  const items = document.querySelector('.items');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json()).then((obj) => obj.results)
     .then((endpoint) => {
       endpoint.forEach((product) => {
         const { id: sku, title: name, thumbnail: image } = product;
-        console.log(product);
         const section = createProductItemElement({ sku, name, image });
-        itemsSection.appendChild(section);
+        items.appendChild(section);
       });
-    });
+      return endpoint;
+    })
+    .then((endpoint) => cartAdd(endpoint));
 };
