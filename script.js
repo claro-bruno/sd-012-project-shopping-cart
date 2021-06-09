@@ -31,7 +31,6 @@ const apiResults = apiFetchJson.results;
 const items = document.querySelector('.items');
 apiResults.forEach((item) => items.appendChild(createProductItemElement(item)));
 }
-// fetchApi();
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
