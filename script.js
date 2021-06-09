@@ -16,7 +16,6 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-  console.log(sku, name, image);
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
@@ -25,23 +24,42 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   const sectionItems = document.querySelector('.items');
   sectionItems.appendChild(section);
+
+  const buttonItemAdd = document.querySelectorAll('.item__add');
+  buttonItemAdd.forEach((click) => click.addEventListener('click', botao));
 }
 
-/* function getSkuFromProductItem(item) {
+function botao() {
+  console.log('oi');
+  fetch(`https://api.mercadolibre.com/items/MLB1341706310`)
+  .then((response) => response.json())
+  .then((response) => console.log(response.price));
+};
+
+function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  //
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  
+  
+
+
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
+
+  // const cartItems = document.querySelector('.cart__items');
+  // cartItems.appendChild(li);
+
   return li;
-} */
+}
 
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const fetchAPI = () => {
@@ -52,7 +70,7 @@ const fetchAPI = () => {
   fetch(API_URL, myObject)
     .then((response) => response.json())
     .then((response) => response.results)
-    .then((response) => response.forEach((item) => createProductItemElement(item)));    
+    .then((response) => response.forEach((item) => createProductItemElement(item)));
 };
 
 window.onload = function onload() { 
