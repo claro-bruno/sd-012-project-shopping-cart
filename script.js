@@ -1,3 +1,4 @@
+const cartList = document.getElementsByClassName('cart__items');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,9 +30,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 } */
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
-  const cartList = document.querySelector('.cart__items');
-  cartList.removeChild(event.target);
+  // coloque seu código aqui  
+  const words = event.target.innerHTML.split(' ');
+  const id = words.filter((word) => word.startsWith('MLB'));  
+  localStorage.removeItem(id);
+  cartList[0].removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -39,6 +42,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  localStorage.setItem(sku, name);
   return li;
 }
 
@@ -51,11 +55,10 @@ const addEvent = (event, callback) => {
 
 const addCartItem = (event) => {
   const section = event.target.parentElement;
-  const id = section.firstElementChild.innerHTML;
-  const cartList = document.querySelector('.cart__items');
+  const id = section.firstElementChild.innerHTML;  
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
     response.json().then((item) => {      
-      cartList.appendChild(createCartItemElement(item));
+      cartList[0].appendChild(createCartItemElement(item));
     });
   });
 };
@@ -73,6 +76,19 @@ const createList = () => {
   });
 };
 
+const getCartItems = () => {  
+  const keys = Object.keys(localStorage);
+  const items = keys.filter((key) => key.startsWith('MLB'));  
+  items.forEach((item) => {
+    fetch(`https://api.mercadolibre.com/items/${item}`).then((response) => {
+      response.json().then((itemAPI) => {
+        cartList[0].appendChild(createCartItemElement(itemAPI));
+      });
+    });
+  });
+};
+
 window.onload = function onload() {
+  getCartItems();
   createList();
 };
