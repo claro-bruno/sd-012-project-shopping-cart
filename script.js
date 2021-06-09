@@ -24,9 +24,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 function cartItemClickListener(event) {
   event.target.remove();
@@ -63,7 +63,16 @@ const addItemToCart = () => {
   }));
 };
 
+const priceCart = () => {
+  const sectionCart = document.querySelector('.cart');
+  const criarP = document.createElement('p');
+  criarP.className = 'total-price';
+  criarP.innerText = 'Preço Total: ';
+  sectionCart.appendChild(criarP);
+};
+
 window.onload = function onload() {
   fetchAPI()
     .then(() => addItemToCart());
+    priceCart();
 };
