@@ -42,12 +42,12 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const getApi = async () => {
   const items = document.querySelector('.items');
-  await fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador")
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
   .then((computer) => computer.results)
   .then((results) => results.forEach((item) => items.appendChild(createProductItemElement(item))));
-}
+};
 
 window.onload = function onload() {
   getApi();
-}
+};
