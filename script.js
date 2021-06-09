@@ -16,20 +16,20 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-const saveCart = () => {
-  const cartItem = document.getElementsByClassName('cart__item');
-  // console.log(cartItem);
-  const cartObj = [];
-  for (let i = 0; i <= cartItem.length; i += 1) {
-    cartObj.push({
-      cartItem: [cartItem[i]],
-    });
-  }
-  const cartSave = JSON.stringify(cartObj);
-  console.log(cartObj);
-  console.log(cartSave);
-  localStorage.setItem('cartStorage', cartSave);
-};
+// const saveCart = () => {
+//   const cartItem = document.getElementsByClassName('cart__item');
+//   // console.log(cartItem);
+//   const cartObj = [];
+//   for (let i = 0; i <= cartItem.length; i += 1) {
+//     cartObj.push({
+//       cartItem: [cartItem[i]],
+//     });
+//   }
+//   const cartSave = JSON.stringify(cartObj);
+//   console.log(cartObj);
+//   console.log(cartSave);
+//   localStorage.setItem('cartStorage', cartSave);
+// };
 
 function cartItemClickListener(event) {
   event.target.remove();
