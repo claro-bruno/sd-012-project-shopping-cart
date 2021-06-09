@@ -1,6 +1,11 @@
+// Salvar Local Storage
+const saveLocalStorage = () => localStorage
+  .setItem('cart', (document.querySelector('.cart__items').innerHTML));
+
 // Remove Item do cart
 function cartItemClickListener(event) {
   event.target.remove();
+  saveLocalStorage();
 }
 
 // Cria o elemento para adicionar ao carrinho
@@ -20,8 +25,10 @@ const getComputerIDPromise = (computerID) => new Promise((resolve, reject) => {
     fetch(`https://api.mercadolibre.com/items/${computerID}`)
     .then((response) => {
       response.json().then((computer) => {
-        const cart = document.querySelector('.cart__items');
+        const cart = document.querySelector('ol');
         cart.appendChild(createCartItemElement(computer));
+        // salvar no local storage
+        saveLocalStorage();
         resolve();
       });
     });
@@ -96,6 +103,14 @@ const fetchComputer = async () => {
   }
 };
 
+const reloadCart = () => {
+  document.querySelector('ol').innerHTML = localStorage.getItem('cart');
+  const listItens = document.querySelectorAll('.cart__item');
+  return listItens.forEach((item) => item.addEventListener('click', cartItemClickListener));
+};
+
 window.onload = function onload() {
   fetchComputer();
+  reloadCart();
+  // Carregar Local Storage
 };
