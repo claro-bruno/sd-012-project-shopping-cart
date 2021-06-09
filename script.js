@@ -1,5 +1,12 @@
 const cartItem = '.cart__items';
 
+const appendPrice = (price) => {
+  const totalPricePlace = document.querySelector('.total-price');
+  let value = Math.round((Number(totalPricePlace.innerText) + Number(price)) * 100) / 100;
+  value = value === 0 ? '' : value;
+  totalPricePlace.innerText = value;
+  };
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,8 +39,12 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
+    let priceStr = event.target.innerText;
+    priceStr = `-${priceStr.slice(priceStr.indexOf('$') - priceStr.length + 1)}`;
     event.target.remove();
-    localStorage.setItem('shop', document.querySelector(cartItem).innerHTML);
+    appendPrice(priceStr);
+    localStorage.setItem('shop', document.querySelector('.cart__items').innerHTML);
+    localStorage.setItem('totalValue', document.querySelector('H2').innerHTML);
   }
 }
 
@@ -49,28 +60,35 @@ const getComputerItems = async (QUERY, itemsSection) =>
   .then((indexResponse) => indexResponse.json().then((response) => 
   response.results.forEach((element) => { 
     createProductItemElement(element.id, element.title, element.thumbnail, itemsSection);
-  })));  
+  })));
 
 const addCartItem = (event) => {
   if (event.target.tagName === 'BUTTON') {
-    const cartSection = document.querySelector(cartItem);
+    const cartSec = document.querySelector(cartItem);
     const item = event.target.parentElement.children[0].innerText;
     fetch(`https://api.mercadolibre.com/items/${item}`)
     .then((indexResponse) => indexResponse.json().then((response) => {
-      createCartItemElement(response.id, response.title, response.price, cartSection);
-      console.log(cartSection.innerHTML);
-      localStorage.setItem('shop', cartSection.innerHTML);
+      createCartItemElement(response.id, response.title, response.price, cartSec);
+      appendPrice(response.price);
+      localStorage.setItem('shop', cartSec.innerHTML);
+      localStorage.setItem('totalValue', document.querySelector('H2').innerHTML);      
     }));
   }
 };
 
   window.onload = function onload() { 
 // Iniciando códigos para a Seção HTML do carrinho de Compras
-  const cartSection = document.querySelector(cartItem);
-  cartSection.innerHTML = localStorage.getItem('shop');
+  const cartSection = document.getElementsByClassName('cart__items')[0];
+  console.log(cartSection);
+  if (localStorage.getItem('shop')) {
+    cartSection.innerHTML = localStorage.getItem('shop');
+    document.querySelector('H2').innerHTML = localStorage.getItem('totalValue'); 
+  } 
   cartSection.addEventListener('click', cartItemClickListener);
 // Iniciando códigos para a Seção HTML de seleção de itens
   const itemsSection = document.querySelector('.items');
   getComputerItems('computador', itemsSection);
   itemsSection.addEventListener('click', addCartItem);
+
+
   };
