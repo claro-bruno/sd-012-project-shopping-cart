@@ -35,8 +35,15 @@ function saveCart() {
   localStorage.setItem('cart', cartItems);
 }
 
+let totalPrice = 0;
+
 function cartItemClickListener(event) {
   event.target.remove();
+  const indexPrice = event.target.innerHTML.indexOf('$');
+  const Itemprice = event.target.innerText.slice(indexPrice + 1);
+  totalPrice -= Itemprice;
+  const price = document.getElementsByClassName('total-price')[0];
+  price.innerText = totalPrice;
   saveCart();
 }
 
@@ -47,8 +54,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-let totalPrice = 0;
 
 function getPrice(target) {
   const id = getSkuFromProductItem(target.path[1]);
