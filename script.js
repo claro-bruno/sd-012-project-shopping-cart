@@ -1,3 +1,5 @@
+const ol = document.getElementsByClassName('cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -52,11 +54,28 @@ const toLocalStorage = () => {
   localStorage.setItem('item', LocalOl[0].innerHTML);
 };
 
-const ol = document.getElementsByClassName('cart__items');
+function createSpanPrice() {
+  const oli = document.querySelector('.cart__items');
+  const newSpan = document.createElement('span');
+  // ol[0].childNodes.forEach((elm) => elm);
+  newSpan.className = 'total-price';
+  newSpan.innerText = 'Preço Total:';
+  ol[0].appendChild(newSpan);
+  console.log(oli);
+}
+
+const sumPrices = (price) => {
+  const span = document.getElementsByClassName('total-price');
+  let sum = 0;
+  sum += price;
+  span.innerHTML = `Preço Total: R$${sum}`;
+};
+
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
   itemAPI = await itemAPI.json();
   ol[0].appendChild(createCartItemElement(itemAPI));
+  sumPrices(itemAPI.price);
   toLocalStorage();
 }
 
@@ -71,4 +90,5 @@ window.onload = function onload() {
   fat();
   ol[0].innerHTML = localStorage.getItem('item');
   ol[0].childNodes.forEach((elm) => elm.addEventListener('click', cartItemClickListener));
+  createSpanPrice();
 };
