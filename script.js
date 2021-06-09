@@ -29,7 +29,12 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const produto = document.querySelector('.cart__items');
+  produto.addEventListener('click', function (evento) {
+    if (event.target.className === 'cart__item') {
+      event.target.remove();
+    }
+  });
 }
 
 function createCartItemElement(sku, name, salePrice) {
