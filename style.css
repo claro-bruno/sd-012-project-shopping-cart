@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.cartPrice {
+  display: none;
+}
+
 .top-bar .input-name-group {
   align-items: flex-start;
   display: flex;
@@ -18,7 +22,7 @@
 }
 
 .container {
-  display: flex;
+  display: none;
   justify-content: space-around;
   width: 100%;
 }
