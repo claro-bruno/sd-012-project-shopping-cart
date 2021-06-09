@@ -59,6 +59,7 @@ async function botaoDeClick(event) {
   let botaoFetch = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
   botaoFetch = await botaoFetch.json();
   cartItems[0].appendChild(createCartItemElement(botaoFetch));
+  localStorage.setItem('items', JSON.stringify(cartItems[0].innerHTML));
 }
 
 document.addEventListener('click', (event) => {
@@ -67,4 +68,7 @@ document.addEventListener('click', (event) => {
   }
 });
 
-window.onload = function onload() { pegaAPI(); };
+window.onload = function onload() { 
+  pegaAPI();
+  cartItems[0].innerHTML = localStorage.getItem('items');
+};
