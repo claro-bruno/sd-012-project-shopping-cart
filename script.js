@@ -15,7 +15,7 @@ function createProductImageElement(imageSource) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id, title, price }) {
