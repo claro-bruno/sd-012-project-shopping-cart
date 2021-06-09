@@ -2,6 +2,13 @@ const listURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const cartItem = '.cart__items';
 const total = '.total-price';
 
+const removeLoading = () => {
+  const parentElement = document.querySelector('body');
+  const element = document.querySelector('.loading');
+
+  parentElement.removeChild(element);
+};
+
 const addTotalPrice = (price) => {
   const totalElement = document.querySelector(total);
   let totalPrice;
@@ -151,6 +158,7 @@ const asyncFuncList = async () => {
     await createItemList(productList);
     await addButtonEvent();
     getCartFromLocalStorage();
+    removeLoading();
   } catch (error) {
     console.log('Error');
   }
