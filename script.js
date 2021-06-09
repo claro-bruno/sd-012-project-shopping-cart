@@ -9,6 +9,19 @@ window.onload = function onload() {
     .catch((error) => console.log(error));
 };
 
+function loadingStatus() {
+  const loadingElement = document.querySelector('.loading');
+  const parent = document.querySelector('.cart');
+  if (loadingElement) {
+    loadingElement.parentElement.removeChild(loadingElement);
+  } else {
+    const loading = document.createElement('p');
+    loading.innerHTML = 'loading...';
+    loading.classList.add('loading');
+    parent.appendChild(loading);
+  }
+}
+
 function emptyCart() {
   const btn = document.querySelector('.empty-cart');
   btn.addEventListener('click', () => {
@@ -48,10 +61,12 @@ function saveCartList() {
 }
 
 function fetchList(url) {
+  loadingStatus();
   return new Promise((resolve, reject) => {
     fetch(url)
       .then((r) => r.json())
       .then((obj) => resolve(obj))
+      .then(() => loadingStatus())
       .catch((err) => reject(err));
   })
 }
