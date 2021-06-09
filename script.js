@@ -1,4 +1,4 @@
-window.onload = function onload() { };
+window.onload = function onload() {};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +14,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({
+  sku,
+  name,
+  image,
+}) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -34,7 +38,11 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({
+  sku,
+  name,
+  salePrice
+}) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
