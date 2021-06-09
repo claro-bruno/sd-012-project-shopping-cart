@@ -24,6 +24,40 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+/* function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+} */
+
+function cartItemClickListener(/* event */) {
+  // coloque seu código aqui
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const addEvent = (event, callback) => {
+  const itemAddButtons = document.getElementsByClassName('item__add');
+  for (let index = 0; index < itemAddButtons.length; index += 1) {
+    itemAddButtons[index].addEventListener(event, callback);
+  }
+};
+
+const addCartItem = (event) => {
+  const section = event.target.parentElement;
+  const id = section.firstElementChild.innerHTML;
+  const cartList = document.querySelector('.cart__items');
+  fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
+    response.json().then((item) => {      
+      cartList.appendChild(createCartItemElement(item));
+    });
+  });
+};
+
 const createList = () => {
   const itensSection = document.getElementsByClassName('items');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador').then((response) => {
@@ -32,25 +66,10 @@ const createList = () => {
         const newSection = createProductItemElement(results[index]);
         itensSection[0].appendChild(newSection);
       }
+      addEvent('click', addCartItem);
     });
   });
 };
-
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
-/* function cartItemClickListener(event) {
-  // coloque seu código aqui
-} */
-
-/* function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-} */
 
 window.onload = function onload() {
   createList();
