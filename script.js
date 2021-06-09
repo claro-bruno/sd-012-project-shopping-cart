@@ -14,7 +14,6 @@ const saveCart = () => {
   localStorage.setItem('Total', JSON.stringify(totalPrice.innerHTML));
 };
 
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -57,7 +56,6 @@ function createCartItemElement({
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
 
 const addButton = (e) => {
   const addedId = getSkuFromProductItem(e.target.parentElement);
