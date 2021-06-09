@@ -31,7 +31,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  olItems.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
