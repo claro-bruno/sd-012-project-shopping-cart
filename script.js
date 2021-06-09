@@ -1,12 +1,27 @@
+const API = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
+const URL_PROD = "https://api.mercadolibre.com/items/";
+
+// CARREGA LISTA DO LOCALSTORAGE
+const temp = JSON.parse(localStorage.getItem('saved cart'));
+if (temp != null){
+  document.getElementById('cart').outerHTML = temp;
+}
+
+document.getElementById('emtpy-cart').addEventListener('click', () => {
+  document.getElementById('cart').innerHTML = '';
+});
+
+// COLOCA OS PRODUTOS NA TELA
 window.onload = async () => { 
   const products = await fetchProducts();
   products.forEach((product) => {
     document
     .querySelector('.items')
     .appendChild(createProductItemElement(product));
-  })
+  });
 }
 
+// BUSCA PELA API TODOS OS PRODUTOS QUE VAO NA TELA PRINCIPAL
 const fetchProducts = () => (
   new Promise((resolve, reject) => {
     fetch(API)
@@ -16,17 +31,32 @@ const fetchProducts = () => (
   })
 );
 
+// BUSCA PELA API O PRODUTO SELECIONADO
 const fetchProduct = (url) => (
   new Promise((resolve, reject) => {
     fetch(url)
     .then(response => response.json())
-    .then(data => resolve(data.results))
+    .then(data => resolve(data))
     .catch(fail => reject('Bugou'));
   })
 );
 
-const addToCart = async (item) => {
+// FUNCAO USADA AO CLICAR NO BOTAO 'ADICIONAR AO CART'
+const addToCart = async (targetParent) => {
+  const item = getSkuFromProductItem(targetParent);
+  const url = URL_PROD + item;
+  const product = await fetchProduct(url);
+  document
+  .querySelector('.cart__items')
+  .appendChild(createCartItemElement(product));
+  saveList();
+}
 
+// FUNCAO QUE SALVA O ESTADO ATUAL DA LISTA
+function saveList(){
+  const list = document.getElementById('cart').outerHTML;
+  const temp = JSON.stringify(list);
+  localStorage.setItem('saved cart', temp);
 }
 
 
@@ -38,8 +68,7 @@ const addToCart = async (item) => {
 
 
 
-const API = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
-
+// FUNCAO SECUNDARIA - CRIA IMAGEM
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -47,6 +76,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// FUNCAO SECUNDARIA - CRIA ELEMENTO
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -54,13 +84,13 @@ function createCustomElement(element, className, innerText) {
   if (element == 'button'){
     e.addEventListener('click', (event) => {
       const item = event.target.parentElement;
-
-      console.log(getSkuFromProductItem(item));
+      addToCart(item);
     })
   }
   return e;
 }
 
+// CRIA BOX DO PRODUTO HTML
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -78,10 +108,11 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
+  saveList();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
