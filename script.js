@@ -1,6 +1,7 @@
 function cartItemClickListener(event) {
-    // coloque seu código aqui
-    return event;
+  // coloque seu código aqui
+  const olCart = document.querySelector('.cart__items')
+  olCart.removeChild(event.target);
 }
 
 function createCartItemElement({ id, title, price }) {
