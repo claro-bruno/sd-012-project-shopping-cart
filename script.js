@@ -1,6 +1,4 @@
-window.onload = function onload() { 
-  getItems();
- };
+window.onload = function onload() { };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -28,31 +26,34 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-const getItems = () => fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador")
+const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json()
     .then((computers) => {
       computers.results.forEach((computer) => {
-        computer['sku'] = computer['id'];
-        computer['name'] = computer['title'];
-        computer['image'] = computer['thumbnail'];
+        const computerFunc = computer;
+        computerFunc.sku = computerFunc.id;
+        computerFunc.name = computerFunc.title;
+        computerFunc.image = computerFunc.thumbnail;
         const items = document.getElementsByClassName('items')[0];
-        const item = createProductItemElement(computer);
+        const item = createProductItemElement(computerFunc);
         items.appendChild(item);
       });
     }));
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+getItems();
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function cartItemClickListener() {
+//   // coloque seu código aqui
+// }
+
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
