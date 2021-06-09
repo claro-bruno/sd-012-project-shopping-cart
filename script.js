@@ -5,8 +5,19 @@ window.onload = function onload() {
     .then((items) => items.forEach((item) => createProductItemElement(item)))
     .then(() => cartButtonClickListener())
     .then(() => loadCartList())
+    .then(() => emptyCart())
     .catch((error) => console.log(error));
 };
+
+function emptyCart() {
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', () => {
+    const cartList = document.querySelectorAll('li.cart__item');
+    cartList.forEach((item) => item.parentElement.removeChild(item));
+    saveCartList();
+    totalValue();
+  })
+}
 
 function loadCartList() {
   const storage = JSON.parse(window.localStorage.getItem('cartItems'));
