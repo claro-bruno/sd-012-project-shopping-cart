@@ -101,8 +101,6 @@ function clearingCart() {
   });
 }
 
-
-
 window.onload = function onload() { 
   const listaCarrinho = document.querySelector('ol');
   listaCarrinho.innerHTML = localStorage.getItem('shopCart');
