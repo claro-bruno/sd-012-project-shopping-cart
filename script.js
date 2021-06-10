@@ -35,12 +35,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
-async function fetchProductArrayFromURL(URL, product) {
-  const response = await fetch(`${URL}${product}`);
-  const json = await response.json();
-  return json;
-}
-
 const showAndStoreTotalPrice = (totalPricex) => {
   totalPriceElement.innerHTML = Number(totalPricex);
   localStorage.setItem('totalPrice', Number(totalPricex));
@@ -57,6 +51,12 @@ const removePrice = (event) => {
   showAndStoreTotalPrice(totalPrice);
 };
 
+const emptyCart = () => {
+  while (shoppingCartList.firstChild) {
+    shoppingCartList.removeChild(shoppingCartList.firstChild);
+  }
+};
+
 function cartItemClickListener(event) {
   removePrice(event);
   event.target.remove();
@@ -70,6 +70,35 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const addEmptyCartButtonClickListener = () => {
+  const emptyCartButton = document.querySelector('.empty-cart');
+  emptyCartButton.addEventListener('click', () => {
+    emptyCart();
+    showAndStoreTotalPrice(0);
+    localStorage.clear();
+    totalPrice = 0;
+  });
+};
+
+const showResults = (results) => results
+  .forEach((result) => itemsSection
+    .appendChild(createProductItemElement(result)));
+
+const showOrHideLoading = (string) => {
+  const loadingElement = document.querySelector('.loading');
+  if (string === 'show') {
+    loadingElement.innerHTML = 'loading...';
+  } else {
+    loadingElement.remove();
+  }
+};
+
+const fetchProductArrayFromURL = async (URL, product) => {
+  const response = await fetch(`${URL}${product}`);
+  const productsJson = await response.json();
+  return productsJson;
+};
 
 const addResultsClickListeners = (results) => {
   const buttons = document.querySelectorAll('.item__add');
@@ -85,6 +114,15 @@ const addResultsClickListeners = (results) => {
   });
 };
 
+const loadResults = async () => {
+  showOrHideLoading('show');
+  const { results } = await fetchProductArrayFromURL(
+    'https://api.mercadolibre.com/sites/MLB/search?q=',
+    'computador',
+    );
+    return results;
+  };
+  
 const loadLocalStorage = () => {
   const savedCart = localStorage.getItem('shoppingCartList');
   if (savedCart) {
@@ -92,51 +130,13 @@ const loadLocalStorage = () => {
     const savedCartListItems = document.querySelectorAll('.cart__item');
     savedCartListItems.forEach((savedCartListItem) => {
       savedCartListItem.addEventListener('click', cartItemClickListener);
-    });
+      });
   }
   const savedTotal = localStorage.getItem('totalPrice');
   if (savedTotal) {
-    totalPriceElement.innerHTML = parseFloat(savedTotal);
-    totalPrice = parseFloat(savedTotal);
+    totalPriceElement.innerHTML = Number(savedTotal);
+    totalPrice = Number(savedTotal);
   }
-};
-
-const showOrHideLoading = (string) => {
-  const loadingElement = document.querySelector('.loading');
-  if (string === 'show') {
-    loadingElement.innerHTML = 'loading...';
-  } else {
-    loadingElement.remove();
-  }
-};
-
-const showResults = (results) => results
-  .forEach((result) => itemsSection
-    .appendChild(createProductItemElement(result)));
-
-const loadResults = async () => {
-  showOrHideLoading('show');
-  const { results } = await fetchProductArrayFromURL(
-    'https://api.mercadolibre.com/sites/MLB/search?q=',
-    'computador',
-  );
-  return results;
-};
-
-const emptyCart = () => {
-  while (shoppingCartList.firstChild) {
-    shoppingCartList.removeChild(shoppingCartList.firstChild);
-  }
-};
-
-const addEmptyCartButtonClickListener = () => {
-  const emptyCartButton = document.querySelector('.empty-cart');
-  emptyCartButton.addEventListener('click', () => {
-    emptyCart();
-    showAndStoreTotalPrice(0);
-    localStorage.clear();
-    totalPrice = 0;
-  });
 };
 
 window.onload = async function onload() {
@@ -150,28 +150,3 @@ window.onload = async function onload() {
   addResultsClickListeners(results);
   addEmptyCartButtonClickListener();
 };
-/* 
-
-promise: obrigatoriamente tem que chamar resolve() e reject(), senão fica pending pra sempre em loop
-
-devem ser chamados no retorno de uma promise
-.then((result) => {})
-.catch((error) => {})
-
-async/await
-precisa de try catch
-
-debbugar o fetch
-
-const e await
-e try catch para erro
-
-const fulano = await getGithubUser();
-fulano é o próprio response
-fulano.json retorna uma promise
-
-TODA VEZ QUE SE RETORNAR UMA PROMISE ASSINCRONA, TENHO QUE RESOLVER (SINCRONIZAR) COM .THEN OU ASYNC AWAIT
-
-englobar retorno da fetch em uma nova promise
-
- */
