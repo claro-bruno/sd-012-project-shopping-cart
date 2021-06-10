@@ -1,6 +1,3 @@
-const URLMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-const items = document.querySelector('.items');
-// const olCartItems = document.querySelector('.cart__items');
 // Adiciona imagen
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,7 +13,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 // Adiciona o elemento na pag
-function createProductItemElement({ id: sku, tittle: name, thumbnail: image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // 'Reatribuindo os valores que o parametro vai receber'
   const section = document.createElement('section');
   section.className = 'item';
@@ -27,27 +24,43 @@ function createProductItemElement({ id: sku, tittle: name, thumbnail: image }) {
 
   return section;
 }
-// function createCartItemElement(user) {
-//   const { sku, name, salePrice } = user;
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
-// ----------------------------------CREATE----------------------------------------------------------------------
-// function getSkuFromProductItem(item) {
+function cartItemClickListener(event) {
+  console.log(`removeu ${event}`);
+}
+// o user que ele vai receber como parametro é o getIdfromProduct
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+// -----------------------------------------------CREATE--------------------------------------------------------
+// function getIdFromProductItem(item) {
 //   // Função que pega o id do item 'MLB1613404303'
 //   alert('funcionou');
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// Requisito 2
-
-// Removi o parametro event do cartItemClickListener
-// function cartItemClickListener(event) {
-// }
-
+const olChild = async (id) => {
+  const olCartItems = document.querySelector('.cart__items');
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const data = await response.json();
+  console.log(data);
+  olCartItems.appendChild(createCartItemElement(data));
+};
+const onClick = () => {
+  const buttons = document.querySelectorAll('.item__add');
+  console.log(buttons);
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', async (event) => {
+      const userId = event.target.parentElement.querySelector('span.item__sku').innerText;
+      console.log(`cliclou ${userId}`);
+      olChild(userId);
+    });
+  });
+};
 // -------------------------------------Requisito 1 onload fetch API ------------------------------
 
 // Usando Promise
@@ -64,21 +77,30 @@ function createProductItemElement({ id: sku, tittle: name, thumbnail: image }) {
 //   .catch(() => reject()));
 
 // Usando async
+const productsList = (data) => {
+  console.log(data);
+  const items = document.querySelector('.items');
 
-const fetchMercadoLivre = async () => {
+  return data.results.forEach((user) => items
+  .appendChild(createProductItemElement(user)));
+};
+
+const fetchMercadoLivre = async (page) => {
   try {
-    const response = await fetch(`${URLMercadoLivre}${'computador'}`);
+    const URLMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+    const response = await fetch(`${URLMercadoLivre}${page}`);
     const data = await response.json();
-    return data.results.forEach((user) => items
-    .appendChild(createProductItemElement(user)));
+    return productsList(data);
   } catch (e) {
-    return e;
+    return e + alert('ERROR API NOT FOUND ');
+    // return e;
   }
 };
 
 window.onload = async () => {
   try {
-     await fetchMercadoLivre();
+    await fetchMercadoLivre('computador');
+    onClick();
     //  cartItemClickListener();
   } catch (error) {
     console.log(error);
