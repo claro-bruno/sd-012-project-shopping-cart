@@ -52,7 +52,11 @@
 }
 
 .item .item__image {
-  width: 100%;
+  width: 50%;
+  border-radius: 2ch;
+  display: flex;
+  align-self: center;
+  margin-bottom: 6px;
 }
 
 .item .item__add {
