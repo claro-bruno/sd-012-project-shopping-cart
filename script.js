@@ -1,32 +1,52 @@
+
+
 const API = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
 const URL_PROD = "https://api.mercadolibre.com/items/";
 
-// CARREGA LISTA DO LOCALSTORAGE
-const storageContent = JSON.parse(localStorage.getItem('saved cart'));
-if (storageContent != null){
-  document.getElementById('cart').outerHTML = storageContent;
-  const lista = document.getElementById('cart');
-  for (let i = 0; i < lista.children.length; i += 1){
-    lista.children[i].addEventListener('click', cartItemClickListener)
-  }
-  console.log(lista.children.length);
-}
 
-// ESVAZIAR CARRINHO
+
+// EVENT LISTENER - ESVAZIAR CARRINHO
 document.getElementById('emtpy-cart').addEventListener('click', () => {
   document.getElementById('cart').innerHTML = '';
+  updateTotalPrice();
   saveList();
 });
 
-// COLOCA OS PRODUTOS NA TELA
-window.onload = async () => { 
-  const products = await fetchProducts();
-  products.forEach((product) => {
-    document
-    .querySelector('.items')
-    .appendChild(createProductItemElement(product));
-  });
-}
+// FUNCAO QUE SALVA O ESTADO ATUAL DA LISTA
+const saveList = () => {
+  const list = document.getElementById('cart').outerHTML;
+  const temp = JSON.stringify(list);
+  localStorage.setItem('saved cart', temp);
+};
+
+// ATUALIZA O PRECO TOTAL DA LISTA
+const updateTotalPrice = () => {
+  let str = document.getElementById('cart').innerHTML;
+  
+  let end = str.indexOf('</li>');
+  let start = str.indexOf('PRICE: $')+8;
+  let substr;    
+  let totals = [];
+  
+  if (end>0) {
+    while(end>0) { 
+      substr = str.substring(start, end);
+      totals.push(Number(substr));
+      str = str.replace('</li>', '');
+      str = str.replace('PRICE: $', '');
+      start = str.indexOf('PRICE: $')+8;
+      end = str.indexOf('</li>');
+    }
+  }
+  
+  const total = totals.reduce((acc, item) => acc + item, 0);
+  document.getElementById('total-price').innerHTML = total;
+
+  
+  console.log(total);
+  // console.log(substr, start);
+
+};
 
 // BUSCA PELA API TODOS OS PRODUTOS QUE VAO NA TELA PRINCIPAL
 const fetchProducts = () => (
@@ -58,23 +78,15 @@ const addToCart = (targetParent) => {
     .querySelector('.cart__items')
     .appendChild(createCartItemElement(product));
   })
-  .then(() => {saveList();});
-}
-
-// FUNCAO QUE SALVA O ESTADO ATUAL DA LISTA
-function saveList(){
-  const list = document.getElementById('cart').outerHTML;
-  const temp = JSON.stringify(list);
-  localStorage.setItem('saved cart', temp);
-}
+  .then(() => {
+    updateTotalPrice();
+    saveList();
+  });
+};
 
 
 
-
-
-
-
-
+//----------------------------------------------------------------
 
 
 // FUNCAO SECUNDARIA - CRIA IMAGEM
@@ -118,6 +130,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  updateTotalPrice();
   saveList();
 }
 
@@ -128,4 +141,46 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+
+
+
+
+
+
+
+
+// CARREGA LISTA DO LOCALSTORAGE*************************************************
+const storageContent = JSON.parse(localStorage.getItem('saved cart'));
+if (storageContent != null){
+  document.getElementById('cart').outerHTML = storageContent;
+  const lista = document.getElementById('cart');
+  for (let i = 0; i < lista.children.length; i += 1){
+    lista.children[i].addEventListener('click', cartItemClickListener)
+  }
+}
+updateTotalPrice();
+
+// COLOCA OS PRODUTOS NA TELA
+window.onload = async () => { 
+  const products = await fetchProducts();
+  products.forEach((product) => {
+    document
+    .querySelector('.items')
+    .appendChild(createProductItemElement(product));
+  });
+} //*******************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
 
