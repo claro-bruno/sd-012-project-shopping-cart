@@ -113,6 +113,22 @@ const loadResults = async () => {
   return results;
 };
 
+const emptyCart = () => {
+  while (shoppingCartList.firstChild) {
+    shoppingCartList.removeChild(shoppingCartList.firstChild);
+  }
+};
+
+const addEmptyCartButtonClickListener = () => {
+  const emptyCartButton = document.querySelector('.empty-cart');
+  emptyCartButton.addEventListener('click', () => {
+    emptyCart();
+    showAndStoreTotalPrice(0);
+    localStorage.clear();
+    totalPrice = 0;
+  });
+};
+
 window.onload = async function onload() {
   totalPriceElement = document.querySelector('.total-price');
   shoppingCartList = document.querySelector('#cart');
@@ -121,6 +137,7 @@ window.onload = async function onload() {
   const results = await loadResults();
   showResults(results);
   addResultsClickListeners(results);
+  addEmptyCartButtonClickListener();
 };
 /* 
 
