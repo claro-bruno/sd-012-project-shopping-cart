@@ -62,11 +62,7 @@ function sumTotal() {
   const totalPrice = document.querySelector('.total-price');
   const cartItems = document.querySelectorAll('.cart__item');
   const priceItems = Array.prototype.map.call(cartItems, 
-    (item) => Number(item
-      .innerHTML
-      .split('|')
-      .reverse()[0]
-      .replace(/[^\d.]+/g, '')))
+      (item) => Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1)))
     .reduce((total, price) => total + price, 0);
   totalPrice.innerText = priceItems;
 }
