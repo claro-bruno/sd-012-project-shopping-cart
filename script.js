@@ -54,14 +54,20 @@ function savePrice() {
   localStorage.setItem('price', totalPrice);
 }
 
+function emptyLocalStorage() {
+  localStorage.removeItem('cart');
+  localStorage.removeItem('price');
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
   const indexPrice = event.target.innerHTML.indexOf('$');
-  const Itemprice = event.target.innerText.slice(indexPrice + 1);
-  totalPrice -= Itemprice;
+  const itemPrice = event.target.innerText.slice(indexPrice + 1);
+  totalPrice = Math.round((totalPrice - itemPrice) * 100) / 100;
   updateTotalPrice();
   savePrice();
   saveCart();
+  if (totalPrice === 0) emptyLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -83,7 +89,7 @@ const addItemToCart = async (event) => {
   items.appendChild(item);
   saveCart();
 
-  totalPrice += computer.price;
+  totalPrice = Math.round((totalPrice + computer.price) * 100) / 100;
   updateTotalPrice();
   savePrice();
 };
@@ -107,8 +113,7 @@ function emptyCart() {
   ol.innerHTML = '';
   totalPrice = 0;
   updateTotalPrice();
-  savePrice();
-  saveCart();
+  emptyLocalStorage();
 }
     
 window.onload = function onload() {
