@@ -52,21 +52,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 // BUSCA PELA API TODOS OS PRODUTOS QUE VAO NA TELA PRINCIPAL
 const fetchProducts = () => (
-  new Promise((resolve, reject) => {
+  new Promise((resolve) => {
     fetch(API)
     .then((response) => response.json())
-    .then((data) => resolve(data.results))
-    .catch(() => reject('Bugou'));
+    .then((data) => resolve(data.results));
   })
 );
 
 // BUSCA PELA API O PRODUTO SELECIONADO
 const fetchProduct = (url) => (
-  new Promise((resolve, reject) => {
+  new Promise((resolve) => {
     fetch(url)
     .then((response) => response.json())
-    .then((data) => resolve(data))
-    .catch(() => reject('Bugou'));
+    .then((data) => resolve(data));
   })
 );
 
