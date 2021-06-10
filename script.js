@@ -29,11 +29,11 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-// REQUISITO 4.1 - Salva os itens do carrinho no Local Storage
+// REQUISITO 4.1 - Salva os itens do carrinho no Local Storage:
 function localStorageCart() {
   localStorage.setItem('shopping-data', JSON.stringify(shoppingCart));
 }
-// REQUISITO 3 - Remove do carrinho os itens clicados
+// REQUISITO 3 - Remove do carrinho os itens clicados:
 function cartItemClickListener(event) {
   event.target.remove();
   localStorageCart();
@@ -47,7 +47,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-// REQUISITO 2.2 - Adiciona o item clicado no carrinho
+// REQUISITO 2.2 - Adiciona o item clicado no carrinho:
 function insertCartItem() {
   const cartItem = document.querySelector('.cart__items');
   cartItem.innerHTML = '';
@@ -56,7 +56,7 @@ function insertCartItem() {
     cartItem.appendChild(cartItemElement);
   });
 }
-// REQUISITO 2.1 - Busca os detalhes do produto clicado para adicionar no carrinho
+// REQUISITO 2.1 - Busca os detalhes do produto clicado para adicionar no carrinho:
 async function addToCart(event) {
   const sku = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${sku}`);
@@ -65,7 +65,7 @@ async function addToCart(event) {
   insertCartItem();
   localStorageCart();
 }
-// REQUISITO 4.2 - Resgata os itens do carrinho salvo no Local Storage
+// REQUISITO 4.2 - Resgata os itens do carrinho salvo no Local Storage:
 function retrieveLocalStorage() {
   const dataToRetrieve = JSON.parse(localStorage.getItem('shopping-data'));
   if (dataToRetrieve) {
@@ -73,7 +73,7 @@ function retrieveLocalStorage() {
     insertCartItem();
   }
 }
-// REQUISITO 1 - Insere a lista de produtos na página
+// REQUISITO 1 - Insere a lista de produtos na página:
 async function productList() {
   const itemSection = document.querySelector('section .items');
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
@@ -88,7 +88,7 @@ async function productList() {
     itemSection.appendChild(component);
   });
 }
-// REQUISITO 6 - Apaga os itens do carrinho ao clicar no botão
+// REQUISITO 6 - Apaga os itens do carrinho ao clicar no botão:
 function clearCart() {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
