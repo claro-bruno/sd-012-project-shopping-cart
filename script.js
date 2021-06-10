@@ -173,15 +173,21 @@ const preventDef = (e) => {
   e.preventDefault();
 };
 
+const itemsSection = document.querySelector('.items');
+
 formBtn.addEventListener('click', preventDef);
-formBtn.addEventListener('click', () => {
-  
+formBtn.addEventListener('click', async () => {
+  const productsList = await loadProducts(formInput.value);
+  while (itemsSection.lastElementChild) {
+    itemsSection.lastElementChild.remove();
+  }
+  productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product)));
+  addsHoverToItems();
 });
 
 window.addEventListener('load', async () => {
   loadCart();
   const productsList = await loadProducts('computador');
-  const itemsSection = document.querySelector('.items');
   productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product)));
   addsHoverToItems();
 });
