@@ -21,8 +21,9 @@ function createButton(element, className, id, innerText) {
   return e;
 }
 
-function cartItemClickListener(/* event */) {
-  //
+function cartItemClickListener(event) {
+  const deleteProduct = event;
+  deleteProduct.target.outerHTML = '';
 }
 
 function createCartItemElement({ id: sku = this.id }) {
