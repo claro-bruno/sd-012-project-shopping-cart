@@ -45,7 +45,7 @@ function cartItemClickListener(event) {
   const getPrice = event.target.innerHTML.split('$');
   const price = Number(getPrice[getPrice.length - 1]);
   const totalPrice = document.querySelector(getTotalPrice);
-  totalPrice.innerHTML = Number(totalPrice.innerHTML) - price;
+  totalPrice.innerHTML = Math.round((Number(totalPrice.innerHTML) - price) * 100) / 100;
   cart.removeChild(event.target);
   addLocalStorage();
 }
@@ -69,7 +69,7 @@ function cartAdd(endpoint) {
     const cartItem = createCartItemElement({ sku, name, salePrice });
     cartItems.appendChild(cartItem);
     const totalPrice = document.querySelector(getTotalPrice);
-    totalPrice.innerHTML = Number(totalPrice.innerHTML) + salePrice;
+    totalPrice.innerHTML = Math.round(((Number(totalPrice.innerHTML) + salePrice)) * 100) / 100;
     addLocalStorage();
   }));
 }
