@@ -32,7 +32,7 @@ const totalPrice = [];
 
 const totalCalc = () => {
   const total = totalPrice.reduce((acc, curr) => acc + curr, 0);
-  document.querySelector('.total-price').innerText = `${total}`
+  document.querySelector('.total-price').innerText = `${total}`;
 }
 
 async function cartItemClickListener(event) {
@@ -53,15 +53,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const addItemsInCart = () => {
   const carItems = document.querySelector('.cart__items');
   const arrayOfButtons = document.querySelectorAll('.item__add');
-  const createSpan = document.createElement('p');
-  createSpan.innerHTML = 'O preço total é: '
   arrayOfButtons.forEach((button) => {
     button.addEventListener('click', async () => {
       const id = button.parentNode.firstChild.innerText;
       try {
         await fetch(`https://api.mercadolibre.com/items/${id}`)
-        .then((response) => response.json())
-        .then((item) => {
+        .then((response) => response.json()).then((item) => {
           totalPrice.push(item.price);
           carItems.appendChild(createCartItemElement(item));
         });
