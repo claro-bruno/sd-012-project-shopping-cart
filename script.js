@@ -1,5 +1,6 @@
-const ol = document.querySelector('.cart__items');
 const body = document.querySelector('body');
+const items = document.querySelector('.items');
+const ol = document.querySelector('.cart__items');
 const total = document.querySelector('.total-price');
 total.innerHTML = 0;
 
@@ -56,19 +57,20 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const createLoading = () => {
-  const loading = createCustomElement('header', 'loading', 'loading...');
+  const loading = createCustomElement('span', 'loading', 'loading...');
   body.appendChild(loading);
 };
 
 const removeLoading = () => {
-  const loading = document.querySelector('header');
+  const loading = document.querySelector('.loading');
   if (loading) body.removeChild(loading);
 };
 
-const fetchProductList = async () => {
+let search = 'computador';
+const fetchProductList = async (item) => {
   createLoading();
   const itens = document.querySelector('.items');
-  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`);
   const obj = await response.json();
   const arr = obj.results;
   arr.forEach((computer) => {
@@ -117,10 +119,31 @@ const clearCart = () => {
   });
 };
 
-window.onload = function onload() {
-  fetchProductList()
+const loader = () => {
+  fetchProductList(search)
   .then(() => loadLocalStorage())
   .then(() => addCart())
   .then(() => totalPrice())
   .then(() => clearCart());
-  };
+};
+
+const searchEngine = () => {
+  const searchInput = document.querySelector('#search');
+  searchInput.addEventListener('keypress', (event) => {
+    const pressEnter = document.getElementById('search-span');
+    if (event.key === 'Enter') {
+      items.innerHTML = '';
+      search = searchInput.value;
+      loader();
+      searchInput.value = '';
+      pressEnter.style.color = 'gold';
+    } else {
+      pressEnter.style.color = 'black';
+    }
+  });
+};
+
+window.onload = function onload() {
+  loader();
+  searchEngine();
+};
