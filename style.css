@@ -19,7 +19,7 @@ body {
   background-color: gold;
   border-bottom: rgb(31, 31, 31) solid 4px;
   border-radius: 0 0 10px 10px;
-  z-index: 9999;
+  z-index: 9998;
   padding: 10px 0;
 }
 
@@ -70,6 +70,7 @@ body {
   padding: 2px;
   border-radius: 5px;
   width: 8%;
+  z-index: 9999;
   transition: 1s;
 }
 
@@ -190,8 +191,7 @@ body {
   background-color: red;
   color: white;
   width: 300px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 10px auto;
   text-align: center;
   height: 40px;
   border-radius: 10px;
@@ -199,7 +199,6 @@ body {
   font-size: 14pt;
   border: none;
   cursor: pointer;
-  margin-top: 5px;
   box-shadow: 2px 3px 0 2px rgb(58, 58, 58);
   opacity: 0.8;
   transition: all 0.4s ease;
