@@ -40,9 +40,7 @@ const createProductItemElement = ({ sku, name, image }) => {
 
 // const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
-const cartItemClickListener = (event) => {
- event.console.log('ok');
-};
+const cartItemClickListener = async (event) => event.target.remove();
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
   const li = document.createElement('li');
