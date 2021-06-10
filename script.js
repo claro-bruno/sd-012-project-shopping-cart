@@ -1,6 +1,4 @@
-// iniciando o projeto
-window.onload = function onload() { };
-
+const linkML = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -18,12 +16,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -42,3 +40,18 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+function buscaItensAPI() {
+  fetch(`${linkML}computador`)
+  .then((response) => (response.json()))
+  .then((Object) => Object.results.forEach((result) => { 
+    const intensAPI = createProductItemElement(
+      { sku: result.id, name: result.title, image: result.thumbnail },
+); 
+    document.querySelector('.items').appendChild(intensAPI);
+}));
+}
+
+window.onload = function onload() { 
+  buscaItensAPI();
+};
