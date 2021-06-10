@@ -1,3 +1,5 @@
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -20,35 +22,43 @@ function createButton(element, className, id, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {
+function cleanItemFromCart(event) {
   const cartItems = document.querySelector('.cart__items');
   cartItems.removeChild(event.target);
 }
 
-/*
-function saveProductsLocalStorage(skuReceived) {
-  localStorage.setItem('products', skuReceived);
+function clearAllCart() {
+  const buttonClear = document.querySelector('.empty-cart');
+   buttonClear.addEventListener('click', () => {
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.innerHTML = '';
+  });
 }
 
+function saveProductsLocalStorage(skuReceived) {
+  localStorage.setItem('products', skuReceived); // não esta salvando todos os produtos clicados
+}
+
+/* abaixo funcao usada no projeto to do list
 function returnsSaveProducts() {
   const products = document.querySelectorAll('.cart__item');
   if (localStorage.getItem('products') !== undefined) {
     products.innerHTML = localStorage.getItem('products');
   }
-}
-*/
+} */
 
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
       li.className = 'cart__item';
       const textFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
       li.innerText = textFormat;
-      li.addEventListener('click', cartItemClickListener);
+      li.addEventListener('click', cleanItemFromCart);
     
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(li);
       
-      // saveProductsLocalStorage(textFormat);
+      saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
+      clearAllCart();
 }
 
 async function fetchAPIProduct({ id: skuReceived = this.id }) {
@@ -85,8 +95,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
-const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
 async function fetchAPI() {
   try {
     const response = await fetch(API_URL);
@@ -99,5 +107,5 @@ async function fetchAPI() {
 
 window.onload = function onload() { 
   fetchAPI();
-  // returnsSaveProducts();
+  // returnsSaveProducts(); // funcao usada no projeto to do list
 };
