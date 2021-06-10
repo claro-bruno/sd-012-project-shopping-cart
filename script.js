@@ -8,6 +8,7 @@ function createProductImageElement(imageSource) {
 function cartItemClickListener(event) {
   const lista = document.querySelector('.cart__items');
   lista.removeChild(event.target);
+  localStorage.removeItem(event.target.id);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -18,12 +19,19 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+let listaItems = []
+const auxiliarStorage = (item) => {
+  listaItems.push(item);
+  localStorage.setItem('lista', listaItems);
+}
+
 async function cartItem(id) {
   const objId = await fetch(`https://api.mercadolibre.com/items/${id}`).then((r) => r.json());
   const { title, price } = objId;
   const newCart = createCartItemElement({ sku: id, name: title, salePrice: price });
   const list = document.querySelector('.cart__items');
   list.appendChild(newCart);
+  auxiliarStorage(newCart.innerText)
 }
 
 function createCustomElement(element, className, innerText) {
@@ -73,6 +81,17 @@ async function verifetch(url) {
       throw new Error('endpoint does not exist');
 }
 
+function clearCart() {
+  const cart = document.querySelector('.cart__items');
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => cart.removeChild(item));
+}
+
 window.onload = function onload() { 
   verifetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const clearBtn = document.querySelector('.empty-cart');
+  clearBtn.addEventListener('click', clearCart)
+  // const carrinho = document.querySelector('.cart__items');
+  // const listaRefresh = localStorage.getItem('lista');
+  // listaRefresh.forEach((item) => carrinho.appendChild(item))
 };
