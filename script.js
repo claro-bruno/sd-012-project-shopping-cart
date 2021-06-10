@@ -30,18 +30,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener({ target }) {
-  target.remove();
-}
-
-function createCartItemElement({ id: sku, title: name, price: SalePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${SalePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 const sec = document.getElementsByClassName('items');
 const fat = async () => {
   let objAPI = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
@@ -54,22 +42,25 @@ const toLocalStorage = () => {
   localStorage.setItem('item', LocalOl[0].innerHTML);
 };
 
-function createSpanPrice() {
-  const oli = document.querySelector('.cart__items');
-  const newSpan = document.createElement('span');
-  // ol[0].childNodes.forEach((elm) => elm);
-  newSpan.className = 'total-price';
-  newSpan.innerText = 'Preço Total:';
-  ol[0].appendChild(newSpan);
-  console.log(oli);
+let sum = 0;
+const sumPrices = (price) => {
+  const idPrice = document.getElementById('total-price');
+  sum += price;
+  idPrice.innerHTML = sum;
+};
+
+function cartItemClickListener({ target }) {
+  target.remove();
+  toLocalStorage();
 }
 
-const sumPrices = (price) => {
-  const span = document.getElementsByClassName('total-price');
-  let sum = 0;
-  sum += price;
-  span.innerHTML = `Preço Total: R$${sum}`;
-};
+function createCartItemElement({ id: sku, title: name, price: SalePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${SalePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
@@ -84,11 +75,13 @@ document.addEventListener('click', function ({ target }) {
     const itemID = target.parentElement.firstChild.innerText;
     addItemToCart(itemID);
   }
+  if (target.classList.contains('empty-cart')) {
+    ol[0].innerHTML = '';
+  }
 });
 
 window.onload = function onload() {
   fat();
   ol[0].innerHTML = localStorage.getItem('item');
   ol[0].childNodes.forEach((elm) => elm.addEventListener('click', cartItemClickListener));
-  createSpanPrice();
 };
