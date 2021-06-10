@@ -1,5 +1,6 @@
+const ul = document.querySelector('.cart__items');
+
 function cartItemClickListener(event) {
-  const ul = document.querySelector('.cart__items');
   ul.removeChild(event.target);
 }
 
@@ -23,8 +24,6 @@ function createProductImageElement(imageSource) {
 }
 
 const addPrductsCart = async (item) => {
-  // let cartItens = {};
-  const ul = document.querySelector('.cart__items');
   const idProduct = getSkuFromProductItem(item);
   const url = `https://api.mercadolibre.com/items/${idProduct}`;
   let result = await fetch(url);
@@ -76,7 +75,6 @@ const loadProducts = async (filter) => {
 window.onload = function onload() {
   loadProducts('computador');
   if (localStorage.getItem('shoppingCart')) {
-    const ul = document.querySelector('.cart__items');
     ul.innerHTML = JSON.parse(localStorage.getItem('shoppingCart'));
   }
  };
