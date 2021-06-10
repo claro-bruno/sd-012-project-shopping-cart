@@ -1,4 +1,6 @@
 const mercadoLivreURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const stringOrderedList = 'ol.cart__items';
+const strinListaProdutos = 'lista-produtos';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,10 +33,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // }
 
 function cartItemClickListener(event) {
-  const itemList = document.querySelector('ol.cart__items');
+  const itemList = document.querySelector(stringOrderedList);
 
   event.target.remove();
-  localStorage.setItem('lista-produtos', itemList.innerHTML);
+  localStorage.setItem(`${strinListaProdutos}`, itemList.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -47,15 +49,15 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 const saveList = (event) => {
   const productID = event.parentNode.innerHTML;
-  localStorage.setItem('lista-produtos', productID);
+  localStorage.setItem(`${strinListaProdutos}`, productID);
 };
 
 const buttonListener = () => {
   const allButtons = document.querySelectorAll('button.item__add');
   let itemCode = '';
-  const itemList = document.querySelector('ol.cart__items');
   allButtons.forEach((item) => {
     item.addEventListener('click', (evt) => {
+      const itemList = document.querySelector(stringOrderedList);
       itemCode = evt.target.parentNode.firstChild.innerText;
       const productURL = `https://api.mercadolibre.com/items/${itemCode}`;
       fetch(productURL)
@@ -85,8 +87,9 @@ const appendJson = (jsonData) => {
 };
 
 const returnSavedList = () => {
-  const itemList = document.querySelector('ol.cart__items');
-  itemList.innerHTML = localStorage.getItem('lista-produtos');
+  const itemList = document.querySelector(stringOrderedList);
+
+  itemList.innerHTML = localStorage.getItem(`${strinListaProdutos}`);
   itemList.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
