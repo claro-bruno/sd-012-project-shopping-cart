@@ -80,6 +80,7 @@ const fetchApiML = () => {
           const item = document.querySelectorAll('.item__add');
           item[index].addEventListener('click', addToCart);
         }
+        document.querySelector('.loading').remove();
       });
     });
 };
@@ -107,7 +108,7 @@ const cleanProduct = () => {
     document.querySelector('.buy').innerHTML = '';
     document.getElementById('dept').innerText = 0;
     saveLocal();
-  })
+  });
 };
 
 window.onload = function onload() {
