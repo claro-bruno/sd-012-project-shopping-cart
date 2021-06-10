@@ -70,4 +70,10 @@ window.onload = () => {
     }));
   });
   cartItems.innerHTML = localStorage.getItem('cartItem');
+
+  const cleanCart = () => {
+    cartItems.innerHTML = '';
+  };
+  const cleanButton = document.querySelector('.empty-cart');
+  cleanButton.addEventListener('click', cleanCart);
 };
