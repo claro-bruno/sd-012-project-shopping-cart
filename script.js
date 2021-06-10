@@ -1,3 +1,5 @@
+const somaItems = [];
+
 const pegarComputadoresML = () => new Promise((resolve, reject) => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
@@ -17,6 +19,20 @@ const createProductImageElement = (imageSource) => {
   img.className = 'item__image';
   img.src = imageSource;
   return img;
+};
+
+const criaSomaCart = () => {
+  const cart = document.querySelector('.cart');
+  const criaP = document.createElement('p');
+  criaP.className = 'total-price';
+  cart.appendChild(criaP);
+};
+
+const somaPreços = (salePrice) => {
+  const pSomaTotal = document.querySelector('.total-price');
+  somaItems.push(salePrice);
+  const total = somaItems.reduce((acc, num) => acc + num);
+  pSomaTotal.innerHTML = `Preço total: $${Math.round(total * 100) / 100}`;
 };
 
 const createCustomElement = (element, className, innerText) => {
@@ -40,7 +56,9 @@ const createProductItemElement = ({ sku, name, image }) => {
 
 // const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
-const cartItemClickListener = async (event) => event.target.remove();
+const cartItemClickListener = (event) => {
+  event.target.remove();
+};
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
   const li = document.createElement('li');
@@ -71,6 +89,7 @@ const adicionaItensCarrinho = async () => {
         const idComputadores = await pegarIdComputadorML(itemSku);
         const { id: sku, title: name, price: salePrice } = idComputadores;
         olCartItems.appendChild(createCartItemElement({ sku, name, salePrice }));
+        somaPreços(salePrice);
       }));
   } catch (erro) {
     console.log(erro);
@@ -80,13 +99,16 @@ const adicionaItensCarrinho = async () => {
 const removerTudo = () => {
   const olCartItems = document.querySelector('.cart__items');
   const buttonRemoveTudo = document.querySelector('.empty-cart');
+  const pSomaTotal = document.querySelector('.total-price');
   buttonRemoveTudo.addEventListener('click', () => {
     olCartItems.innerHTML = '';
+    pSomaTotal.innerHTML = '';
   });
 };
 
   window.onload = async () => {
     try {
+      await criaSomaCart();
       await pegarComputadoresML();
       await adicionaItensPagina();
       await adicionaItensCarrinho();
