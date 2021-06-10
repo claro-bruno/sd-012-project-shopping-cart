@@ -33,7 +33,7 @@ const totalPrice = [];
 const totalCalc = () => {
   const total = totalPrice.reduce((acc, curr) => acc + curr, 0);
   document.querySelector('.total-price').innerText = `${total}`;
-}
+};
 
 async function cartItemClickListener(event) {
   const erasePrice = event.target.innerText.split('$')[1] * -1;
