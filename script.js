@@ -54,7 +54,9 @@ const saveList = (event) => {
 
 const buttonListener = () => {
   const allButtons = document.querySelectorAll('button.item__add');
+
   let itemCode = '';
+
   allButtons.forEach((item) => {
     item.addEventListener('click', (evt) => {
       const itemList = document.querySelector(stringOrderedList);
@@ -66,6 +68,11 @@ const buttonListener = () => {
         .then((eachProduct) => saveList(eachProduct));
     });
   });
+};
+
+const gettingPrice = () => {
+  const itemList = document.querySelector(stringOrderedList);
+  console.log(itemList[0]);
 };
 
 const getAPIJson = (requested) => {
@@ -93,12 +100,23 @@ const returnSavedList = () => {
   itemList.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
+const clearButton = () => {
+  const button = document.querySelector('button.empty-cart');
+  button.addEventListener('click', () => {
+    const itemList = document.querySelector(stringOrderedList);
+    itemList.innerHTML = '';
+    localStorage.clear();
+  });
+};
+
 window.onload = async () => {
   try {
     const getJson = await fetch(mercadoLivreURL);
     await getAPIJson(getJson).then(appendJson);
     buttonListener();
     returnSavedList();
+    gettingPrice();
+    clearButton();
   } catch (error) {
     console.log(`Não foi possível obter o json ${error}`);
   }
