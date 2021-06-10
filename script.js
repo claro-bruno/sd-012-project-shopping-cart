@@ -1,4 +1,3 @@
-
 const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 function createProductImageElement(imageSource) {
