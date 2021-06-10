@@ -1,4 +1,20 @@
-window.onload = function onload() { };
+window.onload = function onload() {
+  const URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  fetchList(URL)
+    .then((r) => r.results)
+    .then((items) => items.forEach((item) => createProductItemElement(item)))
+    .then(() => cartItemClickListener())
+    .catch((error) => console.log(error));
+};
+
+function fetchList(url) {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((r) => r.json())
+      .then((obj) => resolve(obj))
+      .catch((err) => reject(err));
+  })
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,17 +30,19 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
-  return section;
+  const parent = document.querySelector('section.items');
+  appendElement(section, parent);
 }
+
+const appendElement = (el, parent) => parent.appendChild(el);
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -32,13 +50,22 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  
+  const btnList = document.querySelectorAll('.item__add');
+  btnList.forEach((btn) => btn.addEventListener('click', (e) => {
+    const target = e.target.parentElement;
+    const URL = `https://api.mercadolibre.com/items/${getSkuFromProductItem(target)}`;
+    fetchList(URL)
+      .then((r) => createCartItemElement(r))
+      .catch((error) => console.log(error));
+  }))
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  return li;
+
+  const parent = document.querySelector('ol.cart__items');
+  appendElement(li, parent);
 }
