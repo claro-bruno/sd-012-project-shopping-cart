@@ -42,8 +42,7 @@ function createCartItemElement({ id: sku = this.id }) {
       cartItems.appendChild(li);
       
       // saveProducts();
-    });
-    
+    }); 
 }
 
 /* function saveProducts() {
