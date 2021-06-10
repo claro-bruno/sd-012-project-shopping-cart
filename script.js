@@ -97,9 +97,19 @@ const fetchAPI = async () => {
   buttonEvents();
 };
 
+// 6
+function deleteItems() {
+  cartItems.innerHTML = '';
+  localStorage.clear();
+  sumPrice();
+}
+
 window.onload = function onload() {
   fetchAPI();
   getItems();
+  
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', deleteItems);
   
   const price = createCustomElement('span', 'total-price', 0);
   const section = document.querySelector('.cart');
