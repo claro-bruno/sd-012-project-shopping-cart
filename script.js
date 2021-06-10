@@ -59,12 +59,10 @@ const sumCartTotalPrice = () => {
       return previousValue + priceNext;
     }, 0);
     const fomatedPrice = parseFloat(totalPrice.toFixed(2));
-    // document.querySelector('#price').innerHTML = `Preço total: $${fomatedPrice}`;
     addTotalPrice(fomatedPrice);
   } else {
     const totalPrice = 0;
     const fomatedPrice = parseFloat(totalPrice.toFixed(2));
-    // document.querySelector('#price').innerHTML = `Preço total: $${fomatedPrice}`;
     addTotalPrice(fomatedPrice);
   }
 };
@@ -205,8 +203,16 @@ const createTotalPriceContainer = () => {
   sumCartTotalPrice();
 };
 
+const emptyCart = () => {
+  const cartSection = document.querySelector(cartItemsElement);
+  while (cartSection.firstChild) cartSection.removeChild(cartSection.firstChild);
+  sumCartTotalPrice();
+  saveCart();
+};
+
 window.onload = function onload() {
   fetchListOfProducts();
   verifyLocalStorage();
   createTotalPriceContainer();
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
 };
