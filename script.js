@@ -191,6 +191,7 @@ formBtn.addEventListener('click', async () => {
   }
   productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product)));
   addsHoverToItems();
+  formInput.value = '';
 });
 
 window.addEventListener('load', async () => {
