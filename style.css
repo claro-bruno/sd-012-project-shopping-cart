@@ -48,13 +48,13 @@ body {
   display: flex;
 }
 
-.search-btn, .search-form .search-input {
+.search-form .search-btn, .search-form .search-input {
   border-radius: 5px;
   padding: 10px;
   margin: auto 5px;
 }
 
-.search-btn {
+.search-form .search-btn {
   border: 2px solid lavender;
   background-color: transparent;
   cursor: pointer;
@@ -63,10 +63,19 @@ body {
   transition: all 0.5 s;
 }
 
-.search-btn:hover {
+.search-form .search-btn:hover {
   background-color: lavender;
   transition: all 0.5s;
   color: blue;
+}
+
+.search-form .search-input {
+  border: none;
+}
+
+.search-form .search-input:focus {
+  outline: none;
+  box-shadow: 0 0 2px 1px black;
 }
 
 .container {
