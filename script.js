@@ -54,8 +54,10 @@ const reduzirPreco = (event) => {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const price = reduzirPreco(event.target);
-  const sum = total -= price;
   const totalPrice = document.querySelector('.total-price');
+  total = total > 0 ? total -= price : 0;
+  totalPrice.innerHTML = total;
+  event.target.remove();
 }
 
 const somarPrecos = (preco) => {
