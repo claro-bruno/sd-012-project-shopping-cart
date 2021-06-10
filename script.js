@@ -1,16 +1,5 @@
-
-
-const API = "https://api.mercadolibre.com/sites/MLB/search?q=$computador";
-const URL_PROD = "https://api.mercadolibre.com/items/";
-
-
-
-// EVENT LISTENER - ESVAZIAR CARRINHO
-document.getElementById('emtpy-cart').addEventListener('click', () => {
-  document.getElementById('cart').innerHTML = '';
-  updateTotalPrice();
-  saveList();
-});
+const API = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+const URL_PROD = 'https://api.mercadolibre.com/items/';
 
 // FUNCAO QUE SALVA O ESTADO ATUAL DA LISTA
 const saveList = () => {
@@ -21,40 +10,53 @@ const saveList = () => {
 
 // ATUALIZA O PRECO TOTAL DA LISTA
 const updateTotalPrice = () => {
-  let str = document.getElementById('cart').innerHTML;
-  
+  let str = document.getElementById('cart').innerHTML;  
   let end = str.indexOf('</li>');
-  let start = str.indexOf('PRICE: $')+8;
+  let start = str.indexOf('PRICE: $') + 8;
   let substr;    
-  let totals = [];
-  
-  if (end>0) {
-    while(end>0) { 
+  const totals = [];  
+  if (end > 0) {
+    while (end > 0) { 
       substr = str.substring(start, end);
       totals.push(Number(substr));
       str = str.replace('</li>', '');
       str = str.replace('PRICE: $', '');
-      start = str.indexOf('PRICE: $')+8;
+      start = str.indexOf('PRICE: $') + 8;
       end = str.indexOf('</li>');
     }
-  }
-  
+  }  
   const total = totals.reduce((acc, item) => acc + item, 0);
   document.getElementById('total-price').innerHTML = total;
-
-  
-  console.log(total);
-  // console.log(substr, start);
-
 };
+
+// PEGA ID
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+// FUNCAO DO EVENT LISTENER DOS ITENS DA LISTA
+function cartItemClickListener(event) {
+  event.target.remove();
+  updateTotalPrice();
+  saveList();
+}
+
+// FUNCAO AUXILIAR PARA CRIAR OS CARDS
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 // BUSCA PELA API TODOS OS PRODUTOS QUE VAO NA TELA PRINCIPAL
 const fetchProducts = () => (
   new Promise((resolve, reject) => {
     fetch(API)
-    .then(response => response.json())
-    .then(data => resolve(data.results))
-    .catch(fail => reject('Bugou'));
+    .then((response) => response.json())
+    .then((data) => resolve(data.results))
+    .catch(() => reject('Bugou'));
   })
 );
 
@@ -62,9 +64,9 @@ const fetchProducts = () => (
 const fetchProduct = (url) => (
   new Promise((resolve, reject) => {
     fetch(url)
-    .then(response => response.json())
-    .then(data => resolve(data))
-    .catch(fail => reject('Bugou'));
+    .then((response) => response.json())
+    .then((data) => resolve(data))
+    .catch(() => reject('Bugou'));
   })
 );
 
@@ -72,7 +74,7 @@ const fetchProduct = (url) => (
 const addToCart = (targetParent) => {
   const item = getSkuFromProductItem(targetParent);
   const url = URL_PROD + item;
-  const product = fetchProduct(url)
+  fetchProduct(url)
   .then((product) => {
     document
     .querySelector('.cart__items')
@@ -84,10 +86,12 @@ const addToCart = (targetParent) => {
   });
 };
 
-
-
-//----------------------------------------------------------------
-
+// EVENT LISTENER - ESVAZIAR CARRINHO
+document.getElementById('emtpy-cart').addEventListener('click', () => {
+  document.getElementById('cart').innerHTML = '';
+  updateTotalPrice();
+  saveList();
+});
 
 // FUNCAO SECUNDARIA - CRIA IMAGEM
 function createProductImageElement(imageSource) {
@@ -102,11 +106,11 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  if (element == 'button'){
+  if (element === 'button') {
     e.addEventListener('click', (event) => {
       const item = event.target.parentElement;
       addToCart(item);
-    })
+    });
   }
   return e;
 }
@@ -124,39 +128,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  event.target.remove();
-  updateTotalPrice();
-  saveList();
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-
-
-
-
-
-
-
-
 // CARREGA LISTA DO LOCALSTORAGE*************************************************
 const storageContent = JSON.parse(localStorage.getItem('saved cart'));
-if (storageContent != null){
+if (storageContent != null) {
   document.getElementById('cart').outerHTML = storageContent;
   const lista = document.getElementById('cart');
-  for (let i = 0; i < lista.children.length; i += 1){
-    lista.children[i].addEventListener('click', cartItemClickListener)
+  for (let i = 0; i < lista.children.length; i += 1) {
+    lista.children[i].addEventListener('click', cartItemClickListener);
   }
 }
 updateTotalPrice();
@@ -169,18 +147,4 @@ window.onload = async () => {
     .querySelector('.items')
     .appendChild(createProductItemElement(product));
   });
-} //*******************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}; // *******************************************************************
