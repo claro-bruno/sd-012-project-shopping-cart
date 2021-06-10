@@ -1,5 +1,4 @@
 const cartItemsElement = '.cart__items'; 
-let productList;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -24,10 +23,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
 
 const saveCart = () => {
   const sectionCartItemsElement = document.querySelector(cartItemsElement);
@@ -116,12 +111,6 @@ const formatCartItemObject = (receivedCartItemObject) => {
     return formatedObject;
 };
 
-/* const addEventToItens = () => {
-  document.querySelectorAll('.cart__item').forEach((item) => {
-    item.addEventListener('click', cartItemClickListener);
-  });
-}; */
-
 const getCartItensPromisse = (sku) => new Promise((resolve, reject) => {
   if (!sku.startsWith('MLB')) {
     reject(new Error('SKU informed does not exist'));
@@ -130,7 +119,6 @@ const getCartItensPromisse = (sku) => new Promise((resolve, reject) => {
       response.json().then((carItemFound) => {
         const cartItemObject = formatCartItemObject({ ...carItemFound });
         addCartItemElement(createCartItemElement(cartItemObject));
-        // addEventToItens();
         resolve();
       });
     });
@@ -175,7 +163,7 @@ const getProductPromisse = (product) => new Promise((resolve, reject) => {
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`).then((response) => {
       response.json().then((productFound) => {
         const requiredListObject = [...productFound.results];
-        productList = formatRequiredObject(requiredListObject);
+        const productList = formatRequiredObject(requiredListObject);
         productList.forEach((productItem) => {
           addProductItemElement(createProductItemElement(productItem));
         });
