@@ -59,7 +59,7 @@ const element = document.getElementsByClassName('cart__items');
 async function getElementToCart(itemID) {
   let elementChoice = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
   elementChoice = await elementChoice.json();
-  element[0].appendChild(createCartItemElement(itemID));
+  element[0].appendChild(createCartItemElement(elementChoice));
   // console.log(elementChoice);
 }
 
