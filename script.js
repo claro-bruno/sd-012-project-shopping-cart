@@ -2,8 +2,8 @@
 
 // const { default: fetch } = require("node-fetch");
 
+// const cartItems = '.cart__items';
 const sectionItems = document.querySelector('.items');
-// const liEl = document.querySelectorAll('.cart_item');
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 function createProductImageElement(imageSource) {
@@ -19,6 +19,11 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+// function setLocalStorage() {
+//   // if (localStorage.length !== 0) localStorage.clear();
+//   localStorage.setItem('cartProduct', document.querySelector(cartItems).innerHTML);
+// }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -41,7 +46,6 @@ const getProductId = async (id) => {
     const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
     const data = await response.json();
     return data;
-    // createCartItemElement(data);
   } catch (e) {
     return e;
   }
@@ -49,8 +53,14 @@ const getProductId = async (id) => {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.parentElement.removeChild(event.target);  
+  event.target.parentElement.removeChild(event.target);
+  // setLocalStorage();
 }
+
+// const getLocalStorage = async () => {
+//   const cartEl = document.querySelector(cartItems);
+
+// }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -60,7 +70,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function addToCart() {
+async function addToCart() {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn) => {
     const olEl = document.querySelector('.cart__items');
@@ -68,16 +78,28 @@ function addToCart() {
       const dataId = event.target.parentElement.querySelector('.item__sku').innerText;
       const data = await getProductId(dataId);
       olEl.appendChild(createCartItemElement(data));
+      
+      // setLocalStorage();
     });
   });
 }
 
+const removeAll = () => {
+  const cardOl = document.querySelector('.cart__items');
+  const clearBtn = document.querySelector('.empty-cart');
+  clearBtn.addEventListener('click', () => {
+    cardOl.innerHTML = '';
+  });
+};
+
+removeAll();
+
 const verifyFetch = async () => {
-const fetchingApi = fetch(API_URL)
+  const fetchingApi = fetch(API_URL)
   .then((response) => response
   .json()
     .then((data) => data));
-return fetchingApi;    
+  return fetchingApi;    
 };
 
 const returningObj = async () => {
@@ -91,18 +113,13 @@ const returningObj = async () => {
   }
 };
 
-// function removeItemCart() {
-//   const olEl = document.querySelector('ol');
-//   olEl.addEventListener('click', (event) => {
-//     olEl.removeChild(event.target);
-//   });
-// }
-
 window.onload = async () => {
   try {  
     await returningObj();
     addToCart();
+    // addProduct();
     cartItemClickListener();
+    // await getLocalStorage();
   } catch (error) {
     console.log('Error');
   }
