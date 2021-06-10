@@ -34,7 +34,10 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   const cartItem = event.target
-  cartItem.remove();
+  if (cartItem.tagName === 'LI') {
+    cartItem.remove();
+  }
+  localStorage.setItem('cart', ol.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -55,6 +58,7 @@ const fetchItem = async (event) => {
   } catch (err) {
     throw new Error(err);
   }
+  localStorage.setItem('cart', ol.innerHTML);
 }
 
 const fetchProducts = async () => {
@@ -73,4 +77,7 @@ const fetchProducts = async () => {
 
 window.onload = function onload() {
   fetchProducts();
+  const cart = localStorage.getItem('cart');
+  ol.innerHTML = cart;
+  ol.addEventListener('click', cartItemClickListener);
 };
