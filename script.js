@@ -1,3 +1,5 @@
+const cartItems = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,7 +28,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 const createProductsList = async () => {
   const itemsSection = document.querySelector('.items');
+  const loadingPlace = document.querySelector('.loading');
   const API_LINK = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  loadingPlace.innerHTML = 'loading...';
   const apiFetch = await fetch(API_LINK);
   const promiseJson = await apiFetch.json();
   const productList = promiseJson.results;
@@ -34,6 +38,7 @@ const createProductsList = async () => {
     const productElement = createProductItemElement(product);
     itemsSection.appendChild(productElement);
   });
+  loadingPlace.remove();
 };
 
 /* function getSkuFromProductItem(item) {
@@ -62,7 +67,6 @@ const productBySku = async (sku) => {
 };
 
 const savedItems = () => {
-  const cartItems = document.querySelector('.cart__items');
   const localKeys = Object.keys(localStorage);
   localKeys.forEach((key) => {
     const li = document.createElement('li');
@@ -75,7 +79,6 @@ const savedItems = () => {
 
 const addCartItem = () => {
   const productsButtons = document.querySelectorAll('.item__add');
-  const cartItems = document.querySelector('.cart__items');
   productsButtons.forEach((button, index) => {
     button.addEventListener('click', async () => {
       const sku = button.parentNode.firstChild.innerText;
@@ -89,16 +92,17 @@ const addCartItem = () => {
 
 const removeItems = () => {
   const clearButton = document.querySelector('.empty-cart');
-  const cartItems = document.querySelector('.cart__items');
   clearButton.addEventListener('click', () => {
     localStorage.clear();
     cartItems.innerHTML = '';
   });
 };
 
-window.onload = async () => {
+const projectFunc = async () => {
   await createProductsList();
   savedItems();
   addCartItem();
   removeItems();
 };
+
+projectFunc();
