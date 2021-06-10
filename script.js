@@ -19,28 +19,30 @@ function createProductImageElement(imageSource) {
 
 const updateStorage = () => {
   const cartItems = document.querySelectorAll('.cart__items')[0];
-  const totalPriceElement = document.getElementsByClassName('total-price')[0];
   if (localStorage.carrinho) {
     localStorage.carrinho = cartItems.innerHTML;
   } else {
     localStorage.setItem('carrinho', cartItems.innerHTML);
   }
-  if (localStorage.totalPrice) {
-    localStorage.totalPrice = totalPriceElement.innerHTML;
-  } else {
-    localStorage.setItem('totalPrice', 0);
-  }
+};
+
+const updatePrice = () => {
+  const cI = document.querySelectorAll('.cart__item');
+  const tP = document.getElementsByClassName('total-price')[0];
+  tP.innerText = '0';
+  let tPCurr = parseFloat(tP.innerText);
+  cI.forEach((it) => {
+    const priceTxt = it.innerText.split('$').pop();
+    const priceNumb = parseFloat(priceTxt);
+    tPCurr += priceNumb;
+  });
+  tP.innerText = tPCurr;
 };
 
 function cartItemClickListener(event) {
-  const innerText = event.target.innerText;
-  const price = parseFloat(innerText.split('$').pop());
-  const totalPriceElement = document.getElementsByClassName('total-price')[0];
-  let curr = parseFloat(totalPriceElement.innerText);
-  curr -= price;
-  totalPriceElement.innerText = curr.toFixed(2);
   event.target.remove();
   updateStorage();
+  updatePrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,20 +53,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const sumPrice = ({ price: salePrice }) => {
-  const totalPriceElement = document.getElementsByClassName('total-price')[0];
-  let curr = parseFloat(totalPriceElement.innerText);
-  curr += salePrice;
-  totalPriceElement.innerText = curr.toFixed(2); 
-};
-
 const fetchItems = async (id) => {
   const itemObj = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const itemJson = await itemObj.json();
   const item = createCartItemElement(itemJson);
-  sumPrice(itemJson);
   document.getElementsByClassName('cart__items')[0].appendChild(item);
   updateStorage();
+  updatePrice();
 };
 
 function createCustomElement(element, className, innerText) {
@@ -115,8 +110,7 @@ const cartLoad = () => {
   cartItems.forEach((element) => {
     element.addEventListener('click', cartItemClickListener);
   });
-  const totalPriceElement = document.getElementsByClassName('total-price')[0];
-  totalPriceElement.innerHTML = parseFloat(localStorage.totalPrice);
+  updatePrice();
 };
 
 window.onload = function onload() {
