@@ -82,7 +82,7 @@ const saveLocalStorage = () => {
   setTimeout(() => {
     localStorage.setItem('cart', ol.innerHTML);
     totalPrice();
-  }, 500);
+  }, 300);
 };
 
 document.addEventListener('click', () => saveLocalStorage());
@@ -95,9 +95,17 @@ const loadLocalStorage = () => {
   }
 };
 
+const clearCart = () => {
+  const clearBtn = document.querySelector('.empty-cart');
+  clearBtn.addEventListener('click', () => {
+    ol.innerHTML = '';
+  });
+};
+
 window.onload = function onload() {
   fetchProductList()
   .then(() => loadLocalStorage())
   .then(() => addCart())
-  .then(() => totalPrice());
+  .then(() => totalPrice())
+  .then(() => clearCart());
   };
