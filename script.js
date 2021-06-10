@@ -1,4 +1,6 @@
 const somaItems = [];
+const cartItens = () => document.querySelector('.cart__items');
+const pSomaTotal = () => document.querySelector('.total-price');
 
 const pegarComputadoresML = () => new Promise((resolve, reject) => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
@@ -13,6 +15,14 @@ const pegarIdComputadorML = (ids) => new Promise((resolve, reject) => {
     .then((id) => resolve(id))
     .catch((erro) => reject(erro));
 });
+
+const salvaCarrinho = () => {
+  localStorage.setItem('items', cartItens().innerHTML);
+};
+
+const carregaCarrinho = () => {
+  cartItens().innerHTML = localStorage.getItem('items'); 
+};
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -29,10 +39,9 @@ const criaSomaCart = () => {
 };
 
 const somaPreços = (salePrice) => {
-  const pSomaTotal = document.querySelector('.total-price');
   somaItems.push(salePrice);
   const total = somaItems.reduce((acc, num) => acc + num);
-  pSomaTotal.innerHTML = `Preço total: $${Math.round(total * 100) / 100}`;
+  pSomaTotal().innerHTML = `Preço total: $${Math.round(total * 100) / 100}`;
 };
 
 const createCustomElement = (element, className, innerText) => {
@@ -58,6 +67,7 @@ const createProductItemElement = ({ sku, name, image }) => {
 
 const cartItemClickListener = (event) => {
   event.target.remove();
+  salvaCarrinho();
 };
 
 const createCartItemElement = ({ sku, name, salePrice }) => {
@@ -81,14 +91,14 @@ const adicionaItensPagina = async () => {
 
 const adicionaItensCarrinho = async () => {
   try {
-    const olCartItems = document.querySelector('.cart__items');
     const buttons = document.querySelectorAll('.item__add');
     Object.values(buttons).map((button, index) =>
       button.addEventListener('click', async () => {
         const itemSku = document.querySelectorAll('.item__sku')[index].innerHTML;
         const idComputadores = await pegarIdComputadorML(itemSku);
         const { id: sku, title: name, price: salePrice } = idComputadores;
-        olCartItems.appendChild(createCartItemElement({ sku, name, salePrice }));
+        cartItens().appendChild(createCartItemElement({ sku, name, salePrice }));
+        salvaCarrinho();
         somaPreços(salePrice);
       }));
   } catch (erro) {
@@ -97,23 +107,23 @@ const adicionaItensCarrinho = async () => {
 };
 
 const removerTudo = () => {
-  const olCartItems = document.querySelector('.cart__items');
   const buttonRemoveTudo = document.querySelector('.empty-cart');
-  const pSomaTotal = document.querySelector('.total-price');
   buttonRemoveTudo.addEventListener('click', () => {
-    olCartItems.innerHTML = '';
-    pSomaTotal.innerHTML = '';
+    document.querySelector('.cart__items').innerHTML = '';
+    pSomaTotal().innerHTML = '';
+    localStorage.clear('lis');
   });
 };
 
-  window.onload = async () => {
-    try {
-      await criaSomaCart();
-      await pegarComputadoresML();
-      await adicionaItensPagina();
-      await adicionaItensCarrinho();
-      await removerTudo();
-    } catch (erro) {
-      console.log(erro);
-    }
-  };
+window.onload = async function onload() {
+  try {
+    await carregaCarrinho();
+    await criaSomaCart();
+    await pegarComputadoresML();
+    await adicionaItensPagina();
+    await adicionaItensCarrinho();
+    await removerTudo();
+  } catch (erro) {
+    console.log(erro);
+  }
+};
