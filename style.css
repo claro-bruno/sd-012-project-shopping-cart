@@ -105,6 +105,7 @@ body {
   transition: all 0.3s;
   user-select: none;
   cursor: pointer;
+  box-shadow: 0 1px 2px 1px black;
 }
 
 .item:hover {
@@ -119,7 +120,7 @@ body {
 .item .item__title {
   flex-grow: 1;
   padding: 10px;
-  text-align: center;
+  text-align: right;
 }
 
 .item .item__image {
@@ -128,8 +129,19 @@ body {
 }
 
 .item .item__price {
-  text-align: right;
-  font-weight: 600;
+  text-align: left;
+  font-weight: 500;
+  font-size: 20pt;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item .item__price:after {
+  content: 'até 10x sem juros';
+  font-size: 10pt;
+  color:steelblue;
+  font-style: italic;
 }
 
 .item .item__add {
