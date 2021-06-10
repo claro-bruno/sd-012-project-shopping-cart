@@ -29,6 +29,8 @@ const createProductItemElement = ({ id: sku, title: name, thumbnail: image }) =>
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
 const cartItemClickListener = (event) => {
+  const cart = document.getElementById('cart__items');
+  cart.removeChild(event.target);
 };
 
 const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
@@ -37,7 +39,7 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   cart.appendChild(li);
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event));
   return li;
 };
 
