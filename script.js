@@ -7,13 +7,23 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
+// ORIGINAL "createCustomElement" ---------------
+// function createCustomElement(element, className, innerText) {
+//   const e = document.createElement(element);
+//   e.className = className;
+//   e.innerText = innerText;
+//   return e;
+// }
+// ----------------------------------------------
+
+function createCustomElement(product, newClass, text) {
+  const e = document.createElement(product);
+  e.className = newClass;
+  e.innerText = text;
   return e;
 }
 
+// colocando "id: sku" estamos fazendo destruction do parâmetro
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -31,7 +41,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -53,8 +63,8 @@ const callback = () => {
   const btnAdd = document.querySelectorAll('.item__add');
 btnAdd.forEach((button) => {
   button.addEventListener('click', (event) => {
-  const teste = event.target.parentElement.firstChild.innerText; // para pegar o elemento
-  addItens(teste);
+    const teste = event.target.parentElement.firstChild.innerText; // para pegar o elemento
+    addItens(teste);
   });
 });
 };
@@ -71,24 +81,3 @@ const fetchML = () => {
 window.onload = function onload() {
   fetchML();
  };
-
-// const fetchML = () => {
-//   const sectionItens = document.querySelector('.items');
-//   const teste = 
-//   fetch(apiMercadoLivre)
-//   .then((response) => response.json())
-//   .then((response) => response.results)
-//   .then((array) => array.forEach((products) => sectionItens.appendChild(createProductItemElement(products))))
-// };
-
-// const addItens = (id) => {
-//   // const teste = createProductItemElement();
-//   const btnAdd = document.getElementsByClassName('item__add');
-//   btnAdd.childNodes.forEach((button) => {
-//     button.addEventListener('click', async () => {
-//       let fetch = await fetch(`https://api.mercadolibre.com/items/${id}`)
-//       fetch = await fetch.json()
-//       fetch = await console.log('clicou')
-//     })
-//   })
-// };
