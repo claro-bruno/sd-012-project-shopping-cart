@@ -55,15 +55,15 @@ const getAPI = async () => {
 };
 
 // Requisito 2:
-
-const cartChild = document.getElementsByClassName('cart__items');
-let local = document.querySelector('.cart__items');
+const cartItems = 'cart__items';
+const cartChild = document.getElementsByClassName(cartItems);
+let local = document.querySelector(`.${cartItems}`);
 
 const getId = async (id) => {
   const apiId = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const apiId1 = await apiId.json();
   cartChild[0].appendChild(createCartItemElement(apiId1));
-  localStorage.setItem('jonas', local.innerHTML);
+  localStorage.setItem('set', local.innerHTML);
 };
 
 document.addEventListener('click', (event) => {
@@ -75,16 +75,23 @@ document.addEventListener('click', (event) => {
 // Requisito 3:
 
 document.addEventListener('click', (event) => {
-  if (event.target.classList.contains('cart__item')) {
+  if (event.target.classList.contains(cartItems)) {
     event.target.remove();
-    localStorage.setItem('jonas', local.innerHTML);
+    localStorage.setItem('set', local.innerHTML);
   }
 });
 
-// Requisito 4:
+const emptyButton = () => {
+  const emptySelect = document.querySelector('.empty-cart');
+  emptySelect.addEventListener('click', () => {
+  const selectCartItems = document.querySelector(cartItems);
+  selectCartItems.innerHTML = '';
+  });
+};
 
 window.onload = function onload() {
   getAPI();
-  local = document.querySelector('.cart__items');
-  local.innerHTML = localStorage.getItem('jonas');
+  local = document.querySelector(cartItems);
+  local.innerHTML = localStorage.getItem('set');
+  emptyButton();
 };
