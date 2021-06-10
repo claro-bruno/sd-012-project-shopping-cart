@@ -3,7 +3,13 @@
   src: url('fonts/Neon80S-8jL2.ttf');
 }
 
+@font-face {
+  font-family: FiraSans;
+  src: url('./fonts/FiraSans-Regular.ttf');
+}
+
 body {
+  font-family: FiraSans, Ubuntu, Cantrell, sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -42,7 +48,7 @@ body {
   display: flex;
 }
 
-.search-btn, .search-input {
+.search-btn, .search-form .search-input {
   border-radius: 5px;
   padding: 10px;
   margin: auto 5px;
