@@ -1,14 +1,3 @@
-window.onload = async () => {
-  try {
-
-  const item = await pegarItem();
-  item.results.forEach((itemML) => createProductItemElement(itemML))
-
-  } catch (error) {
-    console.log(error)
-  }
-};
-
 function pegarItem () {
   return new Promise((resolve, reject) => {
 
@@ -63,3 +52,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+window.onload = async () => {
+  try {
+  const item = await pegarItem();
+  item.results.forEach((itemML) => createProductItemElement(itemML))
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
