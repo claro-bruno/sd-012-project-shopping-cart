@@ -104,6 +104,11 @@ const fetchForId = async (id) => {
   }
 };
 
+const saveLocalStorage = () => {
+  localStorage.setItem('cart', cart.innerHTML);
+  totalPrice();
+};
+
 const addCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn) => {
@@ -111,16 +116,10 @@ const addCart = () => {
       const id = getSkuFromProductItem(btn.parentNode);
       fetchForId(id)
       .then((item) => cart
-        .appendChild(createCartItemElement(item)));
+        .appendChild(createCartItemElement(item)))
+      .then(() => saveLocalStorage());
     });
   });
-};
-
-const saveLocalStorage = () => {
-  setTimeout(() => {
-    localStorage.setItem('cart', cart.innerHTML);
-    totalPrice();
-  }, 300);
 };
 
 document.addEventListener('click', () => saveLocalStorage());
