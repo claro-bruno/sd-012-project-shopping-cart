@@ -34,7 +34,18 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function itemClickListener(event) {
   if (event.target.className === 'item__add') {
     const itemId = getSkuFromProductItem(event.target.parentNode);
     fetch(`${itemEndpoint}${itemId}`)
@@ -46,14 +57,6 @@ function cartItemClickListener(event) {
   }
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 const fetchAPI = (baseUrl, query) => {
   fetch(`${baseUrl}${query}`)
     .then((response) => response.json())
@@ -61,7 +64,7 @@ const fetchAPI = (baseUrl, query) => {
     const { results } = object;
     results.forEach(({ id: sku, title: name, thumbnail: image }) => {
       const element = createProductItemElement({ sku, name, image });
-      element.addEventListener('click', cartItemClickListener)
+      element.addEventListener('click', itemClickListener);
       itemsContainer.appendChild(element);
     });
   });
