@@ -69,15 +69,25 @@ function attachButtonsEvents() {
   }
 }
 
-function apagaClicado() {
-  const noCarrinho = document.querySelectorAll('.cart__item');
+const itemsCarrinho = document.querySelectorAll('.cart__item');
 
-  for (let i = 0; i < noCarrinho.length; i += 1) {
-  noCarrinho[i].addEventListener('click', cartItemClickListener);
+function apagaClicado() {
+  for (let i = 0; i < itemsCarrinho.length; i += 1) {
+    itemsCarrinho[i].addEventListener('click', cartItemClickListener);
   }
+}
+
+function apagaTodos() {
+  const butaoEsvaziar = document.querySelector('.empty-cart');
+  butaoEsvaziar.addEventListener('click', () => {
+  while (document.querySelectorAll('.cart__item').length > 0) {
+    document.getElementsByClassName('cart__item')[0].remove();
+  }
+  });
 }
 
 window.onload = function onload() { 
   listagemItems().then(() => attachButtonsEvents());
   apagaClicado();
+  apagaTodos();
 };
