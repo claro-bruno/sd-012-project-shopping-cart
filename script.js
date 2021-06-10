@@ -34,9 +34,29 @@ const setLocalStorage = () => {
   localStorage.setItem('item', cartItems[0].innerHTML);
 };
 
+function createPriceDiv() {
+  const cart = document.getElementsByClassName('cart')[0];
+  const priceDiv = createCustomElement('div', 'total-price', '0');
+  cart.appendChild(priceDiv);
+}
+
+function calculatePrices() {
+  const priceDiv = document.getElementsByClassName('total-price')[0];
+  const itemList = document.querySelectorAll('.cart__item');
+  priceDiv.innerText = 0;
+  let onlyNymber = parseFloat(priceDiv.innerText);
+  itemList.forEach((e) => {
+    const precoTxt = e.innerText.split('$').pop();
+    const precoNumber = Number(precoTxt);
+    onlyNymber += precoNumber;
+  });
+  priceDiv.innerText = onlyNymber;
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
   setLocalStorage();
+  calculatePrices();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -67,11 +87,13 @@ const selectComputer = async (event) => {
   endpoint = await endpoint.json();
   cart[0].appendChild(createCartItemElement(endpoint));
   setLocalStorage();
+  calculatePrices();
 };
 
 const emptyCartItems = () => {
   const emptyButton = document.querySelector('.cart__items');
   emptyButton.innerHTML = '';
+  calculatePrices();
 };
 
 document.addEventListener('click', (event) => {
@@ -87,4 +109,5 @@ window.onload = function onload() {
   FreeMarket();
   cart[0].innerHTML = localStorage.getItem('item');
   cart[0].childNodes.forEach((e) => e.addEventListener('click', cartItemClickListener));
+  createPriceDiv();
 };
