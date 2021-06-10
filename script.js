@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -35,21 +34,26 @@ function createCartItemElement({ id: sku = this.id }) {
 
       const li = document.createElement('li');
       li.className = 'cart__item';
-      li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+      const textFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+      li.innerText = textFormat;
       li.addEventListener('click', cartItemClickListener);
     
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(li);
       
-      // saveProducts();
+      saveProducts(textFormat);
+      
     }); 
 }
 
-/* function saveProducts() {
-  const products = document.querySelectorAll('.cart__item');
-  localStorage.setItem('products', products.innerHTML);
+function saveProducts(skuReceived) {
+  // const productsCart = document.querySelectorAll('.cart__item');
+  
+  
+  localStorage.setItem('products', skuReceived);
 }
 
+/* 
 function returnsSaveProducts() {
   const products = document.querySelectorAll('.cart__item');
   if (localStorage.getItem('products') !== undefined) {
