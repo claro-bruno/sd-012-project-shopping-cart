@@ -75,7 +75,7 @@ document.addEventListener('click', (event) => {
 // Requisito 3:
 
 document.addEventListener('click', (event) => {
-  if (event.target.classList.contains(cartItems)) {
+  if (event.target.classList.contains('cart__item')) {
     event.target.remove();
     localStorage.setItem('set', local.innerHTML);
   }
@@ -84,14 +84,14 @@ document.addEventListener('click', (event) => {
 const emptyButton = () => {
   const emptySelect = document.querySelector('.empty-cart');
   emptySelect.addEventListener('click', () => {
-  const selectCartItems = document.querySelector(cartItems);
+  const selectCartItems = document.querySelector(`.${cartItems}`);
   selectCartItems.innerHTML = '';
   });
 };
 
 window.onload = function onload() {
   getAPI();
-  local = document.querySelector(cartItems);
+  local = document.querySelector('.cart__items');
   local.innerHTML = localStorage.getItem('set');
   emptyButton();
 };
