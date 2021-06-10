@@ -1,3 +1,8 @@
+const loadingScreen = () => {
+  const text = document.querySelector('.loading');
+  text.remove();
+};
+
 const deleteAllCart = () => {
   const button = document.querySelector('.empty-cart');
   const cart = document.querySelector('.cart__items');
@@ -126,5 +131,8 @@ window.onload = function onload() {
 
   fetch(url)
     .then((response) => response.json())
-    .then((array) => renderAllProducts(array));
+    .then((array) => {
+      renderAllProducts(array);
+      loadingScreen();
+    });
 };
