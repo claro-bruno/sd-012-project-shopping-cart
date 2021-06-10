@@ -1,4 +1,5 @@
 const ol = document.querySelector('.cart__items');
+const body = document.querySelector('body');
 const total = document.querySelector('.total-price');
 total.innerHTML = 0;
 
@@ -38,9 +39,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 function cartItemClickListener(event) {
    ol.removeChild(event.target);
@@ -54,25 +55,39 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const createLoading = () => {
+  const loading = createCustomElement('header', 'loading', 'loading...');
+  body.appendChild(loading);
+};
+
+const removeLoading = () => {
+  const loading = document.querySelector('header');
+  if (loading) body.removeChild(loading);
+};
+
 const fetchProductList = async () => {
+  createLoading();
   const itens = document.querySelector('.items');
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const obj = await response.json();
   const arr = obj.results;
-  return arr.forEach((computer) => itens.appendChild(createProductItemElement(computer)));
+  arr.forEach((computer) => {
+    itens.appendChild(createProductItemElement(computer));
+  });
+  removeLoading();
 };
 
 const fetchForId = async (id) => {
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-   const computer = await response.json();
-   ol.appendChild(createCartItemElement(computer));
+  const computer = await response.json();
+  ol.appendChild(createCartItemElement(computer));
 };
 
 const addCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn) => {
     btn.addEventListener('click', () => {
-      const id = btn.parentNode.firstChild.innerText;
+      const id = getSkuFromProductItem(btn.parentNode);
       fetchForId(id);
     });
   });
