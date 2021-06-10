@@ -161,13 +161,28 @@ body {
     right: -100vw !important;
   }
   
-  .fa-shopping-cart {
+  .fa-shopping-cart, .fa-search {
     display: block !important;
+  }
+
+  .search-form {
+    display: none !important;
+  }
+
+  .icons {
+    display: flex !important;
   }
 }
 
-.fa-shopping-cart {
+.icons {
   display: none;
+  width: 20%;
+  justify-content: space-around;
+}
+
+.fa-shopping-cart, .fa-search {
+  display: none;
+  font-size: 20pt;
 }
 
 .cart {
