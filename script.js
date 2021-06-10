@@ -169,6 +169,11 @@ const addsHoverToItems = () => {
 const formBtn = document.querySelector('.search-btn');
 const formInput = document.querySelector('.search-input');
 
+const validation = () => {
+  if (!formInput.value) formInput.style.boxShadow = '0 0 2px 1px red';
+  else formInput.style.boxShadow = 'initial';
+};
+
 const preventDef = (e) => {
   e.preventDefault();
 };
@@ -176,7 +181,10 @@ const preventDef = (e) => {
 const itemsSection = document.querySelector('.items');
 
 formBtn.addEventListener('click', preventDef);
+
 formBtn.addEventListener('click', async () => {
+  validation();
+  if (!formInput.value) return;
   const productsList = await loadProducts(formInput.value);
   while (itemsSection.lastElementChild) {
     itemsSection.lastElementChild.remove();
