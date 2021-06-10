@@ -19,7 +19,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -53,7 +53,7 @@ function cartItemClickListener(event) {
   saveCart();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -76,12 +76,8 @@ function addItemToCart(target) {
   const id = getSkuFromProductItem(target.path[1]);
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
     response.json().then((computer) => {
-      const computerFunc = computer;
-      computerFunc.sku = computerFunc.id;
-      computerFunc.name = computerFunc.title;
-      computerFunc.salePrice = computerFunc.price;
       const items = document.getElementsByClassName('cart__items')[0];
-      const item = createCartItemElement(computerFunc);
+      const item = createCartItemElement(computer);
       items.appendChild(item);
       saveCart();
     }));
@@ -93,12 +89,8 @@ const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=co
       const loading = document.getElementsByClassName('loading')[0];
       loading.remove();
       computers.results.forEach((computer) => {
-        const computerFunc = computer;
-        computerFunc.sku = computerFunc.id;
-        computerFunc.name = computerFunc.title;
-        computerFunc.image = computerFunc.thumbnail;
         const items = document.getElementsByClassName('items')[0];
-        const item = createProductItemElement(computerFunc);
+        const item = createProductItemElement(computer);
         items.appendChild(item);
         item.addEventListener('click', (event) => {
           addItemToCart(event);
