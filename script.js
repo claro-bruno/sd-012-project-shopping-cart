@@ -1,4 +1,4 @@
-const cartItems = document.querySelector('.cart__items');
+const cartItems = document.querySelector('ol.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -38,17 +38,21 @@ const localStorageSave = () => {
 };
 
 const getLocalStorage = () => {
-  // const getLocalStorage = localStorage.getItem('cart');
-  // cartItems.innerHTML = getLocalStorage; Esse buga a lista e para de apagar os itens.
   localStorage.getItem('cart');
 };
+// ajuda do André Moreno aí de baixo
+// document.addEventListener('click', (event) => {
+//   if(event.target.classList.contains('cart__item')) event.target.remove();
+// })
+// const getLocalStorage = localStorage.getItem('cart');
+  // cartItems.innerHTML = getLocalStorage; Esse buga a lista e para de apagar os itens.
 
 // 3
 function cartItemClickListener(event) {
   // coloque seu código aqui event
   cartItems.removeChild(event.target);
   localStorageSave(); // requisito 4
-  getLocalStorage(); // requisito 4
+  // getLocalStorage(); // requisito 4
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -80,7 +84,7 @@ async function buttonAdd(id) {
   const product = await fetchItems.json();
   cartItems.appendChild(createCartItemElement(product));
   localStorageSave();  // requisito 4
-  getLocalStorage(); // requisito 4
+  // getLocalStorage(); // requisito 4
 }
 // Na 2ª func eu adicionei o evendo de click no document no elemento que sofreu o evento (event.target) e que tem a classe item__add. Foi usado o classList ao invés do className, mas eu não entendi pq. Se o elemento contém, aí eu coloco o id desse elemento numa constante e uso como parâmetro para a função anterior que vai criar um filho ao cartItems.
 document.addEventListener('click', async (event) => {
@@ -92,6 +96,6 @@ document.addEventListener('click', async (event) => {
 
 window.onload = function onload() { 
   fetchApi();
-  localStorageSave();
+  // localStorageSave();
   getLocalStorage();
 };
