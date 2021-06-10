@@ -2,6 +2,8 @@ const END_POINT_ALL_COMPUTERS = 'https://api.mercadolibre.com/sites/MLB/search?q
 
 const END_POINT_ID_COMPUTER = 'https://api.mercadolibre.com/items/';
 
+const cartList = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,9 +34,18 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveLocalStorage = () => {
+  localStorage.setItem('cartShopping', cartList.innerHTML);
+};
+
+const loadLocalStorage = () => {
+  cartList.innerHTML = localStorage.getItem('cartShopping');
+};
+
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.remove();
+  saveLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -68,6 +79,7 @@ const fetchAPI = async (endPoint) => {
       appendComputers(object.results);
     } else {
       appendCartComputers(object);
+      saveLocalStorage();
     }
   } catch (error) {
     console.log(error);
@@ -94,4 +106,5 @@ const setupEvents = () => {
 window.onload = () => {
   setupEvents();
   fetchAPI(END_POINT_ALL_COMPUTERS);
+  loadLocalStorage();
 };
