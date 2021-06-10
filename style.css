@@ -106,6 +106,21 @@ body {
   text-align: center;
 }
 
+.cart .empty-cart {
+  padding: 10px;
+  margin: 5px auto;
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(255, 71, 71);
+  color: white;
+  transition: all 0.3s;
+}
+
+.cart .empty-cart:hover {
+  background-color: red;
+  transition: all 0.3s;
+}
+
 .loading {
   width: 100vw;
   height: 100vh;
