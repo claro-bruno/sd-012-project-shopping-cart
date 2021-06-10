@@ -54,8 +54,9 @@ const reduzirPreco = (event) => {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const price = reduzirPreco(event.target);
+  console.log(price);
   const totalPrice = document.querySelector('.total-price');
-  total = total > 0 ? total -= price : 0;
+  total -= price;
   totalPrice.innerHTML = total;
   event.target.remove();
 }
@@ -64,7 +65,6 @@ const somarPrecos = (preco) => {
   const price = document.querySelector('.total-price');
   total += preco;
   price.innerHTML = total;
-  localStorage.setItem('valorTotal', total);
 } 
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -88,6 +88,8 @@ const saveCarrinho = () => {
 
 const getResult = (results) => {
   const getItems = document.querySelector('.items');
+  const load = document.querySelector('.loading');
+  load.remove();
   const objeto = {};
   results.forEach(({id, title, thumbnail}) => {
     objeto.sku = id;
@@ -113,9 +115,9 @@ const getProducts = async () => {
   fetch(url).then((response) => response.json())
   .then((result) => getResult(result.results))
   .then(() => getButton());
-  const teste = fetch(url).then((r) => r.json());
-  teste.then((result) => result.results);
-  console.log(teste);
+  const load = document.querySelector('.loading');
+  load.innerHTML = 'loading...';
+
 }
 
 const addCarrinho = (results) => {
@@ -138,8 +140,6 @@ const getItem = (ID) => {
 const loadCarrinho = () => {
   const getListItems = document.querySelector('.cart__items');
   const price = document.querySelector('.total-price');
-  const valor = localStorage.getItem('valorTotal');
-  if (valor) price.innerHTML = valor;
   const array = JSON.parse(localStorage.getItem('produtos'));
   if (array !== null) {
     for (let i = 0; i < array.length; i += 1) {
