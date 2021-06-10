@@ -42,17 +42,26 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return li;
 // }
 
-const fetchAPI = () => {
-  const itemsSection = document.querySelector('.items');
-  fetch(mercadoLivreURL)
-    .then((requested) => requested.json())
-    .then((data) =>
-      data.results.forEach((components) => {
-        itemsSection.appendChild(createProductItemElement(components));
-      }))
-    .catch((erro) => console.log(erro));
+const getAPIJson = (requested) => {
+  if (!requested) {
+    throw new Error('Não foi possível obter o json');
+  }
+  return requested.json();
+};
+
+const appendJson = (jsonData) => {
+  if (!jsonData) {
+    throw new Error('Não foi possível atribuir o json');
+  }
+  const itemSection = document.querySelector('section.items');
+  jsonData.results.forEach((components) => {
+    itemSection.appendChild(createProductItemElement(components));
+  });
 };
 
 window.onload = () => {
-  fetchAPI();
+  fetch(mercadoLivreURL)
+    .then(getAPIJson)
+    .then(appendJson)
+    .catch((apiError) => console.log(apiError));
 };
