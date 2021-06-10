@@ -24,11 +24,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 
   return section;
 }
+
 // função chama a createProductItemElement que adiciona na tela os produtos vindos da api S2!
 async function getProductsApi() {
   const getApi = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const getApiResults = await getApi.json();
   const products = getApiResults.results;
+  document.querySelector('.loading').remove();
   // console.log(products)
   const itemsProducts = document.querySelector('.items');
   // console.log(itemsProducts);
