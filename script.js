@@ -1,3 +1,4 @@
+const fatherCart = document.querySelector('.cart__items');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -21,9 +22,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  getFather.appendChild(section);
-  
+  getFather.appendChild(section);  
   return section;
+}
+
+function saveItemStorage() {
+  const fatherCartContent = fatherCart.innerHTML.toString();
+  localStorage.setItem('products', fatherCartContent);
+}
+
+function rIS(event) {
+    event.addEventListener('click', event.remove());
+    saveItemStorage();
 }
 
 // function getSkuFromProductItem(item) {
@@ -32,18 +42,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  if (event.target.classList.value === 'cart__item') {
-    event.target.remove();
+    event.target.remove();     
+    saveItemStorage();
+    console.log('click');
   }
-}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
-  const fatherCart = document.querySelector('.cart__items');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   fatherCart.appendChild(li);
+  saveItemStorage();
   return li;
 }
 
@@ -66,7 +76,20 @@ function addItemCar() {
   });
 }
 
-window.onload = function onload() { 
+// function sumPriceTotal(price) {
+//   const priceOnly = price.innerText.replace(/((.+\$(\.\d{0,2})*))/g, '')
+//   let sumPrice = 0;
+//   sumPrice = sumPrice + parseFloat(priceOnly)
+//   return sumPrice
+// }
+
+window.onload = function onload() {
+    const contentSave = localStorage.getItem('products');
+    if (contentSave) {
+    fatherCart.innerHTML = contentSave;
+    const childrenCart = document.querySelectorAll('.cart__item');
+    childrenCart.forEach((children) => children.addEventListener('click', () => rIS(children)));
+  }
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   fetch(url)
   .then((r) => r.json())
