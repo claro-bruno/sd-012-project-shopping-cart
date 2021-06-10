@@ -77,11 +77,20 @@ const adicionaItensCarrinho = async () => {
   }
 };
 
+const removerTudo = () => {
+  const olCartItems = document.querySelector('.cart__items');
+  const buttonRemoveTudo = document.querySelector('.empty-cart');
+  buttonRemoveTudo.addEventListener('click', () => {
+    olCartItems.innerHTML = '';
+  });
+};
+
   window.onload = async () => {
     try {
       await pegarComputadoresML();
       await adicionaItensPagina();
       await adicionaItensCarrinho();
+      await removerTudo();
     } catch (erro) {
       console.log(erro);
     }
