@@ -1,15 +1,22 @@
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search';
+const API_ITEMS = 'https://api.mercadolibre.com/items/';
+const MSG_ERROR = 'Estamos passando por problemas. Por Favor, tente mais tarde!';
 const body = document.querySelector('body');
 const items = document.querySelector('.items');
-const ol = document.querySelector('.cart__items');
+const cart = document.querySelector('.cart__items');
 const total = document.querySelector('.total-price');
-total.innerHTML = 0;
+let search = 'computador';
+
+const totalPriceEqualZero = () => {
+  total.innerHTML = 0;
+};
 
 const totalPrice = () => {
-  const prices = ol.childNodes;
-  let result = 0;
+  const prices = cart.childNodes;
   const regExp = /\d*\.?\d*$/;
-  prices.forEach((price) => {
-    result += parseFloat(price.innerHTML.match(regExp));
+  let result = 0;
+  prices.forEach(({ innerHTML }) => {
+    result += parseFloat(innerHTML.match(regExp));
   });
   total.innerHTML = result;
 };
@@ -45,7 +52,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-   ol.removeChild(event.target);
+   cart.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -63,26 +70,38 @@ const createLoading = () => {
 
 const removeLoading = () => {
   const loading = document.querySelector('.loading');
-  if (loading) body.removeChild(loading);
+  if (loading) loading.remove();
 };
 
-let search = 'computador';
+const createProductsList = (obj) => {
+  const itens = document.querySelector('.items');
+  const arr = obj.results;
+    arr.forEach((computer) => {
+      itens.appendChild(createProductItemElement(computer));
+    });
+};
+
 const fetchProductList = async (item) => {
   createLoading();
-  const itens = document.querySelector('.items');
-  const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`);
-  const obj = await response.json();
-  const arr = obj.results;
-  arr.forEach((computer) => {
-    itens.appendChild(createProductItemElement(computer));
-  });
-  removeLoading();
+  try {
+    const response = await fetch(`${API_URL}?q=${item}`);
+    removeLoading();
+    const obj = await response.json();
+    createProductsList(obj);
+  } catch (error) {
+    alert(MSG_ERROR);
+  }
 };
 
 const fetchForId = async (id) => {
-  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const computer = await response.json();
-  ol.appendChild(createCartItemElement(computer));
+  createLoading();
+  try {
+    const response = await fetch(`${API_ITEMS}${id}`);
+    removeLoading();
+    return await response.json();
+  } catch (error) {
+    alert(MSG_ERROR);
+  }
 };
 
 const addCart = () => {
@@ -90,14 +109,16 @@ const addCart = () => {
   btnAddCart.forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = getSkuFromProductItem(btn.parentNode);
-      fetchForId(id);
+      fetchForId(id)
+      .then((item) => cart
+        .appendChild(createCartItemElement(item)));
     });
   });
 };
 
 const saveLocalStorage = () => {
   setTimeout(() => {
-    localStorage.setItem('cart', ol.innerHTML);
+    localStorage.setItem('cart', cart.innerHTML);
     totalPrice();
   }, 300);
 };
@@ -107,15 +128,15 @@ document.addEventListener('click', () => saveLocalStorage());
 const loadLocalStorage = () => {
   const cartSaved = localStorage.getItem('cart');
   if (cartSaved) {
-    ol.innerHTML = cartSaved;
-    ol.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
+    cart.innerHTML = cartSaved;
+    cart.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
   }
 };
 
 const clearCart = () => {
   const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
-    ol.innerHTML = '';
+    cart.innerHTML = '';
   });
 };
 
@@ -127,14 +148,22 @@ const loader = () => {
   .then(() => clearCart());
 };
 
+const clearItems = () => {
+  items.innerHTML = '';
+};
+
+const addFoundItems = (value) => {
+  search = value;
+};
+
 const searchEngine = () => {
   const searchInput = document.querySelector('#search');
   searchInput.addEventListener('keypress', (event) => {
     const pressEnter = document.getElementById('search-span');
     if (event.key === 'Enter' && !searchInput.value) return alert('O que você procura? =D');
     if (event.key === 'Enter') {
-      items.innerHTML = '';
-      search = searchInput.value;
+      clearItems();
+      addFoundItems(searchInput.value);
       loader();
       searchInput.value = '';
       pressEnter.style.color = 'gold';
@@ -145,6 +174,7 @@ const searchEngine = () => {
 };
 
 window.onload = function onload() {
+  totalPriceEqualZero();
   loader();
   searchEngine();
 };
