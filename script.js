@@ -101,7 +101,17 @@ const testAndOpenSaved = () => {
   }
 };
 
+const cleanProduct = () => {
+  const clear = document.querySelector('.empty-cart');
+  clear.addEventListener('click', () => {
+    document.querySelector('.buy').innerHTML = '';
+    document.getElementById('dept').innerText = 0;
+    saveLocal();
+  })
+};
+
 window.onload = function onload() {
   fetchApiML();
   testAndOpenSaved();
+  cleanProduct();
 };
