@@ -88,12 +88,18 @@ const buttonEvents = () => {
   // });
 };
 
+const removeLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 const fetchComputers = async () => {
   try {
     const promise = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
     const { results } = await promise.json();
     appendComputers(results);
     buttonEvents();
+    removeLoading();
   } catch (error) {
     alert('Erro ao requerir os dados. Tente novamente mais tarde');
   }
