@@ -23,16 +23,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
-
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
-function cartItemClickListener(event) {
+*/
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -40,16 +39,34 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-*/
-
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+const addCart = async (sku) => {
+  let request = await fetch(`https://api.mercadolibre.com/items/${sku}`);
+   request = await request.json();
+   const ol = document.querySelector('.cart__items');
+   ol.appendChild(createCartItemElement(request));
+ };
+
+const callbutton = () => {
+  const btn = document.querySelectorAll('.item__add');
+  btn.forEach((button) => {
+    (button.addEventListener('click', (event) => {
+      const iten = event.target.parentElement.firstChild.innerText;
+      addCart(iten);
+    }));
+  });
+};
 
 const fetchML = () => {
   const Itens = document.querySelector('.items');
   fetch(apiMercadoLivre)
   .then((Rsp) => Rsp.json())
-  .then((ar) => ar.results.forEach((prd) => Itens.appendChild(createProductItemElement(prd))));
+  .then((ar) => ar.results.forEach((prd) => Itens.appendChild(createProductItemElement(prd))))
+  .then(() => callbutton());
+ // acompanhei a logica do jose carlos perante a eplicação do ronald no plantão. 
 };
+
 window.onload = function onload() {
   fetchML();
 };
