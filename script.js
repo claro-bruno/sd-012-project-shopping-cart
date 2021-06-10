@@ -2,6 +2,8 @@ const cartItems = document.getElementsByClassName('cart__items');
 
 const items = document.getElementsByClassName('items');
 
+const loadPage = document.getElementsByClassName('loading');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,15 +35,16 @@ async function getAPI() {
   response = await response.results;
   response.forEach((computer) => { 
     items[0].appendChild(createProductItemElement(computer));
-  });
-}
+    });
+    loadPage[0].remove();
+  }
 
 function createPriceElements() {
   const sectionItems = document.getElementsByClassName('cart')[0];
   const divPrice = createCustomElement('div', 'total-price', '');
   sectionItems.appendChild(divPrice);
-  const LabelPrice = createCustomElement('p', 'price-label', 'Preço total:');
-  divPrice.appendChild(LabelPrice);
+  const labelPrice = createCustomElement('h2', 'price-label', 'Preço total:');
+  divPrice.appendChild(labelPrice);
   const totalPrice = createCustomElement('p', 'price-div', 'Preço total:');
   divPrice.appendChild(totalPrice);
 }
