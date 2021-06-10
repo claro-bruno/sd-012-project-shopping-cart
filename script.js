@@ -28,15 +28,17 @@ function createProductItemElement({ sku, name, image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
-/* function cartItemClickListener(event) {
-  // coloque seu código aqui
-} */
+function cartItemClickListener(event) {
+  const sectionCartItemsElement = document.querySelector('.cart__items');
+  const cartItemElement = event.target;
+  sectionCartItemsElement.removeChild(cartItemElement);
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -54,6 +56,12 @@ const formatCartItemObject = (receivedCartItemObject) => {
     return formatedObject;
 };
 
+/* const addEventToItens = () => {
+  document.querySelectorAll('.cart__item').forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}; */
+
 const getCartItensPromisse = (sku) => new Promise((resolve, reject) => {
   if (!sku.startsWith('MLB')) {
     reject(new Error('SKU informed does not exist'));
@@ -62,6 +70,7 @@ const getCartItensPromisse = (sku) => new Promise((resolve, reject) => {
       response.json().then((carItemFound) => {
         const cartItemObject = formatCartItemObject({ ...carItemFound });
         addCartItemElement(createCartItemElement(cartItemObject));
+        // addEventToItens();
         resolve();
       });
     });
