@@ -1,9 +1,24 @@
 // Salvar Local Storage
-const saveLocalStorage = () => localStorage
-  .setItem('cart', (document.querySelector('.cart__items').innerHTML));
+const saveLocalStorage = () => {
+  localStorage.setItem('cart', (document.querySelector('.cart__items').innerHTML));
+  // eslint-disable-next-line sonarjs/no-duplicate-string
+  localStorage.setItem('total', (document.querySelector('.total-price').innerHTML));
+};
+
+// Código baseado no código do colega Rodrigo Merlon turma 12
+// Update Price
+const updatePrice = (price) => {
+  const totalPrice = document.querySelector('.total-price');
+  if (price === 0) totalPrice.innerHTML = 0;
+  const currentPrice = Number(totalPrice.innerHTML);
+  totalPrice.innerHTML = Math.round((price + currentPrice) * 100) / 100;
+};
 
 // Remove Item do cart
 function cartItemClickListener(event) {
+  const string = event.target.innerHTML;
+  const price = Number(string.split('$')[1]);
+  updatePrice(-price);
   event.target.remove();
   saveLocalStorage();
 }
@@ -11,6 +26,7 @@ function cartItemClickListener(event) {
 // Cria o elemento para adicionar ao carrinho
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
+  li.id = id;
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
@@ -27,6 +43,7 @@ const getComputerIDPromise = (computerID) => new Promise((resolve, reject) => {
       response.json().then((computer) => {
         const cart = document.querySelector('ol');
         cart.appendChild(createCartItemElement(computer));
+        updatePrice(computer.price);
         // salvar no local storage
         saveLocalStorage();
         resolve();
@@ -74,7 +91,6 @@ function getSkuFromProductItem(item) {
 }
 
 // Gera a Promise do Computador
-
 const getComputerPromise = (computerName) => new Promise((resolve, reject) => {
   if (computerName !== 'computador') {
     reject(new Error('Nome Errado'));
@@ -94,7 +110,6 @@ const getComputerPromise = (computerName) => new Promise((resolve, reject) => {
 });
 
 // fetch Computer
-
 const fetchComputer = async () => {
   try {
     await getComputerPromise('computador');
@@ -103,7 +118,17 @@ const fetchComputer = async () => {
   }
 };
 
+// Limpa carrinho de compras
+const eraseCart = () => {
+  const cart = document.querySelector('ol');
+  cart.innerHTML = '';
+  updatePrice(0);
+  localStorage.clear();
+};
+
+// Carrega o local Storage
 const reloadCart = () => {
+  document.querySelector('.total-price').innerHTML = localStorage.getItem('total');
   document.querySelector('ol').innerHTML = localStorage.getItem('cart');
   const listItens = document.querySelectorAll('.cart__item');
   return listItens.forEach((item) => item.addEventListener('click', cartItemClickListener));
@@ -112,5 +137,5 @@ const reloadCart = () => {
 window.onload = function onload() {
   fetchComputer();
   reloadCart();
-  // Carregar Local Storage
+  document.querySelector('.empty-cart').addEventListener('click', eraseCart);
 };
