@@ -32,40 +32,51 @@ function createProductItemElement({ sku, name, image }) {
   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//  const li = document.createElement('li');
-//  li.className = 'cart__item';
-//  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//  li.addEventListener('click', cartItemClickListener);
-//  return li;
-// }
+function createCartItemElement({ sku, name, salePrice }) {
+  console.log(sku, name, salePrice);
+const li = document.createElement('li');
+li.className = 'cart__item';
+li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+// li.addEventListener('click', cartItemClickListener);
+return li;
+}
 
-// const product = {
-//  name: 'Smart TV Crystal UHD',
-//  price: '1899.05',
-//  seller: 'Casas de Minas',
-// };
-
-// let prod = {
-//  id: undefined,
-//  rg: undefined,
-//  foto: undefined,
-// };
+function clickItemAdd() {
+  const product = {};
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', async (event) => {
+      const idEvent = event.target.parentElement.firstChild.innerText;
+      fetch(`https://api.mercadolibre.com/items/${idEvent}`)
+      .then((response) => response.json())
+      .then((item) => {
+        const { id, title, price } = item;
+        product.sku = id;
+        product.name = title;
+        product.salePrice = price;
+        console.log(item);
+        document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+      });
+    });
+  });
+}
 
 function getandCreateItems() {
-  const obj = {};
+  const product = {};
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((items) => items.results.forEach((item) => {
       const { id, title, thumbnail } = item;
-      obj.sku = id;
-      obj.name = title;
-      obj.image = thumbnail;
-      document.querySelector('.items').appendChild(createProductItemElement(obj));
-    }));
+      product.sku = id;
+      product.name = title;
+      product.image = thumbnail;
+      document.querySelector('.items').appendChild(createProductItemElement(product));
+    }))
+    // .then(() => addClickCart());
+    .then(() => clickItemAdd());
     // .catch((error) => reject(console.log('error')))
 }
 
 window.onload = () => {  
-    getandCreateItems();     
+  getandCreateItems();     
 };
