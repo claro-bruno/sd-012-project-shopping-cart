@@ -1,4 +1,6 @@
-const cartItems = '.cart__items';
+const cartList = document.querySelector('.cart__items');
+const itemsSection = document.querySelector('.items');
+const total = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,10 +32,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const increaseTotal = ({ price }) => {
+  total.innerHTML = (Math.round((parseFloat(total.innerHTML) + price) * 100) / 100);
+};
+
+const decreaseTotal = (price) => {
+  total.innerHTML = (Math.round((parseFloat(total.innerHTML) - parseFloat(price)) * 100) / 100);
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
-  localStorage.setItem('cartList', document.querySelector(cartItems).innerHTML);
+  const price = event.target.innerText.split('$')[1];
+  decreaseTotal(price);
+  localStorage.setItem('cartList', cartList.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -44,62 +56,50 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const fetchComputers = async () => {
-  const results = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
-  .then((response) => response.json())
-  .then((data) => data.results);
-  
-  return results;
-};
-
-const appendComputers = async () => {
-  const computers = await fetchComputers();
-  const itemsSection = document.querySelector('.items');
-  computers.forEach((computer) => {
+const appendComputers = (results) => {
+  results.forEach((computer) => {
     itemsSection.appendChild(createProductItemElement(computer));
   });
 };
 
 const appendCartItem = (info) => {
-  const cart = document.querySelector(cartItems);
-  const data = createCartItemElement(info);
-  cart.appendChild(data);
+  const cartItem = createCartItemElement(info);
+  cartList.appendChild(cartItem);
 };
 
-const updatePrice = ({ price }) => {
-  const price2 = document.querySelector('.total-price');
-  price2.innerHTML = parseFloat(price2.innerHTML) + price;
+const buttonEvents = () => {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((button) => {
+    button.addEventListener('click', async (event) => {
+        const section = event.target.parentElement;
+        const itemSku = getSkuFromProductItem(section);
+        const promise = await fetch(`https://api.mercadolibre.com/items/${itemSku}`);
+        const info = await promise.json();
+        appendCartItem(info);
+        increaseTotal(info);
+        localStorage.setItem('cartList', cartList.innerHTML);
+      });
+  });
 };
 
-document.addEventListener('click', async (event) => {
-  if (event.target.className === 'item__add') {
-    const section = event.target.parentElement;
-    const itemSku = getSkuFromProductItem(section);
-    const info = await fetch(`https://api.mercadolibre.com/items/${itemSku}`)
-    .then((response) => response.json());
-    appendCartItem(info);
-    updatePrice(info);
-    localStorage.setItem('cartList', document.querySelector(cartItems).innerHTML);
+const fetchComputers = async () => {
+  try {
+    const promise = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+    const { results } = await promise.json();
+    appendComputers(results);
+    buttonEvents();
+  } catch (error) {
+    alert('Erro ao requerir os dados. Tente novamente mais tarde');
   }
-});
-
-const totalPrice = () => {
-  const cart = document.querySelector('.cart');
-  const total = createCustomElement('span', 'total', 'Total: $ ');
-  const price = createCustomElement('span', 'total-price', 0);
-  cart.appendChild(total);
-  total.appendChild(price);
 };
 
 document.querySelector('.empty-cart').addEventListener('click', () => {
-  document.querySelector(cartItems).innerHTML = '';
+  cartList.innerHTML = '';
   document.querySelector('.total-price').innerHTML = 0;
-  localStorage.setItem('cartList', document.querySelector(cartItems).innerHTML);
+  localStorage.setItem('cartList', cartList.innerHTML);
 });
 
 window.onload = function onload() {
-  const cartList = document.querySelector(cartItems);
+  fetchComputers();
   cartList.innerHTML = localStorage.getItem('cartList');
-  appendComputers();
-  totalPrice();
 };
