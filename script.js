@@ -10,6 +10,15 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+// funcao que soma feita com ajuda de Thales, Ramon e Camila. 
+
+function sumUp() {
+  const finalPrice = document.querySelector('.total-price');
+  const liProduct = document.querySelectorAll('.cart__item');
+  const listofPr = [...liProduct];
+  const finalSum = listofPr.reduce((acc, curr) => acc + Number(curr.innerHTML.split('$')[1]), 0);
+  finalPrice.innerHTML = finalSum;
+}
 
 // adiciona localstorage nos itens do carrinho
 function storeListItems() {
@@ -46,6 +55,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   items.removeChild(event.target);
   storeListItems();
+  sumUp();
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -87,6 +97,7 @@ function addItemToCart(event) {
       .then((json) => {
         items.appendChild(createCartItemElement(json));
         storeListItems();
+        sumUp();
       });
   }
 }
@@ -100,14 +111,6 @@ function clear() {
 }
 
 // -----------------------------------------------------------------------------------------------------
-
-function sumUp() {
-  const finalPrice = document.querySelector('.total-price');
-  const liProduct = document.querySelectorAll('.cart__item');
-  const listofPr = [...liProduct];
-  const finalSum = listofPr.reduce((acc, curr) => acc + Number(curr.innerHTML.split('$')[1]), 0);
-  finalPrice.innerHTML = finalSum;
-}
 
 window.onload = function onload() { 
   getItem();
