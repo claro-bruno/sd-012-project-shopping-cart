@@ -74,3 +74,11 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  position: absolute;
+  background-color: whitesmoke;
+  font-size: 30px;
+  left: 50%;
+  top: 50%;
+}
