@@ -35,6 +35,15 @@ const totalCalc = () => {
   document.querySelector('.total-price').innerText = `${total}`;
 };
 
+const clearCart = () => {
+  const clearButton = document.querySelector('.empty-cart');
+    clearButton.addEventListener('click', () => {
+      const cartList = document.querySelector('.cart__items');
+      cartList.innerHTML = '';
+  });
+};
+
+
 async function cartItemClickListener(event) {
   const erasePrice = event.target.innerText.split('$')[1] * -1;
   totalPrice.push(erasePrice);
@@ -85,4 +94,5 @@ window.onload = function onload() {
   addItems();
   const carList = document.querySelector('.cart__items');
   carList.innerHTML = localStorage.getItem('carList');
+  clearCart();
 };
