@@ -65,34 +65,36 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function addItemToCart(event) {
+const addItemToCart = async (event) => {
   const id = getSkuFromProductItem(event.path[1]);
-  fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
-    response.json().then((computer) => {
-      const items = document.getElementsByClassName('cart__items')[0];
-      const item = createCartItemElement(computer);
-      items.appendChild(item);
-      saveCart();
+  const url = `https://api.mercadolibre.com/items/${id}`;
+  const res = await fetch(url);
+  const computer = await res.json();
 
-      totalPrice += computer.price;
-      localStorage.setItem('price', totalPrice);
-      const price = capturePrice();
-      price.innerText = totalPrice;
-    }));
-}
+  const items = document.getElementsByClassName('cart__items')[0];
+  const item = createCartItemElement(computer);
+  items.appendChild(item);
+  saveCart();
 
-const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => response.json()
-    .then((computers) => {
-      const loading = document.getElementsByClassName('loading')[0];
-      loading.remove();
-      computers.results.forEach((computer) => {
-        const items = document.getElementsByClassName('items')[0];
-        const item = createProductItemElement(computer);
-        items.appendChild(item);
-        item.addEventListener('click', addItemToCart);
-      });
-    }));
+  totalPrice += computer.price;
+  localStorage.setItem('price', totalPrice);
+  const price = capturePrice();
+  price.innerText = totalPrice;
+};
+
+const getItems = async () => {
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const res = await fetch(url);
+  const data = await res.json();
+  const loading = document.getElementsByClassName('loading')[0];
+  loading.remove();
+  data.results.forEach((computer) => {
+    const items = document.getElementsByClassName('items')[0];
+    const item = createProductItemElement(computer);
+    items.appendChild(item);
+    item.addEventListener('click', addItemToCart);
+  });
+};
 
 function emptyCart() {
   const ol = document.getElementsByClassName('cart__items')[0];
