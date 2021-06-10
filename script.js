@@ -52,6 +52,14 @@ const fetchAPI = () => {
   return produtos;
 };
 
+const priceCart = () => {
+  const sectionCart = document.querySelector('.cart');
+  const criarP = document.createElement('p');
+  criarP.className = 'total-price';
+  criarP.innerText = 'Preço Total: 0';
+  sectionCart.appendChild(criarP);
+};
+
 const addItemToCart = () => {
   const botoesAdd = document.querySelectorAll('.item__add');
   botoesAdd.forEach((botao) => botao.addEventListener('click', () => {
@@ -63,16 +71,19 @@ const addItemToCart = () => {
   }));
 };
 
-const priceCart = () => {
-  const sectionCart = document.querySelector('.cart');
-  const criarP = document.createElement('p');
-  criarP.className = 'total-price';
-  criarP.innerText = 'Preço Total: ';
-  sectionCart.appendChild(criarP);
+const cleanCart = () => {
+  const botaoLimpar = document.querySelector('.empty-cart');
+  botaoLimpar.addEventListener('click', () => {
+    const produtosCarrinho = document.querySelectorAll('.cart__item');
+    if (produtosCarrinho.length > 0) {
+    produtosCarrinho.forEach((produto) => produto.remove());
+    }
+  });
 };
 
 window.onload = function onload() {
   fetchAPI()
-    .then(() => addItemToCart());
-    priceCart();
+    .then(() => addItemToCart())
+    .then(() => cleanCart());
+  priceCart();
 };
