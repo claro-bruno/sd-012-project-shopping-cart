@@ -33,9 +33,18 @@ function getSkuFromProductItem(item) {
 function localStorageCart() {
   localStorage.setItem('shopping-data', JSON.stringify(shoppingCart));
 }
+// REQUISITO 5:
+// function cartTotalCost() {
+//   const totalCost = shoppingCart.reduce((accumulator, currentValue) => {
+//     const itemCost = currentValue.salePrice;
+//     return accumulator + itemCost;
+//   }, 0);
+//   document.querySelector('.total-price').textContent = Math.round(totalCost * 100) / 100;
+// }
 // REQUISITO 3 - Remove do carrinho os itens clicados:
 function cartItemClickListener(event) {
   event.target.remove();
+  // cartTotalCost();
   localStorageCart();
 }
 
@@ -63,6 +72,7 @@ async function addToCart(event) {
   const { title, price } = await response.json();
   shoppingCart.push({ sku, name: title, salePrice: price });
   insertCartItem();
+  // cartTotalCost();
   localStorageCart();
 }
 // REQUISITO 4.2 - Resgata os itens do carrinho salvo no Local Storage:
@@ -71,6 +81,7 @@ function retrieveLocalStorage() {
   if (dataToRetrieve) {
     shoppingCart = [...dataToRetrieve];
     insertCartItem();
+    // cartTotalCost();
   }
 }
 // REQUISITO 1 - Insere a lista de produtos na página:
@@ -94,6 +105,7 @@ function clearCart() {
   clearButton.addEventListener('click', () => {
     document.querySelector('.cart__items').innerHTML = ' ';
     localStorage.clear();
+    shoppingCart = [];
   });
 }
 
