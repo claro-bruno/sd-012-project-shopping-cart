@@ -78,3 +78,21 @@
   font-size: 16pt;
   text-align: center;
 }
+
+h1 , h2 {
+  text-align: center;
+  color: red;
+}
+
+h2 {
+  margin-bottom: 30px;
+}
+
+header {
+  background-color: black;
+}
+
+body {
+  background-color: grey;
+  margin: 0;
+}
