@@ -1,3 +1,17 @@
+const deleteAllCart = () => {
+  const button = document.querySelector('.empty-cart');
+  const cart = document.querySelector('.cart__items');
+
+  button.addEventListener('click', () => {
+    if (cart.firstChild) {
+      while (cart.firstChild) {
+        cart.removeChild(cart.firstChild);
+      }
+      localStorage.removeItem('cart');
+    }
+  });
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -101,6 +115,9 @@ const renderAllProducts = (array) => {
 
 window.onload = function onload() {
   const cartLocalStorage = JSON.parse(localStorage.getItem('cart'));
+
+  deleteAllCart();
+
   if (cartLocalStorage && cartLocalStorage.length > 0) {
     cartLocalStorage.forEach((current) => addToCart(current.id));
   }
