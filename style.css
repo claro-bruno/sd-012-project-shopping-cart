@@ -17,12 +17,14 @@ body {
   width: 100%;
   background-color: blue;
   color: white;
+  box-shadow: 0 2px 2px black;
 }
 
 .top-bar-title {
   font-weight: 400;
   font-size: 40pt;
   font-family: Neon80s;
+  user-select: none;
 }
 
 .top-bar .input-name-group {
@@ -59,6 +61,7 @@ body {
   margin: 5px;
   width: 200px;
   transition: all 0.3s;
+  user-select: none;
 }
 
 .item:hover {
@@ -98,6 +101,8 @@ body {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  background-color:lightcyan;
+  border-radius: 5px;
 }
 
 .cart .cart__title {
@@ -111,7 +116,9 @@ body {
   margin: 5px auto;
   border-radius: 5px;
   border: none;
-  background-color: rgb(255, 71, 71);
+  background-color: rgb(255, 81, 81);
+  font-weight: 600;
+  cursor: pointer;
   color: white;
   transition: all 0.3s;
 }
@@ -119,6 +126,17 @@ body {
 .cart .empty-cart:hover {
   background-color: red;
   transition: all 0.3s;
+}
+
+.cart .cart__item {
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  user-select: none;
+}
+
+.cart .cart__item:hover {
+  background-color: rgba(0, 0, 255, 0.5);
 }
 
 .loading {
@@ -140,4 +158,9 @@ body {
 
 .total {
   text-align: center;
+  font-weight: 600;
+  background-color: white;
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 5px;
 }
