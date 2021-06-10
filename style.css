@@ -90,7 +90,7 @@ body {
   display: flex;
   flex-basis: 70%;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 .item {
@@ -169,8 +169,24 @@ body {
     display: none !important;
   }
 
+  .container {
+    justify-content: space-between;
+  }
+
+  .item {
+    flex-grow: 1;
+  }
+
+  .items {
+    flex-grow: 1;
+  }
+
   .icons {
     display: flex !important;
+  }
+
+  .item:hover {
+    border: none;
   }
 }
 
@@ -186,6 +202,7 @@ body {
 }
 
 .cart {
+  z-index: 1;
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
