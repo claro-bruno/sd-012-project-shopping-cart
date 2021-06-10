@@ -5,31 +5,39 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
+function createCustomElement(element, className, innerText, event) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  e.addEventListener('click', sectionEventListener);
+
+  if (element === 'button') {
+    function sectionEventListener() {
+      const cartItems = document.querySelector('.cart__items');
+      fetch(`https://api.mercadolibre.com/items/${event}`)
+      .then((response) => response.json())
+      .then((item) => cartItems.appendChild(createCartItemElement(item)));
+    }
+    e.addEventListener('click', sectionEventListener);
+  }
+
   return e;
 }
 
-function sectionEventListener(event) {
-  const cartItems = document.querySelector('.cart__items');
-  const id = document.querySelector('.item__sku');
-  event = id.innerHTML;
-  fetch(`https://api.mercadolibre.com/items/${event}`)
-  .then((response) => response.json())
-  .then((item) => cartItems.appendChild(createCartItemElement(item)));
-}
+// function sectionEventListener(id) {
+//   const cartItems = document.querySelector('.cart__items');
+//   fetch(`https://api.mercadolibre.com/items/${id}`)
+//   .then((response) => response.json())
+//   .then((item) => cartItems.appendChild(createCartItemElement(item)));
+// }
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!', id));
+  section.appendChild(createCustomElement('span', 'item__sku', id));
 
   return section;
 }
@@ -63,5 +71,4 @@ const fetchProduct = () => {
 
 window.onload = () => {
   fetchProduct();
-  // sectionEventListener();
 };
