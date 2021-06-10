@@ -87,7 +87,19 @@ const addItemToCart = () => {
   });
 };
 
+// setInterval(() => {
+//   localStorage.setItem('itemsInCart', document.querySelector('.cart__items').innerHTML);
+// }, 500);
+
+// const loadCart = () => {
+//   const array = localStorage.getItem('itemsInCart');
+  
+//   console.log(typeof(array));
+//   console.log(array);
+// };
+
 window.onload = async function onload() {
   await getProductsAPI('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  // await loadCart();
   await addItemToCart();
 };
