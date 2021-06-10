@@ -14,6 +14,11 @@ const loading = document.createElement('p');
 loading.className = 'loading';
 loading.innerText = 'loading...';
 
+const saveCart = () => {
+  localStorage.setItem('cartItems', JSON.stringify(ol.innerHTML));
+  localStorage.setItem('priceCartItems', JSON.stringify(priceTotal));
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -67,6 +72,7 @@ function cartItemClickListener(event, salePrice) {
   priceTotal -= salePrice;
   totalPrice.innerText = priceTotal;
   event.remove();
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -91,7 +97,8 @@ const createItemForCart = async (product) => {
     };
     priceTotal += itemInfos.salePrice;
     totalPrice.innerText = priceTotal;
-    return ol.appendChild(createCartItemElement(itemInfos));
+    ol.appendChild(createCartItemElement(itemInfos));
+    return saveCart();
   } catch (error) {
     console.log(error.message);
   }
@@ -106,27 +113,33 @@ const addItemToCart = () => {
   });
 };
 
-// setInterval(() => {
-//   localStorage.setItem('itemsInCart', document.querySelector('.cart__items').innerHTML);
-// }, 500);
-
-// const loadCart = () => {
-//   const array = localStorage.getItem('itemsInCart');
-  
-//   console.log(typeof(array));
-//   console.log(array);
-// };
-
 const clearButton = document.querySelector('.empty-cart');
 clearButton.addEventListener('click', () => {
   const items = document.querySelectorAll('.cart__item');
   items.forEach((item) => ol.removeChild(item));
   priceTotal = 0;
   totalPrice.innerText = priceTotal;
+  saveCart();
 });
+
+const loadCart = async () => {
+  ol.innerHTML = JSON.parse(localStorage.getItem('cartItems'));
+  const savedLi = document.querySelectorAll('.cart__item');
+  savedLi.forEach((li) => {
+    li.addEventListener('click', (event) => {
+      const originalPrice = Number(event.target.innerText.split('$')[1]);
+      const salePrice = Math.round(originalPrice * 100) / 100;
+      console.log(salePrice);
+      cartItemClickListener(event.target, salePrice);
+    });
+  });
+  const originalPrice = Number(JSON.parse(localStorage.getItem('priceCartItems')));
+  priceTotal = Math.round(originalPrice * 100) / 100;
+  totalPrice.innerText = priceTotal;
+};
 
 window.onload = async function onload() {
   await getProductsAPI('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  // await loadCart();
-  await addItemToCart();
+  await loadCart();
+  addItemToCart();
 };
