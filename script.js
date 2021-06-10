@@ -131,6 +131,7 @@ const searchEngine = () => {
   const searchInput = document.querySelector('#search');
   searchInput.addEventListener('keypress', (event) => {
     const pressEnter = document.getElementById('search-span');
+    if (event.key === 'Enter' && !searchInput.value) return alert('O que você procura? =D');
     if (event.key === 'Enter') {
       items.innerHTML = '';
       search = searchInput.value;
