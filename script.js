@@ -32,6 +32,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   event.target.parentElement.removeChild(event.target);
+  console.log(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -43,27 +44,28 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function getItem(item) {
-  return new Promise((resolve, reject) => {
-    if (item === 'computador') {
-      fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
-        .then((res) => res.json())
-        .then((json) => {
-          json.results.forEach((curr) => {
-            const { id: sku, title: name, thumbnail: image } = curr;
-            const itemSection = document.querySelector('.items');
-            itemSection.appendChild(
-              createProductItemElement({ sku, name, image }),
-            );
-            resolve();
-          });
+  return new Promise((resolve) => {
+    document.getElementById('load').innerHTML = 'loading...';
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
+      .then((res) => res.json())
+      .then((json) => {
+        json.results.forEach((curr) => {
+          const { id: sku, title: name, thumbnail: image } = curr;
+          const itemSection = document.querySelector('.items');
+          itemSection.appendChild(
+            createProductItemElement({ sku, name, image }),
+          );
         });
-    } else {
-      reject();
-    }
+        document
+          .querySelector('.items')
+          .removeChild(document.getElementById('load'));
+        resolve();
+      });
   });
 }
 
 function saveToCart(itemObj) {
+  // source: https://portfolio.adisazizan.xyz/tutor/push-array-value-in-localstorage
   let cartArray = [];
   if (localStorage.cart) {
     cartArray = JSON.parse(localStorage.cart);
@@ -73,18 +75,11 @@ function saveToCart(itemObj) {
 }
 
 function appendCartItem(itemObj, fromClick) {
-  if (fromClick) {
-    const cartContainer = document.getElementsByClassName('cart__items')[0];
-    const { id: sku, title: name, price: salePrice } = itemObj;
-    const cartItem = createCartItemElement({ sku, name, salePrice });
-    cartContainer.appendChild(cartItem);
-    saveToCart(itemObj);
-  } else {
-    const cartContainer = document.getElementsByClassName('cart__items')[0];
-    const { id: sku, title: name, price: salePrice } = itemObj;
-    const cartItem = createCartItemElement({ sku, name, salePrice });
-    cartContainer.appendChild(cartItem);
-  }
+  const cartContainer = document.getElementsByClassName('cart__items')[0];
+  const { id: sku, title: name, price: salePrice } = itemObj;
+  const cartItem = createCartItemElement({ sku, name, salePrice });
+  cartContainer.appendChild(cartItem);
+  if (fromClick) saveToCart(itemObj);
 }
 
 function addItemCart(event) {
@@ -106,6 +101,7 @@ function loadSavedCart() {
 function clearCart() {
   const cartContainer = document.getElementsByClassName('cart__items')[0];
   cartContainer.innerHTML = '';
+  localStorage.cart = '';
 }
 
 window.onload = function onload() {
