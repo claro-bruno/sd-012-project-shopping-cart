@@ -31,8 +31,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const itemList = document.querySelector('ol.cart__items');
+
   event.target.remove();
+  localStorage.setItem('lista-produtos', itemList.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -42,6 +44,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const saveList = (event) => {
+  const productID = event.parentNode.innerHTML;
+  localStorage.setItem('lista-produtos', productID);
+};
 
 const buttonListener = () => {
   const allButtons = document.querySelectorAll('button.item__add');
@@ -53,7 +60,8 @@ const buttonListener = () => {
       const productURL = `https://api.mercadolibre.com/items/${itemCode}`;
       fetch(productURL)
         .then((response) => response.json())
-        .then((data) => itemList.appendChild(createCartItemElement(data)));
+        .then((data) => itemList.appendChild(createCartItemElement(data)))
+        .then((eachProduct) => saveList(eachProduct));
     });
   });
 };
@@ -76,11 +84,18 @@ const appendJson = (jsonData) => {
   });
 };
 
+const returnSavedList = () => {
+  const itemList = document.querySelector('ol.cart__items');
+  itemList.innerHTML = localStorage.getItem('lista-produtos');
+  itemList.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
+};
+
 window.onload = async () => {
   try {
     const getJson = await fetch(mercadoLivreURL);
     await getAPIJson(getJson).then(appendJson);
     buttonListener();
+    returnSavedList();
   } catch (error) {
     console.log(`Não foi possível obter o json ${error}`);
   }
