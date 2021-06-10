@@ -91,9 +91,9 @@ function createProductItemElement({
   section.className = 'item';
   
   section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('span', 'item__price', `$${price}`));
+  section.appendChild(createCustomElement('span', 'item__price', `$ ${Number(price).toFixed(2)}`));
+  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.addEventListener('click', addToCart);
   return section;

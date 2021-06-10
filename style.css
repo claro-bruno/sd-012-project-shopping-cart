@@ -128,7 +128,7 @@ body {
 }
 
 .item .item__price {
-  text-align: center;
+  text-align: right;
   font-weight: 600;
 }
 
@@ -217,5 +217,4 @@ body {
   padding: 10px;
   margin: 10px auto;
   border-radius: 5px;
-  box-shadow: 0 0 3px 1px black;
 }
