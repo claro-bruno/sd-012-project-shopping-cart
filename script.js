@@ -86,12 +86,24 @@ function createProductItemElement({ id, title, thumbnail }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// Tela de Loading
+const Loading = (create) => {
+  if (create === true) {
+    const loadingSection = document.createElement('div');
+    loadingSection.className = 'loadingModal';
+    document.querySelector('body').appendChild(loadingSection);
+    const div = document.createElement('div');
+    div.className = 'loading';
+    div.innerHTML = 'Carregando...';
+    loadingSection.appendChild(div);
+  } else {
+    document.querySelector('.loadingModal').remove();
+  }
+};
 
 // Gera a Promise do Computador
 const getComputerPromise = (computerName) => new Promise((resolve, reject) => {
+  Loading(true);
   if (computerName !== 'computador') {
     reject(new Error('Nome Errado'));
   } else {
@@ -103,6 +115,7 @@ const getComputerPromise = (computerName) => new Promise((resolve, reject) => {
         computer.results.map((computerUnit) => sectionPai
           .appendChild(createProductItemElement(computerUnit)));    
 
+        Loading(false);
         resolve();
       });
     });
