@@ -56,6 +56,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// REQUISITO 7.1 - Função que adiciona a mensagem de loading na tela durante a requisição:
+function addLoading() {
+  const loadingP = createCustomElement('p', 'loading', 'Loading...');
+  document.querySelector('.cart').appendChild(loadingP);
+}
+// REQUISITO 7.2 - Função que remove o loading na tela:
+function removeLoading() {
+  document.querySelector('.loading').remove();
+}
 // REQUISITO 2.2 - Adiciona o item clicado no carrinho:
 function insertCartItem() {
   const cartItem = document.querySelector('.cart__items');
@@ -68,8 +77,10 @@ function insertCartItem() {
 // REQUISITO 2.1 - Busca os detalhes do produto clicado para adicionar no carrinho:
 async function addToCart(event) {
   const sku = getSkuFromProductItem(event.target.parentElement);
+  addLoading();
   const response = await fetch(`https://api.mercadolibre.com/items/${sku}`);
   const { title, price } = await response.json();
+  removeLoading();
   shoppingCart.push({ sku, name: title, salePrice: price });
   insertCartItem();
   // cartTotalCost();
@@ -87,8 +98,10 @@ function retrieveLocalStorage() {
 // REQUISITO 1 - Insere a lista de produtos na página:
 async function productList() {
   const itemSection = document.querySelector('section .items');
+  addLoading();
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const { results } = await response.json();
+  removeLoading();
   results.forEach((product) => {
     const component = createProductItemElement({
       sku: product.id,
