@@ -1,4 +1,6 @@
 const fatherCart = document.querySelector('.cart__items');
+const btnClearCart = document.querySelector('.empty-cart');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -35,6 +37,11 @@ function rIS(event) {
     event.addEventListener('click', event.remove());
     saveItemStorage();
 }
+
+  btnClearCart.addEventListener('click', () => {
+    btnClearCart.nextElementSibling.innerHTML = '';
+    saveItemStorage();
+  });
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
