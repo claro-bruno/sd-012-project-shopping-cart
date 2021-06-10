@@ -44,13 +44,23 @@ body {
 
 .search-btn, .search-input {
   border-radius: 5px;
-  border: none;
   padding: 10px;
   margin: auto 5px;
 }
 
 .search-btn {
+  border: 2px solid lavender;
+  background-color: transparent;
+  cursor: pointer;
+  color: lavender;
   font-weight: 600;
+  transition: all 0.5 s;
+}
+
+.search-btn:hover {
+  background-color: lavender;
+  transition: all 0.5s;
+  color: blue;
 }
 
 .container {
