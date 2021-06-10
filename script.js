@@ -1,7 +1,11 @@
 const olCart = document.querySelector('.cart__items');
+const totalValue = document.querySelector('.total-price');
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const content = event.target.innerHTML;
+  const number = content.slice(content.indexOf('$') + 1, content.length);
+  totalValue.innerHTML = (parseFloat(totalValue.innerHTML) - number).toFixed(1);
   localStorage.removeItem(event.target.id);
   olCart.removeChild(event.target);
 }
@@ -21,6 +25,7 @@ const addToCart = async (event) => {
   searchAPI = await searchAPI.json();
   localStorage.setItem(`${id}`, 
   JSON.stringify({ id: searchAPI.id, title: searchAPI.title, price: searchAPI.price }));
+  totalValue.innerHTML = parseFloat(totalValue.innerHTML) + searchAPI.price;
   olCart.appendChild(createCartItemElement(searchAPI));
 };
 
