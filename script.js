@@ -30,19 +30,36 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  event.target.remove();
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const buttonListener = () => {
+  const allButtons = document.querySelectorAll('button.item__add');
+  let itemCode = '';
+  const itemList = document.querySelector('ol.cart__items');
+  allButtons.forEach((item) => {
+    item.addEventListener('click', (evt) => {
+      itemCode = evt.target.parentNode.firstChild.innerText;
+      const productURL = `https://api.mercadolibre.com/items/${itemCode}`;
+      fetch(productURL)
+        .then((response) => response.json())
+        .then((data) => itemList.appendChild(createCartItemElement(data)));
+    });
+  });
+};
 
 const getAPIJson = (requested) => {
+  // error style learned from Roger Melo youtube channel
   if (!requested) {
     throw new Error('Não foi possível obter o json');
   }
@@ -59,9 +76,12 @@ const appendJson = (jsonData) => {
   });
 };
 
-window.onload = () => {
-  fetch(mercadoLivreURL)
-    .then(getAPIJson)
-    .then(appendJson)
-    .catch((apiError) => console.log(apiError));
+window.onload = async () => {
+  try {
+    const getJson = await fetch(mercadoLivreURL);
+    await getAPIJson(getJson).then(appendJson);
+    buttonListener();
+  } catch (error) {
+    console.log(`Não foi possível obter o json ${error}`);
+  }
 };
