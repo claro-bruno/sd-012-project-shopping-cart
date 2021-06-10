@@ -18,11 +18,11 @@ function createProductImageElement(imageSource) {
 }
 
 const updateStorage = () => {
-  const cartItems = document.querySelectorAll('.cart__items')[0];
+  const cart = document.querySelectorAll('.cart__items')[0];
   if (localStorage.carrinho) {
-    localStorage.carrinho = cartItems.innerHTML;
+    localStorage.carrinho = cart.innerHTML;
   } else {
-    localStorage.setItem('carrinho', cartItems.innerHTML);
+    localStorage.setItem('carrinho', cart.innerHTML);
   }
 };
 
@@ -113,8 +113,20 @@ const cartLoad = () => {
   updatePrice();
 };
 
+const clearBtn = () => {
+  const btn = document.querySelectorAll('.empty-cart')[0];
+  const clearFunc = () => {
+    const cart = document.getElementsByClassName('cart__items')[0];
+    cart.innerHTML = '';
+    updatePrice();
+    updateStorage(); 
+  };
+  btn.addEventListener('click', clearFunc);
+};
+
 window.onload = function onload() {
   totalPrice();
   fetchApi();
   cartLoad();
+  clearBtn();
 };
