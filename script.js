@@ -7,7 +7,7 @@ function createProductImageElement(imageSource) {
 
 const cart = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
-
+  
 const saveCart = () => {
   // console.log(cart.innerHTML);
   localStorage.setItem('Cart', JSON.stringify(cart.innerHTML));

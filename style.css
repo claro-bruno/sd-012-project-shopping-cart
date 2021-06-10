@@ -155,6 +155,21 @@ body {
   font-weight: 600;
 }
 
+@media screen and (max-width: 1024px) {
+  .cart {
+    position: fixed !important;
+    right: -100vw !important;
+  }
+  
+  .fa-shopping-cart {
+    display: block !important;
+  }
+}
+
+.fa-shopping-cart {
+  display: none;
+}
+
 .cart {
   display: flex;
   flex-basis: 30%;
