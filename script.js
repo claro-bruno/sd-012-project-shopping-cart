@@ -33,9 +33,17 @@ function clearAllCart() {
   });
 }
 
-/* function saveProductsLocalStorage(skuReceived) {
-  localStorage.setItem('products', skuReceived); // não esta salvando todos os produtos clicados
-} */
+// teste junto com ronald - nao deu certo ainda
+function saveProductsLocalStorage(skuReceived) {
+  let teste;
+  if (localStorage.products) {
+    teste = localStorage.products;
+    console.log(teste);
+    teste += skuReceived;
+    console.log(teste);
+  }   
+  localStorage.setItem('products', teste); // não esta salvando todos os produtos clicados
+}
 
 /* abaixo funcao usada no projeto to do list
 function returnsSaveProducts() {
@@ -48,13 +56,14 @@ function returnsSaveProducts() {
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
       li.className = 'cart__item';
-      li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+      const textFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+      li.innerText = textFormat;
       li.addEventListener('click', cleanItemFromCart);
     
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(li);
       
-      // saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
+      saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
       clearAllCart();
 }
 
