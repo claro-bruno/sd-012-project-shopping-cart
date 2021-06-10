@@ -166,6 +166,18 @@ const addsHoverToItems = () => {
     }));
 };
 
+const formBtn = document.querySelector('.search-btn');
+const formInput = document.querySelector('.search-input');
+
+const preventDef = (e) => {
+  e.preventDefault();
+};
+
+formBtn.addEventListener('click', preventDef);
+formBtn.addEventListener('click', () => {
+  
+});
+
 window.addEventListener('load', async () => {
   loadCart();
   const productsList = await loadProducts('computador');
