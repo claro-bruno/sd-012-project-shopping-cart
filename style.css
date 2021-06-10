@@ -1,80 +1,103 @@
-.top-bar {
-  align-items: center;
-  display: flex;
-  height: 100px;
-  justify-content: space-around;
-  margin-bottom: 10px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap');
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  list-style: none;
+  font-family: 'Roboto', sans-serif;
+  border: none;
+}
+
+
+body {
+  max-height: 100%;
+  background: linear-gradient(30deg, rgb(8, 13, 38), rgb(0, 0, 0));
+}
+
+.header {
   width: 100%;
-}
-
-.cartPrice {
-  display: none;
-}
-
-.top-bar .input-name-group {
-  align-items: flex-start;
-  display: flex;
-}
-
-.top-bar .input-terms-group {
-  align-items: flex-start;
-  display: flex;
+  background: linear-gradient(30deg, rgb(8, 13, 38), rgb(0, 0, 0));
+  padding: 20px;
+  text-align: center;
+  color: white;
 }
 
 .container {
-  display: none;
-  justify-content: space-around;
-  width: 100%;
-}
-
-.items {
   display: flex;
-  flex-basis: 70%;
-  flex-wrap: wrap;
   justify-content: center;
 }
 
+.items {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+  height: 85vh;
+  overflow-y: scroll;
+}
+.cart {
+  width: 20%;
+  padding: 10px;
+  height: 85vh;
+  overflow-y: scroll;
+}
+
+.total-price {
+  color: white;
+}
 .item {
-  border: 2px solid blue;
-  border-radius: 5px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  height: auto;
-  margin: 5px;
-  width: 200px;
-}
-
-.item .item__sku {
-  display: none;
-}
-
-.item .item__title {
-  flex-grow: 1;
+  width: 20%;
+  margin: 10px;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 5px;
   padding: 10px;
-  text-align: center;
+  box-shadow: 1px 1px 10px black;
+  transition-duration: 0.3;
 }
 
-.item .item__image {
+.item:hover {
+  transform: scale(1.05);
+}
+
+.item img {
+  width: 50%;
+}
+
+.item__image  {
+  align-self: center;
+}
+
+.cart__item {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 1px 1px 10px black;
+  border-radius: 5px;
+  
+}
+
+.cart__item {
+  align-self: center;
+}
+
+.cart__item img {
   width: 100%;
 }
 
-.item .item__add {
-  background-color: green;
-  border: 0;
-  cursor: pointer;
-  margin: 0;
+button {
+  background-color: rgba(228, 110, 27, 0.8);
   padding: 5px;
+  border-radius: 5px;
+  transition-duration: 0.3s;
 }
 
-.cart {
-  display: flex;
-  flex-basis: 30%;
-  flex-flow: column wrap;
-}
+button:hover {
+  cursor: pointer;
+  background-color: #e46e1b;
 
-.cart .cart__title {
-  flex-basis: 1;
-  font-size: 16pt;
-  text-align: center;
 }
