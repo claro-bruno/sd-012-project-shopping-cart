@@ -91,10 +91,30 @@ function addItemToCart(event) {
   }
 }
 
+function clear() {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    items.innerHTML = '';
+    storeListItems();
+  });
+}
+
+// -----------------------------------------------------------------------------------------------------
+
+function sumUp() {
+  const finalPrice = document.querySelector('.total-price');
+  const liProduct = document.querySelectorAll('.cart__item');
+  const listofPr = [...liProduct];
+  const finalSum = listofPr.reduce((acc, curr) => acc + Number(curr.innerHTML.split('$')[1]), 0);
+  finalPrice.innerHTML = finalSum;
+}
+
 window.onload = function onload() { 
   getItem();
   getMlList(); 
   upItems();
+  clear();
+  sumUp();
   const itemsSec = document.querySelector('.items');
   itemsSec.addEventListener('click', addItemToCart);
 };
