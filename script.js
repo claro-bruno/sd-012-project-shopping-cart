@@ -57,7 +57,7 @@ function createCartItemElement({
   return li;
 }
 
-const addButton = (e) => {
+const addToCart = (e) => {
   const addedId = getSkuFromProductItem(e.target.parentElement);
   
   return new Promise((pass, fail) => {
@@ -73,9 +73,9 @@ const addButton = (e) => {
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
-  if (element === 'button') {
-    e.addEventListener('click', addButton);
-  }
+  // if (element === 'button') {
+  //   e.addEventListener('click', addToCart);
+  // }
   e.className = className;
   e.innerText = innerText;
   return e;
@@ -95,6 +95,7 @@ function createProductItemElement({
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('span', 'item__price', `$${price}`));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.addEventListener('click', addToCart);
   return section;
 }
 
