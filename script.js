@@ -33,11 +33,11 @@ function getSkuFromProductItem(item) {
 }
 
 const increaseTotal = ({ price }) => {
-  total.innerHTML = (Math.round((parseFloat(total.innerHTML) + price) * 100) / 100);
+  total.innerText = (Math.round((parseFloat(total.innerText) + price) * 100) / 100);
 };
 
 const decreaseTotal = (price) => {
-  total.innerHTML = (Math.round((parseFloat(total.innerHTML) - parseFloat(price)) * 100) / 100);
+  total.innerText = (Math.round((parseFloat(total.innerText) - parseFloat(price)) * 100) / 100);
 };
 
 function cartItemClickListener(event) {
@@ -46,6 +46,7 @@ function cartItemClickListener(event) {
   const price = event.target.innerText.split('$')[1];
   decreaseTotal(price);
   localStorage.setItem('cartList', cartList.innerHTML);
+  localStorage.setItem('total', total.innerText);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -78,8 +79,13 @@ const buttonEvents = () => {
         appendCartItem(info);
         increaseTotal(info);
         localStorage.setItem('cartList', cartList.innerHTML);
+        localStorage.setItem('total', total.innerText);
       });
   });
+  // const listItems = document.querySelectorAll('.cart__items');
+  // listItems.forEach((listItem) => {
+  //   listItem.addEventListener('click', cartItemClickListener);
+  // });
 };
 
 const fetchComputers = async () => {
@@ -97,9 +103,24 @@ document.querySelector('.empty-cart').addEventListener('click', () => {
   cartList.innerHTML = '';
   document.querySelector('.total-price').innerHTML = 0;
   localStorage.setItem('cartList', cartList.innerHTML);
+  localStorage.setItem('total', total.innerText);
 });
+
+const updateTotal = () => {
+  const check = localStorage.getItem('total');
+  if (check === null) {
+    total.innerText = 0;
+  } else {
+    total.innerText = check;
+  }
+};
+
+const updateCart = () => {
+  cartList.innerHTML = localStorage.getItem('cartList');
+};
 
 window.onload = function onload() {
   fetchComputers();
-  cartList.innerHTML = localStorage.getItem('cartList');
+  updateTotal();
+  updateCart();
 };
