@@ -10,9 +10,9 @@ const addPriceStorage = (totalPrice) => {
 
 const updateCartPrice = (price = 0) => {
   const priceParagraph = document.querySelector('.total-price');
-  const actualPrice = parseFloat(priceParagraph.innerHTML);
-  const totalPrice = actualPrice + price;
-  priceParagraph.innerHTML = parseFloat(totalPrice);
+  const actualPrice = parseFloat(priceParagraph.innerHTML).toFixed(2);
+  const totalPrice = parseFloat(actualPrice) + price;
+  priceParagraph.innerHTML = parseFloat(Math.round(totalPrice * 100) / 100);
   addPriceStorage(totalPrice);
 };
 
