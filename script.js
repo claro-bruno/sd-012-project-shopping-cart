@@ -36,10 +36,10 @@ function cartItemClickListener(event) {
   ol.removeChild(event.target);
 }
 
-function createCartItemElement({id: sku, title: name, price :salePrice }) {
+function createCartItemElement({id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id}} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -52,8 +52,8 @@ const fetchM = () => {
 
 //exercicio 2
 const fetchID = async (id) => {
-  const response = fetch(`https://api.mercadolibre.com/items/${id}`);
-  const idD = response.json();
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const idD = await response.json();
    ol.appendChild(createCartItemElement(idD));
 };
 
@@ -72,6 +72,12 @@ const removeItem = () => {
 
 }
 
+const clearShop = () => {
+  const clearButtonCart = document.querySelector('.empty-cart');
+  clearButtonCart.addEventListener('click', () => {
+    ol.innerHTML = '';
+  });
+};
 window.onload = function onload() {
   fetchM()
   };
