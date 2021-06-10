@@ -1,5 +1,4 @@
-window.onload = function onload() {
-  // Pega os resultados da API, para poder passar para a tela.
+window.onload = function onload() {};
 const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const fetchURL = (url) => {
   fetch(url)
@@ -8,7 +7,6 @@ const fetchURL = (url) => {
   .then((items) => items.forEach((item) => createProductItemElement(item)));
 };
 fetchURL(urlProducts);
-};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
