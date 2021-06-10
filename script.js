@@ -48,6 +48,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const items = document.getElementsByClassName('items');
+const loadingButton = document.getElementsByClassName('loading');
 
 const FreeMarket = async () => {
   let endpoint = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
@@ -56,6 +57,7 @@ const FreeMarket = async () => {
   endpoint.forEach((element) => {
     items[0].appendChild(createProductItemElement(element));
   });
+  loadingButton[0].remove();
 };
 
 const cart = document.getElementsByClassName('cart__items');
