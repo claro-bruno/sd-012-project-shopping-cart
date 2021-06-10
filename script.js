@@ -73,9 +73,9 @@ const limparCarrinho = () => {
 
 window.onload = () => {
   fetchComputer('computador')
-    .then((nuwandagay) =>
-      nuwandagay.forEach((nuwanda) => {
-        sectionPCs.appendChild(createProductItemElement(nuwanda));
+    .then((PCs) =>
+      PCs.forEach((pc) => {
+        sectionPCs.appendChild(createProductItemElement(pc));
       }))
     .then(() => getPcInfo());
   btnLimparCarrinho.addEventListener('click', limparCarrinho);
