@@ -109,8 +109,8 @@ function toggleLoadingText(visible) {
     const loadingBox = document.createElement('span');
     loadingBox.innerText = 'Loading...';
     loadingScreen.appendChild(loadingBox);
-    const body = document.querySelector('body');
-    body.appendChild(loadingScreen);
+    const html = document.querySelector('html');
+    html.appendChild(loadingScreen);
     loadingElement = loadingScreen;
   } else {
     loadingElement.remove();
