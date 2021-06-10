@@ -61,9 +61,19 @@ function adicionaAoCar() {
         }
       });
 }
+function criaLoading() {
+  const carregamento = document.createElement('section');
+  carregamento.className = 'loading';
+  carregamento.innerText = 'loading...';
+  document.querySelector('body').appendChild(carregamento);
+}
+function removeElementoLoading() {
+  document.querySelector('.loading').remove();
+}
 window.onload = function onload() {
   function selecionaResults() {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';  
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  criaLoading();
   fetch(url)
     .then((saida1) => saida1.json())
     .then((saida) => {
@@ -71,6 +81,7 @@ window.onload = function onload() {
         const criaItem = createProductItemElement(elemento.id, elemento.title, elemento.thumbnail);
         document.querySelector('.items').appendChild(criaItem);
       });
+      removeElementoLoading();
       })
     .then(() => adicionaAoCar())
     .then(() => cartItemClickListener());  
