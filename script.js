@@ -1,4 +1,6 @@
-window.onload = function onload() { };
+const END_POINT_ALL_COMPUTERS = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+
+const END_POINT_ID_COMPUTER = 'https://api.mercadolibre.com/items/$';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +16,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -41,3 +43,35 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const idSelected = () => {
+
+};
+
+const appendComputers = (computers) => {
+  const sectionItems = document.querySelector('.items');
+  computers.forEach((computer) => {
+    const { id, title, thumbnail } = computer;
+    const newSection = createProductItemElement({ id, title, thumbnail });
+    sectionItems.appendChild(newSection);
+  });
+};
+
+const fetchAPI = async (endPoint) => {
+  try {
+    const response = await fetch(endPoint);
+    const { results } = await response.json();
+    if (endPoint === END_POINT_ALL_COMPUTERS) {
+      appendComputers(results);
+    } else {
+      console.log('a')
+    }
+  } catch (error){
+    console.log(error)
+  }
+};
+
+window.onload = () =>{
+  fetchAPI(END_POINT_ALL_COMPUTERS);
+  fetchAPI(`${END_POINT_ID_COMPUTER}${idSelected()}`);
+};
