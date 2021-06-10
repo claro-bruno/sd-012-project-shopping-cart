@@ -58,8 +58,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 // REQUISITO 7.1 - Função que adiciona a mensagem de loading na tela durante a requisição:
 function addLoading() {
-  const loadingP = createCustomElement('p', 'loading', 'Loading...');
-  document.querySelector('.cart').appendChild(loadingP);
+  const loading = createCustomElement('p', 'loading', 'Loading...');
+  document.querySelector('.cart').appendChild(loading);
 }
 // REQUISITO 7.2 - Função que remove o loading na tela:
 function removeLoading() {
