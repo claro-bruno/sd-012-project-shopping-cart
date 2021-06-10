@@ -1,4 +1,16 @@
 const ol = document.querySelector('.cart__items');
+const total = document.querySelector('.total-price');
+total.innerHTML = 0;
+
+const totalPrice = () => {
+  const prices = ol.childNodes;
+  let result = 0;
+  const regExp = /\d*\.?\d*$/;
+  prices.forEach((price) => {
+    result += parseFloat(price.innerHTML.match(regExp));
+  });
+  total.innerHTML = result;
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -56,20 +68,24 @@ const fetchForId = async (id) => {
    ol.appendChild(createCartItemElement(computer));
 };
 
-const saveLocalStorage = () => {
-  setTimeout(() => localStorage.setItem('cart', ol.innerHTML), 500);
-};
-
-document.addEventListener('click', () => saveLocalStorage());
 const addCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.parentNode.firstChild.innerText;
-      fetchForId(id); 
+      fetchForId(id);
     });
   });
 };
+
+const saveLocalStorage = () => {
+  setTimeout(() => {
+    localStorage.setItem('cart', ol.innerHTML);
+    totalPrice();
+  }, 500);
+};
+
+document.addEventListener('click', () => saveLocalStorage());
 
 const loadLocalStorage = () => {
   const cartSaved = localStorage.getItem('cart');
@@ -81,6 +97,7 @@ const loadLocalStorage = () => {
 
 window.onload = function onload() {
   fetchProductList()
+  .then(() => loadLocalStorage())
   .then(() => addCart())
-  .then(() => loadLocalStorage());
+  .then(() => totalPrice());
   };
