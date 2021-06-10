@@ -13,6 +13,14 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function createButton(element, className, id, innerText) {
+  const e = document.createElement(element);
+  e.id = id;
+  e.className = className;  
+  e.innerText = innerText;
+  return e;
+}
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -20,13 +28,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createButton('button', 'item__add', `${sku}`, 'Adicionar ao carrinho!'));
 
   const sectionItems = document.querySelector('.items');
   sectionItems.appendChild(section);
 
   const buttonItemAdd = document.querySelectorAll('.item__add');
-  buttonItemAdd.forEach((btn) => btn.addEventListener('click', createCartItemElement));
+    buttonItemAdd.forEach((btn) => btn.addEventListener('click', createCartItemElement));
 }
 
 function getSkuFromProductItem(item) {
@@ -38,8 +46,8 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  console.log(this);
-  fetch(`https://api.mercadolibre.com/items/${sku}`)
+  console.log('oi');
+  fetch(`https://api.mercadolibre.com/items/${this.id}`)
     .then((response) => response.json())
     .then((response) => console.log(response.price));
 
@@ -64,6 +72,17 @@ const fetchAPI = () => {
     .then((response) => response.json())
     .then((response) => response.results)
     .then((response) => response.forEach((item) => createProductItemElement(item)));
+};
+
+const addProductToCart = (sku) => {
+  // sku = ??
+  console.log(sku);
+  // console.log('oi');
+  fetch(`https://api.mercadolibre.com/items/${sku}`)
+    .then((response) => response.json())
+    .then((response) => console.log(response.price));
+
+    
 };
 
 /* const fetchPrice = (sku) => {
