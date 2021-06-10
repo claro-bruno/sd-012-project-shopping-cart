@@ -1,5 +1,6 @@
 function cartItemClickListener(event) {
-  console.log(event.target);
+  const ul = document.querySelector('.cart__items');
+  ul.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
