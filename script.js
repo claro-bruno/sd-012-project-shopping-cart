@@ -1,9 +1,57 @@
-window.onload = function onload() {
-  createItemsList('computador');
-  loadLocalStorage();
+let total = 0;
+
+const updateLocalStorage = () => {
+  localStorage.setItem('cart', document.getElementsByClassName('cart__items').innerHTML);
+  localStorage.setItem('total', total);
 };
 
-let total = 0;
+const loadLocalStorage = () => {
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+  document.querySelector('.total-price').innerHTML = localStorage.getItem('total');
+};
+
+const updateTotal = () => {
+  document.querySelector('.total-price').innerHTML = total;
+  updateLocalStorage();
+};
+
+const insertLoading = () => {
+  const section = document.createElement('section');
+  section.innerHTML = 'Loading...';
+  section.className = 'loading';
+  document.querySelector('.items').appendChild(section);
+};
+
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
+function cartItemClickListener(event) {
+  total -= Number(event.target.id) / 2;
+  event.target.remove();
+  updateTotal();
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.id = `${salePrice}`;
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  total += salePrice;
+  updateTotal();
+  return li;
+}
+
+const fetchItemPrice = (sku) => {
+  fetch(`https://api.mercadolibre.com/items/${sku}`).then((response) => {
+    response.json().then((item) => {
+      const cartSection = document.querySelector('.cart__items');
+      cartSection.appendChild(createCartItemElement(item));
+      updateLocalStorage();
+    });
+  });
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,23 +82,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  total = total - Number(event.target.id) / 2;
-  event.target.remove();
-  updateTotal();
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.id = `${salePrice}`
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  total = total + salePrice;
-  updateTotal();
-  return li;
-}
-
 const createItemsList = (searchTerm) => {
   insertLoading();
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchTerm}`).then((response) => {
@@ -62,55 +93,24 @@ const createItemsList = (searchTerm) => {
       });
     });
   });
-}
+};
 
 document.addEventListener('click', (event) => {
   if (event.target.className === 'item__add') {
     fetchItemPrice(getSkuFromProductItem(event.target.parentElement));
-  };
-  if (event.target.className === 'cart__item') {
-    cartItemClickListener(event);
-  };
+  }
+  // if (event.target.className === 'cart__item') {
+  //   cartItemClickListener(event);
+  // }
   if (event.target.className === 'empty-cart') {
-    document.querySelector('.cart__items').innerHTML = '';
+    document.getElementsByClassName('gitcart__items').innerHTML = '';
     total = 0;
     updateTotal();
-    updateLocalStorage;
-  };
+    updateLocalStorage();
+  }
 });
 
-const fetchItemPrice = (sku) => {
-  fetch(`https://api.mercadolibre.com/items/${sku}`).then((response) => {
-    response.json().then((item) => {
-      const cartSection = document.querySelector('.cart__items');
-      cartSection.appendChild(createCartItemElement(item));
-      updateLocalStorage();
-    });
-  });
-}
-
-const updateLocalStorage = () => {
-  localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
-  localStorage.setItem('total', total);
-}
-
-const loadLocalStorage = () => {
-  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
-  document.querySelector('.total-price').innerHTML = localStorage.getItem('total');
-}
-
-const updateTotal = () => {
-  document.querySelector('.total-price').innerHTML = total;
-  updateLocalStorage();
-}
-
-const insertLoading = () => {
-  const section = document.createElement('section');
-  section.innerHTML = 'Loading...';
-  section.className = 'loading'
-  document.querySelector('.items').appendChild(section);
-}
-
-const removeLoading = () => {
-  document.querySelector('.loading').remove();
-}
+window.onload = function onload() {
+  createItemsList('computador');
+  loadLocalStorage();
+};
