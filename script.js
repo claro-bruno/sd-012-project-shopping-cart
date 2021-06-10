@@ -55,6 +55,10 @@ const fetchProducts = () => (
   new Promise((resolve) => {
     fetch(API)
     .then((response) => response.json())
+    .then((res) => {
+      document.getElementById('loading').remove();
+      return res;
+    })
     .then((data) => resolve(data.results));
   })
 );
@@ -117,12 +121,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
