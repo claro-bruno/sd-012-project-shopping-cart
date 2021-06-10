@@ -24,6 +24,9 @@ function createButton(element, className, id, innerText) {
 function cartItemClickListener(event) {
   const deleteProduct = event;
   deleteProduct.target.outerHTML = '';
+  // abaixo teste que eu vi no código de outros alunos durante a mentoria
+  // const cartItems = document.querySelector('.cart__items');
+  // cartItems.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku = this.id }) {
@@ -78,15 +81,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 } */
 
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-function fetchAPI() {
-  const myObject = {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  };
-  fetch(API_URL, myObject)
-    .then((response) => response.json())
-    .then((response) => response.results)
-    .then((response) => response.forEach((item) => createProductItemElement(item)));
+
+async function fetchAPI() {
+  try {
+    const response = await fetch(API_URL);
+    const { results } = await response.json();
+    results.forEach((item) => createProductItemElement(item));
+  } catch (error) { 
+    alert('Ops, deu ruim');
+  }
 }
 
 window.onload = function onload() { 
