@@ -136,7 +136,18 @@ const emptyCart = () => {
 };
 
 const emptyCartBtn = document.querySelector('.empty-cart');
+
 emptyCartBtn.addEventListener('click', emptyCart);
+
+emptyCartBtn.addEventListener('mouseover', () => {
+  const trashIcon = emptyCartBtn.firstElementChild;
+  trashIcon.className = 'fas fa-trash-restore';
+});
+
+emptyCartBtn.addEventListener('mouseout', () => {
+  const trashIcon = emptyCartBtn.firstElementChild;
+  trashIcon.className = 'fas fa-trash';
+});
 
 window.addEventListener('load', async () => {
   loadCart();
