@@ -24,15 +24,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function cartItemClickListener() {
-
+function cartItemClickListener(event) {
+  return event.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener());
+  li.addEventListener('click', (event) => cartItemClickListener(event.target));
   return li;
 }
 
@@ -40,7 +40,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 2
+// Requisito 2 - Referẽncia: Caroline Benichio.
 const addProductToCart = async (idProduct) => {
   const getOlCartItems = document.querySelector('.cart__items');
   const apiURL = `https://api.mercadolibre.com/items/${idProduct}`;
@@ -49,7 +49,7 @@ const addProductToCart = async (idProduct) => {
   return getOlCartItems.appendChild(createCartItemElement(data));
 };
 
-// Requisito 2
+// Requisito 2 - Referẽncia: Caroline Benichio.
 const addEventListenerToItemsButtons = () => {
   const getItemsButtons = document.querySelectorAll('.item__add');
   getItemsButtons.forEach((button) => 
@@ -57,7 +57,7 @@ const addEventListenerToItemsButtons = () => {
       addProductToCart(getSkuFromProductItem(event.target.parentNode))));
 };
 
-// Requisito 1
+// Requisito 1 - Referẽncias: Natalia Souza - turma 11, Caroline Benichio. 
 const addProductsToSectionItens = async () => {
   const getSectionItems = document.querySelector('.items');
   const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
