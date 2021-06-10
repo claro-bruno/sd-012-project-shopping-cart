@@ -1,8 +1,7 @@
 // Salvar Local Storage
 const saveLocalStorage = () => {
   localStorage.setItem('cart', (document.querySelector('.cart__items').innerHTML));
-  // eslint-disable-next-line sonarjs/no-duplicate-string
-  localStorage.setItem('total', (document.querySelector('.total-price').innerHTML));
+  localStorage.setItem('total', (document.querySelector('#totalPrice').innerHTML));
 };
 
 // Código baseado no código do colega Rodrigo Merlon turma 12
