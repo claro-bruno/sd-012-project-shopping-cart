@@ -35,7 +35,11 @@ const saveLocal = () => {
 };
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const quebra = (event.target.innerText).split('$');
+  const value = document.getElementById('dept');
+  let valor = value.innerText;
+  valor -= quebra[1];
+  value.innerText = valor;
   event.target.remove();
   saveLocal();
 }
@@ -57,6 +61,9 @@ const addToCart = (event) => {
     const { id: sku, title: name, price: salePrice } = id;
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement({ sku, name, salePrice }));
+    let valor = parseFloat(document.getElementById('dept').innerText);
+    valor += salePrice;
+    document.getElementById('dept').innerText = valor;
     saveLocal();
   });
 };
@@ -79,13 +86,18 @@ const fetchApiML = () => {
 
 const testAndOpenSaved = () => {
   if (localStorage.getItem('listaSalva') !== 'undefined') {
+    let valor = 0;
     const listaSalva = document.querySelector('.cart__items');
     const storage = window.localStorage;
     listaSalva.innerHTML = storage.getItem('listaSalva');
     const ol = document.getElementsByClassName('cart__item');
     for (let index = 0; index < ol.length; index += 1) {
       ol[index].addEventListener('click', (event) => cartItemClickListener(event));
+      const quebra = (ol[index].innerText).split('$');
+      valor += parseFloat(quebra[1]);
     }
+    const value = document.getElementById('dept');
+    value.innerText = valor;
   }
 };
 
