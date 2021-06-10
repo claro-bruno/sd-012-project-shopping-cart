@@ -3,6 +3,10 @@
   src: url('fonts/Neon80S-8jL2.ttf');
 }
 
+* {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -92,18 +96,62 @@ body {
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: white;
+  border-radius: 3px;
+  transition: all 0.3s;
+}
+
+.item .item__add:hover {
+  background-color: greenyellow;
+  color: black;
+  transition: all 0.3s;
 }
 
 .cart {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  margin: 30px;
+  height: fit-content;
+  width: 30%;
+  position: sticky;
+  top: 50px;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: rgb(199, 199, 199);
 }
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-size: 20pt;
   text-align: center;
+}
+
+.cart .total {
+  font-weight: 600;
+  background-color: white;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.cart__items {
+  border-bottom: 1px solid black;
+}
+
+.cart .cart__item {
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.cart .cart__item:hover {
+  background-color: rgba(0, 0, 255, 0.37);
+}
+
+.empty-cart {
+  width: 50%;
+  margin: auto;
 }
 
 .loading {
