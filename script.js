@@ -21,11 +21,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({
-  id: sku,
-  title: name,
-  thumbnail: image
-}) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
   const product = document.querySelector('.items');
@@ -42,19 +38,7 @@ function createProductItemElement({
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener(event) {
-}
-
-function addItem() {
-  const botao = document.querySelectorAll('.item__add');
-  botao.forEach((btn) => {
-    btn.addEventListener('click', async (event) => {
-      const id = event.target.parentElement.firstChild.innerHTML;
-      const itemSelected = await fetchAddItem(id);
-      const ol = document.querySelector('.cart__items')
-      ol.appendChild(createCartItemElement(itemSelected))
-    })
-  })
+function cartItemClickListener() {
 }
 
 function fetchAddItem(id) {
@@ -66,8 +50,7 @@ function fetchAddItem(id) {
   });
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice
-}) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -75,11 +58,23 @@ function createCartItemElement({ id: sku, title: name, price: salePrice
   return li;
 }
 
+function addItem() {
+  const botao = document.querySelectorAll('.item__add');
+  botao.forEach((btn) => {
+    btn.addEventListener('click', async (event) => {
+      const id = event.target.parentElement.firstChild.innerHTML;
+      const itemSelected = await fetchAddItem(id);
+      const ol = document.querySelector('.cart__items');
+      ol.appendChild(createCartItemElement(itemSelected));
+    });
+  });
+}
+
 window.onload = async () => {
   try {
     const item = await pegarItem();
     item.results.forEach((itemML) => createProductItemElement(itemML));
-    addItem()
+    addItem();
   } catch (error) {
     console.log(error);
   }
