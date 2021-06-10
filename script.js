@@ -10,6 +10,10 @@ const totalPrice = document.createElement('p');
 totalPrice.innerText = priceTotal;
 document.querySelector('.total-price').appendChild(totalPrice);
 
+const loading = document.createElement('p');
+loading.className = 'loading';
+loading.innerText = 'loading...';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -37,9 +41,11 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const getProductsAPI = async (url) => {
+  document.querySelector('.items').appendChild(loading);
   try {
     const resultsApi = await fetch(url);
     const objResults = await resultsApi.json();
+    document.querySelector('.items').removeChild(loading);
     return objResults.results.forEach((item) => {
       const itemInfos = {
         sku: item.id,
