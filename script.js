@@ -1,3 +1,4 @@
+let soma = 0;
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,13 +29,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  const produto = document.querySelector('.cart__items');
-  produto.addEventListener('click', function (evento) {
-    if (event.target.className === 'cart__item') {
-      event.target.remove();
-    }
-  });
+function cartItemClickListener(evento) {
+  if (evento.target.className === 'cart__item') {
+    evento.target.remove();
+    soma -= parseFloat(evento.target.innerText.split('$')[1]);
+    document.querySelector('.total-price').innerText = soma;
+  }
 }
 
 function createCartItemElement(sku, name, salePrice) {
@@ -54,11 +54,13 @@ function adicionaAoCar() {
             .then((saida) => {
               const criaItemCarrinho = createCartItemElement(saida.id, saida.title, saida.price);
               document.querySelector('.cart__items').appendChild(criaItemCarrinho);
+              soma += saida.price;
+              const valorFinal = document.querySelector('.total-price');
+              valorFinal.innerText = soma;
             });
         }
       });
-  }
-
+}
 window.onload = function onload() {
   function selecionaResults() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';  
@@ -70,7 +72,8 @@ window.onload = function onload() {
         document.querySelector('.items').appendChild(criaItem);
       });
       })
-    .then(() => adicionaAoCar());
-}
+    .then(() => adicionaAoCar())
+    .then(() => cartItemClickListener());  
+  }
 selecionaResults();
 };
