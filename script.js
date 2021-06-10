@@ -47,9 +47,13 @@ function cartItemClickListener(event) {
   const indexPrice = event.target.innerHTML.indexOf('$');
   const Itemprice = event.target.innerText.slice(indexPrice + 1);
   totalPrice -= Itemprice;
-  localStorage.setItem('price', totalPrice);
   const price = capturePrice();
   price.innerText = totalPrice;
+  localStorage.setItem('price', totalPrice);
+  if (totalPrice === 0) {
+    price.innerText = '';
+    localStorage.removeItem('price');
+  }
   saveCart();
 }
 
@@ -61,25 +65,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function getPrice(target) {
-  const id = getSkuFromProductItem(target.path[1]);
-  fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
-    response.json().then((computer) => {
-      totalPrice += computer.price;
-      localStorage.setItem('price', totalPrice);
-      const price = capturePrice();
-      price.innerText = totalPrice;
-    }));
-}
-
-function addItemToCart(target) {
-  const id = getSkuFromProductItem(target.path[1]);
+function addItemToCart(event) {
+  const id = getSkuFromProductItem(event.path[1]);
   fetch(`https://api.mercadolibre.com/items/${id}`).then((response) =>
     response.json().then((computer) => {
       const items = document.getElementsByClassName('cart__items')[0];
       const item = createCartItemElement(computer);
       items.appendChild(item);
       saveCart();
+
+      totalPrice += computer.price;
+      localStorage.setItem('price', totalPrice);
+      const price = capturePrice();
+      price.innerText = totalPrice;
     }));
 }
 
@@ -92,10 +90,7 @@ const getItems = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=co
         const items = document.getElementsByClassName('items')[0];
         const item = createProductItemElement(computer);
         items.appendChild(item);
-        item.addEventListener('click', (event) => {
-          addItemToCart(event);
-          getPrice(event);
-        });
+        item.addEventListener('click', addItemToCart);
       });
     }));
 
