@@ -74,7 +74,10 @@ const getPromiseProducts = () => new Promise((resolve) => {
 
 const addProductsToPage = (promise) => {
   const sectionItems = document.querySelector('.items');
+  const loading = createCustomElement('h1', 'loading', 'LOADING...');
+  sectionItems.appendChild(loading);
   return promise.then((computer) => {
+    sectionItems.removeChild(loading);
     computer.results.forEach((item) => {
       const { id: sku, title: name, thumbnail: image } = item;
       const sectionItem = createProductItemElement({ sku, name, image });
@@ -139,8 +142,6 @@ const cleanCart = () => {
     addPriceStorage(0);
   });
 };
-
-
 
 window.onload = function onload() {
   addProductsToPage(getPromiseProducts()).then(() => addToCart());
