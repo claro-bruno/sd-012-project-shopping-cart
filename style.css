@@ -78,11 +78,13 @@ body {
   padding: 20px;
   box-shadow: 1px 1px 10px black;
   border-radius: 5px;
-  
+  align-self: center;
+  transition-duration: 0.3;
 }
 
-.cart__item {
-  align-self: center;
+.cart__item:hover {
+  cursor: pointer;
+  transform: scale(1.05);
 }
 
 .cart__item img {
@@ -99,5 +101,4 @@ button {
 button:hover {
   cursor: pointer;
   background-color: #e46e1b;
-
 }

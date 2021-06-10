@@ -87,6 +87,7 @@ document.addEventListener('click', ({ target }) => {
   } else if (target.classList.contains('empty-cart')) {
     cartItems[0].innerHTML = '';
     localStorage.setItem('items', JSON.stringify(cartItems[0].innerHTML));
+    sumProducts();
   }
 });
 
