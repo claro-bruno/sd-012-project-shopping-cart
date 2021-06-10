@@ -33,7 +33,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const cartItem = event.target;
+  cartItem.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -78,6 +79,8 @@ const listener = (event) => {
     const computer = event.target.parentNode;
     const computerId = computer.children[0].innerHTML;
     fetchAPI(END_POINT_ID_COMPUTER + computerId);
+  } if (event.target.classList.contains('cart__item')) {
+    cartItemClickListener(event);
   } else {
         // se não, exclua esse evento dos registros
         event.target.removeEventListener('click', listener);
