@@ -135,8 +135,31 @@ const addButtonsEvent = async () => {
   });
 };
 
+const eraseCart = () => {
+  const eraseButton = document.querySelector('.empty-cart');
+
+  eraseButton.addEventListener('click', () => {
+    const cartItems = document.querySelector(cartItemsClass);
+    const totalPrice = document.querySelector(totalPriceClass);
+
+    cartItems.innerHTML = '';
+    totalPrice.innerHTML = '';
+
+    localStorage.clear();
+  });
+};
+
+const removeLoading = () => {
+  const parentElement = document.querySelector('body');
+  const element = document.querySelector('.loading');
+
+  parentElement.removeChild(element);
+};
+
 window.onload = async () => {
   await createItemList();
   addButtonsEvent();
   getLocalStorage();
+  eraseCart();
+  removeLoading();
 };
