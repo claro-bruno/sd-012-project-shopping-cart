@@ -1,3 +1,11 @@
+// Cart Storage
+
+const addCartStorage = (cart) => {
+  localStorage.setItem('cart', cart.innerHTML);
+};
+
+// Funções Auxiliares
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -67,11 +75,12 @@ const getPromiseItem = (itemId) => new Promise((resolve) => {
   });
 
 const addProductToCart = (promise) => {
-  const cartItems = document.querySelector('.cart__items');
+  const cart = document.querySelector('.cart__items');
   promise.then((item) => {
     const { id: sku, title: name, price: salePrice } = item;
     const itemLi = createCartItemElement({ sku, name, salePrice });
-    cartItems.appendChild(itemLi);
+    cart.appendChild(itemLi);
+    addCartStorage(cart);
   });
 };
 
@@ -84,6 +93,18 @@ const addToCart = () => {
   });
 };
 
+const getcartStorage = () => {
+  const cartStorage = localStorage.getItem('cart');
+  if (cartStorage) {
+    const cart = document.querySelector('.cart__items');
+    cart.innerHTML = cartStorage;
+    Array.from(cart.children).forEach((li) => {
+      li.addEventListener('click', cartItemClickListener);
+    });
+  }
+};
+
 window.onload = function onload() {
   addProductsToPage(getPromiseProducts()).then(() => addToCart());
+  getcartStorage();
  };
