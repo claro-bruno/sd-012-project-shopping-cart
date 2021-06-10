@@ -95,6 +95,7 @@ body {
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  border-radius: 3px;
 }
 
 .cart {
@@ -103,6 +104,9 @@ body {
   flex-flow: column wrap;
   background-color:lightcyan;
   border-radius: 5px;
+  height: fit-content;
+  box-shadow: 1px 1px 5px 1px black;
+  margin-right: 10px;
 }
 
 .cart .cart__title {
