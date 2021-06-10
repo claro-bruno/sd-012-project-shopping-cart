@@ -1,6 +1,8 @@
 const apiLink = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const results = [];
-const cartItems = [];
+// const cartItems = [];
+const cart = document.querySelector('.cart__items');
+
 // let itemClicked = {};
 
 function createProductImageElement(imageSource) {
@@ -35,7 +37,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  const cart = document.querySelector('.cart__items');
+  // const cart = document.querySelector('.cart__items');
   localStorage.setItem('cartItems', cart.innerHTML);
 }
 
@@ -84,7 +86,7 @@ const fetchItem = (id) => {
   return fetch(link, list)
     .then((response) => response.json())
     .then((data) => {
-      const cart = document.querySelector('.cart__items');
+      // const cart = document.querySelector('.cart__items');
       cart.appendChild(createCartItemElement(data));
       // cartItems.push(cart.innerHTML);
       localStorage.setItem('cartItems', cart.innerHTML);
@@ -96,7 +98,7 @@ const addItemInCart = () => {
     if (item.target.className === 'item__add') {
       const parent = item.target.parentElement;
       const id = parent.querySelector('.item__sku').innerText;
-      const clickedItem = results.find((encontra) => encontra.id === id); // fetchItem(id); // results.find((encontra) => encontra.id === id);
+      results.find((encontra) => encontra.id === id);
       fetchItem(id);
     }
   });
@@ -104,11 +106,20 @@ const addItemInCart = () => {
 
 const loadCart = () => {
   // console.log(localStorage);
-  const cartList = document.querySelector('.cart__items');
+  // const cartList = document.querySelector('.cart__items');
   const savedList = localStorage.cartItems;
   // console.log(savedList);
   // localStorage.cartItems = '';
-  cartList.innerHTML = savedList;
+  cart.innerHTML = savedList;
+};
+
+const emptyCart = () => {
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', () => {
+    // const cart = document.querySelector('.cart__items');
+    cart.innerHTML = '';
+    localStorage.setItem('cartItems', cart.innerHTML);
+  });
 };
 
 window.onload = function onload() { 
@@ -116,4 +127,5 @@ window.onload = function onload() {
   addItemInCart();
   loadCart();
   rmvClickedItem();
+  emptyCart();
 };
