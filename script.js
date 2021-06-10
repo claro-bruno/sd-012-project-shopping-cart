@@ -1,4 +1,5 @@
 const ol = document.getElementsByClassName('cart__items');
+const h1 = document.getElementsByClassName('loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,11 +31,20 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+function getprice() {
+  const sPrice = document.querySelectorAll('.price');
+  const idPrice = document.getElementsByClassName('total-price');
+  let totalPrice = 0;
+  sPrice.forEach((elm) => { totalPrice += Number(elm.innerText); });
+  idPrice[0].innerText = totalPrice;
+}
+
 const sec = document.getElementsByClassName('items');
 const fat = async () => {
   let objAPI = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   objAPI = await objAPI.json();
   objAPI.results.forEach((API) => sec[0].appendChild(createProductItemElement(API)));
+  h1[0].remove();
 };
 
 const toLocalStorage = () => {
@@ -42,22 +52,16 @@ const toLocalStorage = () => {
   localStorage.setItem('item', LocalOl[0].innerHTML);
 };
 
-let sum = 0;
-const sumPrices = (price) => {
-  const idPrice = document.getElementById('total-price');
-  sum += price;
-  idPrice.innerHTML = sum;
-};
-
 function cartItemClickListener({ target }) {
   target.remove();
   toLocalStorage();
+  getprice();
 }
 
-function createCartItemElement({ id: sku, title: name, price: SalePrice }) {
+function createCartItemElement({ id: sku, title: name, price: SalesPrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${SalePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span class='price'>${SalesPrice}</span>`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -66,8 +70,8 @@ async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
   itemAPI = await itemAPI.json();
   ol[0].appendChild(createCartItemElement(itemAPI));
-  sumPrices(itemAPI.price);
   toLocalStorage();
+  getprice();
 }
 
 document.addEventListener('click', function ({ target }) {
@@ -77,6 +81,7 @@ document.addEventListener('click', function ({ target }) {
   }
   if (target.classList.contains('empty-cart')) {
     ol[0].innerHTML = '';
+    getprice();
   }
 });
 
@@ -84,4 +89,5 @@ window.onload = function onload() {
   fat();
   ol[0].innerHTML = localStorage.getItem('item');
   ol[0].childNodes.forEach((elm) => elm.addEventListener('click', cartItemClickListener));
+  getprice();
 };
