@@ -1,3 +1,4 @@
+const cartItemsElement = '.cart__items'; 
 let productList;
 
 function createProductImageElement(imageSource) {
@@ -28,11 +29,43 @@ function createProductItemElement({ sku, name, image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
+const saveCart = () => {
+  const sectionCartItemsElement = document.querySelector(cartItemsElement);
+  const cartItems = sectionCartItemsElement.children;
+  let index = 1;
+  // console.clear();
+  localStorage.clear();
+  Object.values(cartItems).forEach((item) => {
+    localStorage.setItem(index, item.innerText);
+    // console.log(`${localStorage.getItem(index)} -> Salvo com Sucesso!`);
+    index += 1;
+  });
+};
+
 function cartItemClickListener(event) {
-  const sectionCartItemsElement = document.querySelector('.cart__items');
+  const sectionCartItemsElement = document.querySelector(cartItemsElement);
   const cartItemElement = event.target;
   sectionCartItemsElement.removeChild(cartItemElement);
+  saveCart();
 }
+
+const loadCart = (cartItem) => {
+  const sectionCartItemsElement = document.querySelector(cartItemsElement);
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `${cartItem}`;
+  li.addEventListener('click', cartItemClickListener);
+  sectionCartItemsElement.appendChild(li);
+};
+
+const verifyLocalStorage = () => {
+  if (localStorage.length !== 0) {
+    for (let index = 1; index <= localStorage.length; index += 1) {
+      console.log(localStorage.getItem(index));
+      loadCart(localStorage.getItem(index));
+    }
+  }
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -43,8 +76,9 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const addCartItemElement = (cartItemElement) => {
-  const sectionCartItemsElement = document.querySelector('.cart__items');
+  const sectionCartItemsElement = document.querySelector(cartItemsElement);
   sectionCartItemsElement.appendChild(cartItemElement);
+  saveCart();
 };
 
 const formatCartItemObject = (receivedCartItemObject) => {
@@ -136,4 +170,5 @@ const fetchListOfProducts = async () => {
 
 window.onload = function onload() {
   fetchListOfProducts();
+  verifyLocalStorage();
 };
