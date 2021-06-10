@@ -1,5 +1,3 @@
-const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,8 +21,8 @@ function createButton(element, className, id, innerText) {
 }
 
 function cleanItemFromCart(event) {
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.removeChild(event.target);
+  const deleteProduct = event;
+  deleteProduct.target.outerHTML = '';
 }
 
 function clearAllCart() {
@@ -35,9 +33,9 @@ function clearAllCart() {
   });
 }
 
-function saveProductsLocalStorage(skuReceived) {
+/* function saveProductsLocalStorage(skuReceived) {
   localStorage.setItem('products', skuReceived); // não esta salvando todos os produtos clicados
-}
+} */
 
 /* abaixo funcao usada no projeto to do list
 function returnsSaveProducts() {
@@ -50,14 +48,13 @@ function returnsSaveProducts() {
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
       li.className = 'cart__item';
-      const textFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-      li.innerText = textFormat;
+      li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
       li.addEventListener('click', cleanItemFromCart);
     
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(li);
       
-      saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
+      // saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
       clearAllCart();
 }
 
@@ -94,6 +91,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 } */
+
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 async function fetchAPI() {
   try {
