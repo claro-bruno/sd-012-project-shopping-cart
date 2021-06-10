@@ -74,3 +74,8 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.qualquer{
+  display: flex;
+  align-self: flex-end;
+}
