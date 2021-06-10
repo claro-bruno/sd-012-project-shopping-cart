@@ -116,7 +116,10 @@ function addItems(results, items) {
   const loading = items;
   loading.innerHTML = '';
   const arrayResults = results
-    .map(({ id: sku, title: name, thumbnail: image }) => ({ sku, name, image }));
+    .map(({ id: sku, title: name, thumbnail }) => {
+      const image = thumbnail.replace(/-I.jpg/g, '-O.jpg');
+      return ({ sku, name, image });
+    });
   arrayResults.forEach((objResult) => items.appendChild(createProductItemElement(objResult)));
   addBtnEvent();
 }
