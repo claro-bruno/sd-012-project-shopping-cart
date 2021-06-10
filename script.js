@@ -111,15 +111,44 @@ const formatCartItemObject = (receivedCartItemObject) => {
     return formatedObject;
 };
 
+const addLoading = (where) => {
+  if (where === 'items') {
+    const sectionItemsElement = document.querySelector('.items');
+    const loadingElement = document.createElement('span');
+    loadingElement.className = 'loading';
+    loadingElement.innerHTML = 'loading...';
+    sectionItemsElement.appendChild(loadingElement);
+  } else {
+    const sectionCart = document.querySelector('.cart');
+    const loadingElement = document.createElement('span');
+    loadingElement.className = 'loading';
+    loadingElement.innerHTML = 'loading...';
+    sectionCart.appendChild(loadingElement);
+  }
+};
+
+const removeLoading = (where) => {
+  if (where === 'items') {
+    const sectionItemsElement = document.querySelector('.items');
+    sectionItemsElement.removeChild(sectionItemsElement.firstChild);
+  } else {
+    const sectionCart = document.querySelector('.cart');
+    sectionCart.removeChild(sectionCart.lastChild);
+  }
+};
+
 const getCartItensPromisse = (sku) => new Promise((resolve, reject) => {
+  addLoading('cart');
   if (!sku.startsWith('MLB')) {
     reject(new Error('SKU informed does not exist'));
+    removeLoading('cart');
   } else {
     fetch(`https://api.mercadolibre.com/items/${sku}`).then((response) => {
       response.json().then((carItemFound) => {
         const cartItemObject = formatCartItemObject({ ...carItemFound });
         addCartItemElement(createCartItemElement(cartItemObject));
         resolve();
+        removeLoading('cart');
       });
     });
   }
@@ -157,8 +186,10 @@ const addEventToButtons = () => {
 };
 
 const getProductPromisse = (product) => new Promise((resolve, reject) => {
+  addLoading('items');
   if (product !== 'computador') {
     reject(new Error('Product out of context'));
+    removeLoading('items');
   } else {
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`).then((response) => {
       response.json().then((productFound) => {
@@ -169,6 +200,7 @@ const getProductPromisse = (product) => new Promise((resolve, reject) => {
         });
         addEventToButtons();
         resolve();
+        removeLoading('items');
       });
     });
   }
