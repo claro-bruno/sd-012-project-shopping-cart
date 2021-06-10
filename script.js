@@ -16,8 +16,24 @@ function createCustomElement(element, className, innerText) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+const saveInLocalStorage = () => {
+  const allCartItems = document.querySelectorAll('.cart__item');
+  const arrayAllCart = [];
+
+  allCartItems.forEach((currentCart) => {
+    const split = currentCart.innerText.split(' ');
+    arrayAllCart.push({
+      cartClass: currentCart.classList,
+      id: split[1],
+    });
+  });
+  console.log(arrayAllCart);
+  localStorage.setItem('cart', JSON.stringify(arrayAllCart));
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  saveInLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,6 +54,7 @@ const addToCart = (id) => {
 
       const cartSection = document.querySelector('.cart__items');
       cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
+      saveInLocalStorage();
     });
 };
 
@@ -70,6 +87,11 @@ const renderAllProducts = (array) => {
 };
 
 window.onload = function onload() {
+  const cartLocalStorage = JSON.parse(localStorage.getItem('cart'));
+  if (cartLocalStorage && cartLocalStorage.length > 0) {
+    cartLocalStorage.forEach((current) => addToCart(current.id));
+  }
+
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computer';
 
   fetch(url)
