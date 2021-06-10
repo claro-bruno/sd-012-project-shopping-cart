@@ -154,13 +154,13 @@ const addsHoverToItems = () => {
   const itemCollection = document.getElementsByClassName('item');
   Object.keys(itemCollection).forEach((key) => itemCollection[key]
     .addEventListener('mouseover', () => {
-      itemCollection[key].lastElementChild.style.backgroundColor = 'greenyellow';
+      itemCollection[key].lastElementChild.style.backgroundColor = 'lightskyblue';
       itemCollection[key].lastElementChild.style.color = 'black';
       itemCollection[key].lastElementChild.style.transition = 'all 0.5s';
     }));
   Object.keys(itemCollection).forEach((key) => itemCollection[key]
     .addEventListener('mouseout', () => {
-      itemCollection[key].lastElementChild.style.backgroundColor = 'green';
+      itemCollection[key].lastElementChild.style.backgroundColor = 'blue';
       itemCollection[key].lastElementChild.style.color = 'white';
       itemCollection[key].lastElementChild.style.transition = 'all 0.5s';
     }));
