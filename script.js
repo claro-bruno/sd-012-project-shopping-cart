@@ -22,11 +22,8 @@ function createButton(element, className, id, innerText) {
 }
 
 function cartItemClickListener(event) {
-  const deleteProduct = event;
-  deleteProduct.target.outerHTML = '';
-  // abaixo teste que eu vi no código de outros alunos durante a mentoria
-  // const cartItems = document.querySelector('.cart__items');
-  // cartItems.removeChild(event.target);
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku = this.id }) {
