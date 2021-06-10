@@ -2,17 +2,38 @@ const somaItems = [];
 const cartItens = () => document.querySelector('.cart__items');
 const pSomaTotal = () => document.querySelector('.total-price');
 
+const colocaLoading = () => {
+  const sectionConteiner = document.querySelector('.container');
+  const criaPContainer = document.createElement('p');
+  criaPContainer.innerHTML = 'loading...';
+  criaPContainer.className = 'loading';
+  sectionConteiner.appendChild(criaPContainer);
+ };
+ 
+ const retiraLoading = () => {
+  const loadingClass = document.querySelector('.loading');
+  loadingClass.remove();
+ };
+
 const pegarComputadoresML = () => new Promise((resolve, reject) => {
+  colocaLoading();
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
-  .then((computador) => resolve(computador.results))
+  .then((computador) => {
+    retiraLoading();
+    resolve(computador.results);
+  })
   .catch((erro) => reject(erro));
 });
 
 const pegarIdComputadorML = (ids) => new Promise((resolve, reject) => {
+  colocaLoading();
   fetch(`https://api.mercadolibre.com/items/${ids}`)
     .then((response) => response.json())
-    .then((id) => resolve(id))
+    .then((id) => {
+      retiraLoading();
+      resolve(id);
+    })
     .catch((erro) => reject(erro));
 });
 
