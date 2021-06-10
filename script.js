@@ -1,6 +1,6 @@
 const END_POINT_ALL_COMPUTERS = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 
-const END_POINT_ID_COMPUTER = 'https://api.mercadolibre.com/items/$';
+const END_POINT_ID_COMPUTER = 'https://api.mercadolibre.com/items/';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,17 +36,13 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-const idSelected = () => {
-
-};
 
 const appendComputers = (computers) => {
   const sectionItems = document.querySelector('.items');
@@ -57,21 +53,42 @@ const appendComputers = (computers) => {
   });
 };
 
+const appendCartComputers = (computer) => {
+  const cartItems = document.querySelector('.cart__items');
+  const { id, title, price } = computer;
+  cartItems.appendChild(createCartItemElement({ id, title, price }));
+};
+
 const fetchAPI = async (endPoint) => {
   try {
     const response = await fetch(endPoint);
-    const { results } = await response.json();
+    const object = await response.json();
     if (endPoint === END_POINT_ALL_COMPUTERS) {
-      appendComputers(results);
+      appendComputers(object.results);
     } else {
-      console.log('a')
+      appendCartComputers(object);
     }
-  } catch (error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
   }
 };
 
-window.onload = () =>{
+const listener = (event) => {
+  if (event.target.classList.contains('item__add')) {
+    const computer = event.target.parentNode;
+    const computerId = computer.children[0].innerHTML;
+    fetchAPI(END_POINT_ID_COMPUTER + computerId);
+  } else {
+        // se não, exclua esse evento dos registros
+        event.target.removeEventListener('click', listener);
+    }
+};
+
+const setupEvents = () => {
+  document.addEventListener('click', listener);
+};
+
+window.onload = () => {
+  setupEvents();
   fetchAPI(END_POINT_ALL_COMPUTERS);
-  fetchAPI(`${END_POINT_ID_COMPUTER}${idSelected()}`);
 };
