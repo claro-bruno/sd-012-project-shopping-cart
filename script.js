@@ -1,11 +1,11 @@
 const URL_PC = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const URL_ITEM = 'https://api.mercadolibre.com/items/';
-let price;
+let priceT;
 
-if (isNaN(parseFloat(localStorage.getItem('total'))) || localStorage.getItem('total') === null) {
-  price = 0;
+if (Number.isNaN(parseFloat(localStorage.getItem('total'))) || localStorage.getItem('total') === null) {
+  priceT = 0;
 } else {
-  price = parseFloat(localStorage.getItem('total'));
+  priceT = parseFloat(localStorage.getItem('total'));
 }
 
 const createCustomElement = (element, className, innerText) => {
@@ -32,38 +32,36 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
   return section;
 };
 
-const getSkuFromProductItem = (item) => {
-  return item.querySelector('span.item__sku').innerText;
-};
+const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
 const updatePrice = (total) => {
   const spanPrice = document.createElement('span');
-  spanPrice.innerText = price;
+  spanPrice.innerText = priceT;
   if (total.childElementCount === 0) {
     total.appendChild(spanPrice);
   } else {
     total.removeChild(total.lastChild);
     total.appendChild(spanPrice);
   }
-}
+};
 
 const loadPrice = () => {
   const total = document.querySelector('.total-price');
   updatePrice(total);
-}
+};
 
 const sumPrice = (object) => {
   const total = document.querySelector('.total-price');
-  price += object.price;
+  priceT += object.price;
   updatePrice(total);
-  localStorage.setItem('total', price);
+  localStorage.setItem('total', priceT);
 };
 
 const subPrice = (number) => {
   const total = document.querySelector('.total-price');
-  price -= number;
+  priceT -= number;
   updatePrice(total);
-  localStorage.setItem('total', price);
+  localStorage.setItem('total', priceT);
 };
 
 const saveStorage = () => {
@@ -87,7 +85,7 @@ const loadStorage = () => {
     }
   }
   loadPrice();
-}
+};
 
 const listPcs = (array) => {
   const list = document.querySelector('.items');
@@ -111,17 +109,17 @@ const addPc = async (url) => {
 
 const addClick = (array) => {
   array.forEach((element, index) => {
-    const item_add = document.getElementsByClassName('item__add')[index];
-    item_add.addEventListener('click', async () => addPc (`${URL_ITEM}${element.id}`));
+    const itemAdd = document.getElementsByClassName('item__add')[index];
+    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`));
   });
 };
 
 const removeItens = () => {
-  price = 0;
+  priceT = 0;
   const cart = document.querySelector('.cart');
   const totalText = document.querySelector('.total-text');
   const ol = document.querySelector('.cart__items');
-  cart.removeChild(totalText)
+  cart.removeChild(totalText);
   cart.removeChild(ol);
   const newOl = document.createElement('ol');
   newOl.className = 'cart__items';
@@ -135,18 +133,18 @@ const removeItens = () => {
   newTotalPrice.className = 'total-price';
   newTotalText.appendChild(newTotalPrice);
   updatePrice(newTotalPrice);
-  localStorage.setItem('total', price);
-}
+  localStorage.setItem('total', priceT);
+};
 
 const buttonRemove = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', async () => removeItens());
-}
+};
 
 const removeLoading = () => {
   const loading = document.querySelector('.loading');
   loading.remove();
-}
+};
 
 const cartItemClickListener = (event) => {
   const ol = document.querySelector('.cart__items');
