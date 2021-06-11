@@ -1,3 +1,4 @@
+const olCartItems = document.querySelector('.cart__items');
 // Adiciona imagen
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -24,11 +25,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
+const setLocalStorage = () => {
+  localStorage.setItem('item', olCartItems.innerHTML);
+};
 function cartItemClickRemove(event) {
-  console.log(`removeu ${event}`);
+  console.log(`removeu ${event.target.innerText}`);
   event.target.remove();
+  setLocalStorage();
 }
-// o user que ele vai receber como parametro é o getIdfromProduct
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -45,11 +49,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // }
 
 const olChild = async (id) => {
-  const olCartItems = document.querySelector('.cart__items');
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const data = await response.json();
   console.log(data);
   olCartItems.appendChild(createCartItemElement(data));
+  setLocalStorage();
 };
 const onClick = () => {
   const buttons = document.querySelectorAll('.item__add');
@@ -57,8 +61,8 @@ const onClick = () => {
   buttons.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
       const userId = event.target.parentElement.querySelector('span.item__sku').innerText;
-      console.log(`cliclou ${userId}`);
-      olChild(userId);
+      console.log(`adicionou ${userId}`);
+      await olChild(userId);
     });
   });
 };
@@ -97,12 +101,17 @@ const fetchMercadoLivre = async (page) => {
     // return e;
   }
 };
+const cartItemsOnLocalStorage = () => {
+  olCartItems.innerHTML = localStorage.getItem('item');
+  olCartItems.childNodes.forEach((element) => element
+  .addEventListener('click', cartItemClickRemove));
+};
 
 window.onload = async () => {
   try {
     await fetchMercadoLivre('computador');
     onClick();
-    //  cartItemClickListener();
+    cartItemsOnLocalStorage();
   } catch (error) {
     console.log(error);
   }

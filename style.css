@@ -39,7 +39,7 @@
   height: auto;
   margin: 5px;
   width: 200px;
-}
+} 
 
 .item .item__sku {
   display: none;
@@ -73,4 +73,7 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+body {
+  background-color: #888888;
 }
