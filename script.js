@@ -1,6 +1,9 @@
 const sectionPCs = document.querySelector('.items');
 const carrinho = document.querySelector('.cart__items');
 const btnLimparCarrinho = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
+
+const removeLoading = () => sectionPCs.removeChild(loading);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -19,12 +22,13 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
+  const img = image.replace(/-I.jpg/g, '-O.jpg');
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createProductImageElement(img));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -73,10 +77,12 @@ const limparCarrinho = () => {
 
 window.onload = () => {
   fetchItem()
-    .then((PCs) =>
+    .then((PCs) => {
+      removeLoading();
       PCs.forEach((pc) => {
         sectionPCs.appendChild(createProductItemElement(pc));
-      }))
+      });
+    })
     .then(() => getItemId());
   btnLimparCarrinho.addEventListener('click', limparCarrinho);
 };
