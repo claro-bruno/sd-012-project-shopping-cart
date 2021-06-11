@@ -36,6 +36,7 @@ function cartItemClickListener(event) {
   const itemList = document.querySelector(stringOrderedList);
 
   event.target.remove();
+
   localStorage.setItem(`${strinListaProdutos}`, itemList.innerHTML);
 }
 
@@ -70,24 +71,21 @@ const buttonListener = () => {
   });
 };
 
-const gettingPrice = () => {
-  const itemList = document.querySelector(stringOrderedList);
-  console.log(itemList[0]);
-};
-
 const getAPIJson = (requested) => {
   // error style learned from Roger Melo youtube channel
   if (!requested) {
-    throw new Error('Não foi possível obter o json');
+    throw new Error('Não foi possível entrar em contato com a API');
   }
   return requested.json();
 };
 
 const appendJson = (jsonData) => {
   if (!jsonData) {
-    throw new Error('Não foi possível atribuir o json');
+    throw new Error('Não foi possível obter o json para append');
   }
   const itemSection = document.querySelector('section.items');
+  itemSection.firstChild.remove();
+
   jsonData.results.forEach((components) => {
     itemSection.appendChild(createProductItemElement(components));
   });
@@ -110,14 +108,9 @@ const clearButton = () => {
 };
 
 window.onload = async () => {
-  try {
-    const getJson = await fetch(mercadoLivreURL);
-    await getAPIJson(getJson).then(appendJson);
-    buttonListener();
-    returnSavedList();
-    gettingPrice();
-    clearButton();
-  } catch (error) {
-    console.log(`Não foi possível obter o json ${error}`);
-  }
+  const getJson = await fetch(mercadoLivreURL);
+  await getAPIJson(getJson).then(appendJson);
+  buttonListener();
+  returnSavedList();
+  clearButton();
 };
