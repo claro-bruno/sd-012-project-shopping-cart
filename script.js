@@ -1,5 +1,7 @@
+const URLMercadoLivre = 'https://api.mercadolibre.com/';
 const olCartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
+const clean = document.querySelector('.empty-cart');
 // Adiciona imagen
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -27,6 +29,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 const sumAllPrices = (price) => {
+  // Tenho muito a agradecer pelo Bruno Yamamoto ter me ajudado a construir essa função, diminuindo e muito o meu trabalho
   totalPrice.innerText = parseFloat(totalPrice.innerText) + price;
 };
 const setLocalStorage = () => {
@@ -49,20 +52,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 // -----------------------------------------------CREATE--------------------------------------------------------
-// function getIdFromProductItem(item) {
-//   // Função que pega o id do item 'MLB1613404303'
-//   alert('funcionou');
-//   return item.querySelector('span.item__sku').innerText;
-// }
 
 const olChild = async (id) => {
-  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const response = await fetch(`${URLMercadoLivre}items/${id}`);
   const data = await response.json();
   console.log(data);
   sumAllPrices(data.price);
   olCartItems.appendChild(createCartItemElement(data));
   setLocalStorage();
 };
+
 const onClick = () => {
   const buttons = document.querySelectorAll('.item__add');
   console.log(buttons);
@@ -76,19 +75,6 @@ const onClick = () => {
 };
 // -------------------------------------Requisito 1 onload fetch API ------------------------------
 
-// Usando Promise
-
-// const fetchMercadoLivre = () => 
-// new Promise((resolve, reject) => 
-//   fetch(`${URLMercadoLivre}${'computador'}`)
-//   .then((response) => response.json())
-//   .then((data) => { 
-//     data.results.forEach((user) => items
-//     .appendChild(createProductItemElement(user)));
-//     resolve();
-//   })
-//   .catch(() => reject()));
-
 // Usando async
 const productsList = (data) => {
   console.log(data);
@@ -100,8 +86,7 @@ const productsList = (data) => {
 
 const fetchMercadoLivre = async (page) => {
   try {
-    const URLMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-    const response = await fetch(`${URLMercadoLivre}${page}`);
+    const response = await fetch(`${URLMercadoLivre}sites/MLB/search?q=${page}`);
     const data = await response.json();
     return productsList(data);
   } catch (e) {
@@ -109,17 +94,25 @@ const fetchMercadoLivre = async (page) => {
     // return e;
   }
 };
+
 const cartItemsOnLocalStorage = () => {
   olCartItems.innerHTML = localStorage.getItem('item');
   olCartItems.childNodes.forEach((element) => element
   .addEventListener('click', cartItemClickRemove));
 };
 
+const clearcart = () => {
+  olCartItems.innerHTML = '';
+  totalPrice.innerHTML = 0;
+};
+clean.addEventListener('click', clearcart);
+
 window.onload = async () => {
   try {
     await fetchMercadoLivre('computador');
     onClick();
     cartItemsOnLocalStorage();
+    clearcart();
   } catch (error) {
     console.log(error);
   }
