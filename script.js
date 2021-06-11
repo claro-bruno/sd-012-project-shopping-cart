@@ -7,24 +7,14 @@ const removeLoading = () => sectionPCs.removeChild(loading);
 
 const saveStorage = () => {
   localStorage.setItem('zéDoPeixe', JSON.stringify(carrinho.innerHTML));
-}
-
-const loadStorage = () => {
-  if(localStorage){
-    carrinho.innerHTML = JSON.parse(localStorage.getItem('zéDoPeixe'));
-  }
-  carrinhoResetado = document.getElementsByClassName('cart__item');
-  Object.values(carrinhoResetado).forEach((item) => {
-    item.addEventListener('click', cartItemClickListener)
-  });
-}
+};
 
 const limparCarrinho = () => {
   while (carrinho.firstChild) {
     carrinho.removeChild(carrinho.firstChild);
   }
   saveStorage();
-}
+};
 
 const fetchItem = (term = 'computador') => (
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${term}`)
@@ -86,10 +76,20 @@ function getItemId() {
       fetch(`https://api.mercadolibre.com/items/${idItem}`)
         .then((response) => response.json())
         .then((id) => carrinho.appendChild(createCartItemElement(id)))
-        .then(() => saveStorage())
+        .then(() => saveStorage());
     });
   });
 }
+
+const loadStorage = () => {
+  if (localStorage) {
+    carrinho.innerHTML = JSON.parse(localStorage.getItem('zéDoPeixe'));
+  }
+  const carrinhoResetado = document.getElementsByClassName('cart__item');
+  Object.values(carrinhoResetado).forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+};
 
 window.onload = () => {
   fetchItem()
