@@ -1,5 +1,9 @@
 window.onload = function onload() { 
   getPc();
+  const ol = document.querySelector('.cart__items');
+  if (localStorage.getItem('cartItens')) {
+    ol.innerHTML = JSON.parse(localStorage.getItem('cartItens'));
+  }
   
 };
 
@@ -45,6 +49,7 @@ async function adicionarCarr(item) {
     const {id: sku, title: name, price: salePrice} = produto;
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement({sku, name, salePrice}));
+    localStorage.setItem('cartItens', JSON.stringify(ol.innerHTML));
 }
 
 function getSkuFromProductItem(item) {
@@ -54,6 +59,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   const ol = document.querySelector('.cart__items');
   ol.removeChild(event.target);
+  localStorage.setItem('cartItens', JSON.stringify(ol.innerHTML));
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
