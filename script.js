@@ -19,6 +19,7 @@ const totalPrice = () => {
   prices.forEach(({ innerHTML }) => {
     result += parseFloat(innerHTML.match(regExp));
   });
+  console.log(result);
   total.innerHTML = result;
 };
 
@@ -54,6 +55,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
    cart.removeChild(event.target);
+   totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -109,7 +111,6 @@ const fetchForId = async (id) => {
 
 const saveLocalStorage = () => {
   localStorage.setItem('cart', cart.innerHTML);
-  totalPrice();
 };
 
 const addCart = () => {
@@ -121,6 +122,7 @@ const addCart = () => {
       .then((item) => cart
         .appendChild(createCartItemElement(item)))
       .then(() => saveLocalStorage())
+      .then(() => totalPrice())
       .catch(() => {
         removeLoading();
         items.innerHTML = `<h1>${MSG_ERROR}</h1>`;
@@ -143,6 +145,7 @@ const clearCart = () => {
   const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
     cart.innerHTML = '';
+    totalPrice();
   });
 };
 
