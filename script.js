@@ -152,19 +152,24 @@ emptyCartBtn.addEventListener('mouseout', () => {
 });
 
 const addsHoverToItems = () => {
-  const itemCollection = document.getElementsByClassName('item');
-  Object.keys(itemCollection).forEach((key) => itemCollection[key]
-    .addEventListener('mouseover', () => {
-      itemCollection[key].lastElementChild.style.backgroundColor = 'lightskyblue';
-      itemCollection[key].lastElementChild.style.color = 'black';
-      itemCollection[key].lastElementChild.style.transition = 'all 0.5s';
-    }));
-  Object.keys(itemCollection).forEach((key) => itemCollection[key]
-    .addEventListener('mouseout', () => {
-      itemCollection[key].lastElementChild.style.backgroundColor = 'blue';
-      itemCollection[key].lastElementChild.style.color = 'white';
-      itemCollection[key].lastElementChild.style.transition = 'all 0.5s';
-    }));
+  const itemCollection = document.querySelectorAll('.item');
+  console.log(itemCollection);
+  itemCollection.forEach((item) => {
+    const currentItem = item;
+    currentItem.addEventListener('mouseover', () => {
+      currentItem.lastElementChild.style.backgroundColor = 'lightskyblue';
+      currentItem.lastElementChild.style.color = 'black';
+      currentItem.lastElementChild.style.transition = 'all 0.5s';
+    });
+  });
+  itemCollection.forEach((item) => {
+     const currentItem = item;
+    currentItem.addEventListener('mouseout', () => {
+      currentItem.lastElementChild.style.backgroundColor = 'blue';
+      currentItem.lastElementChild.style.color = 'white';
+      currentItem.lastElementChild.style.transition = 'all 0.5s';
+    });
+  });
 };
 
 const formBtn = document.querySelector('.search-btn');
