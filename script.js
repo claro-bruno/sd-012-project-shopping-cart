@@ -96,6 +96,8 @@ async function fetchApi() {
   const apiFetchJson = await apiFetch.json();
   const apiResults = apiFetchJson.results;
   const items = document.querySelector('.items');
+  const pLoading = document.querySelector('.loading'); // 7
+  pLoading.remove(); // 7
   apiResults.forEach((item) => items.appendChild(createProductItemElement(item)));
 }
 
