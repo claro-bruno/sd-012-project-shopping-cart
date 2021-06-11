@@ -80,9 +80,8 @@ const clearCart = () => {
     if (cartItems.firstChild) {
       cartItems.innerHTML = '';
     }
-   })
-}
-
+   });
+};
 
 window.onload = function onload() {
   getApi();
