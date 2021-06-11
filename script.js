@@ -197,24 +197,44 @@ formBtn.addEventListener('click', async () => {
 
 const cartContainer = document.querySelector('.cart');
 const cartIcon = document.querySelector('.fa-shopping-cart');
-let active = false;
+let activeCart = false;
 
 cartIcon.addEventListener('click', () => {
-  if (!active) {
+  if (!activeCart) {
     cartContainer.classList.remove('hidden');
     cartIcon.style.backgroundColor = 'white';
-    active = true;
+    cartIcon.style.boxShadow = 'none';
+    activeCart = true;
   } else {
     cartContainer.classList.add('hidden');
     cartIcon.style.backgroundColor = 'initial';
-    active = false;
+    cartIcon.style.boxShadow = '0 1px 2px 1px black';
+    activeCart = false;
   }
 });
 
 const closeCart = document.querySelector('.fa-times');
 closeCart.addEventListener('click', () => {
   cartContainer.classList.add('hidden');
-  active = false;
+  activeCart = false;
+});
+
+const searchForm = document.querySelector('.search-form');
+const searchIcon = document.querySelector('.fa-search');
+let activeSearch = false;
+
+searchIcon.addEventListener('click', () => {
+  if (!activeSearch) {
+    searchForm.classList.remove('hidden');
+    searchIcon.style.backgroundColor = 'white';
+    searchIcon.style.boxShadow = 'none';
+    activeSearch = true;
+  } else {
+    searchForm.classList.add('hidden');
+    searchIcon.style.backgroundColor = 'initial';
+    searchIcon.style.boxShadow = '0 1px 2px 1px black';
+    activeSearch = false;
+  }
 });
 
 window.addEventListener('load', async () => {
