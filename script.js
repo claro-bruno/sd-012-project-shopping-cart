@@ -44,7 +44,7 @@ function cartItemClickListener(event) {
   const cart = event.target.parentNode;
   const price = Number(event.target.innerHTML.split('$')[1]);
   const totalPrice = document.querySelector(getTotalPrice);
-  totalPrice.innerHTML = Math.round((Number(totalPrice.innerHTML) - price) * 100) / 100; // o roud aqui serve para remover erros de subtração de números decimais
+  totalPrice.innerHTML = Math.round((totalPrice.innerHTML - price) * 100) / 100; // o roud aqui serve para remover erros de subtração de números decimais
   cart.removeChild(event.target);
   addLocalStorage();
 }
