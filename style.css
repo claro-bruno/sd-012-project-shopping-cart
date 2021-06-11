@@ -36,7 +36,7 @@ body {
 
 .item {
   border: 1px solid lightgray;
-  box-shadow: 0px 0px 15px -3px grey;
+  box-shadow: 0px 0px 15px -6px grey;
   border-radius: 6px;
   box-sizing: border-box;
   display: flex;
@@ -54,10 +54,15 @@ body {
   flex-grow: 1;
   padding: 10px;
   text-align: center;
+  vertical-align: middle;
+  background-color: whitesmoke;
+  border-radius: 6px;
 }
 
 .item .item__image {
   width: 100%;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 .item .item__add {
@@ -80,12 +85,36 @@ body {
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-weight: bold;
+  font-size: 2em;
+  margin-bottom: 15px;
   text-align: center;
 }
 
+.empty-cart {
+  border: none;
+  padding: 9px;
+  background-color: lightseagreen;
+  font-weight: bold;
+  font-size: medium;
+  cursor: pointer;
+  border-radius: 9px;
+}
+
+.cart__items {
+  padding: 3px;
+  list-style: none;
+  border-radius: 6px;
+}
+
 .cart__item {
-  margin-bottom: 15px;
+  margin: 15px 0 15px;
+  padding: 9px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: whitesmoke;
+  border-radius: 6px;
+  box-shadow: 0px 0px 9px -2px grey;
 }
 
 .total label {

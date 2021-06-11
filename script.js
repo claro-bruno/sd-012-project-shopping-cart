@@ -91,8 +91,8 @@ function createProductItemElement({ sku, name, image }) {
   itemAddBtn.addEventListener('click', addItemCart);
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(itemAddBtn);
 
   return section;
