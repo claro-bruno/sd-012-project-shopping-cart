@@ -35,6 +35,7 @@ function clearAllCart() {
    buttonClear.addEventListener('click', () => {
     const cartItems = document.querySelector('.cart__items');
     cartItems.innerHTML = '';
+    localStorage.clear('products');
   });
 }
 
