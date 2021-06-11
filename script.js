@@ -12,7 +12,7 @@ const updateTotalPrice = () => {
 const addLocalStorage = (item) => {
   itemStorage.push(item);
   const itemStorageString = JSON.stringify(itemStorage);
-  localStorage.setItem('teste', itemStorageString);
+  localStorage.setItem('shopCart', itemStorageString);
   updateTotalPrice();
 };
 
@@ -20,7 +20,7 @@ const rmvLocalStorage = (cartItem) => {
   const itemSKU = cartItem.innerText.substr(5, 13);
   itemStorage = itemStorage.filter((item) => item.id !== itemSKU);
   const itemStorageString = JSON.stringify(itemStorage);
-  localStorage.setItem('teste', itemStorageString);
+  localStorage.setItem('shopCart', itemStorageString);
   updateTotalPrice();
 };
 
@@ -65,8 +65,8 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
 };
 
 const getLocalStorage = () => {
-  if (localStorage.getItem('teste') !== null) {
-    itemStorage = JSON.parse(localStorage.getItem('teste'));
+  if (localStorage.getItem('shopCart') !== null) {
+    itemStorage = JSON.parse(localStorage.getItem('shopCart'));
     itemStorage.forEach((item) => {
       const parentElement = document.querySelector(CART_ITEMS);
       parentElement.appendChild(createCartItemElement(item));
