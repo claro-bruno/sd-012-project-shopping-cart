@@ -25,7 +25,8 @@ const removeLoading = () => {
 
 const clearEverything = () => {
   ol.innerHTML = '';
-  localStorage.setItem('cartItems', JSON.stringify([]));
+  localStorage.removeItem('cartItems');
+  // função removeItem utilizada com a dica da colega Adriana Biberg
   divPrices.innerHTML = 0;
 };
 
