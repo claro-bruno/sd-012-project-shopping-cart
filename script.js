@@ -45,7 +45,7 @@ function cartItemClickListener(event) {
   const getPrice = event.target.innerHTML.split('$');
   const price = Number(getPrice[getPrice.length - 1]);
   const totalPrice = document.querySelector(getTotalPrice);
-  totalPrice.innerHTML = Math.round((Number(totalPrice.innerHTML) - price) * 100) / 100;
+  totalPrice.innerHTML = Math.round((Number(totalPrice.innerHTML) - price) * 100) / 100; // o roud aqui serve para remover erros de subtração de números decimais
   cart.removeChild(event.target);
   addLocalStorage();
 }
@@ -69,7 +69,7 @@ function cartAdd(endpoint) {
     const cartItem = createCartItemElement({ sku, name, salePrice });
     cartItems.appendChild(cartItem);
     const totalPrice = document.querySelector(getTotalPrice);
-    totalPrice.innerHTML = Math.round(((Number(totalPrice.innerHTML) + salePrice)) * 100) / 100;
+    totalPrice.innerHTML = Math.round(((Number(totalPrice.innerHTML) + salePrice)) * 100) / 100; // o roud aqui serve para remover erros de soma de números decimais
     addLocalStorage();
   }));
 }
@@ -138,5 +138,6 @@ window.onload = function onload() {
     .then(() => createTotalPrice())
     .then((totalPrice) => emptyCart(totalPrice))
     .then(() => getLocalStorage())
-    .then(() => removeLoading());
+    .then(() => removeLoading())
+    .catch(() => console.log('Oops! Algo deu errado!'));
 };
