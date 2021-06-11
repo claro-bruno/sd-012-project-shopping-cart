@@ -16,9 +16,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function saveCartList() {
+  localStorage.setItem('shopList', cartList.innerHTML);
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.parentNode.removeChild(event.target);
+  saveCartList();
+}
+
+function recoverSavedList() {
+  cartList.innerHTML = localStorage.getItem('shopList');
+  const listItems = document.getElementsByTagName('li');
+  for (let index = 0; index < listItems.length; index += 1) {
+    listItems[index].addEventListener('click', cartItemClickListener);
+  }
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -37,6 +50,7 @@ async function addToCart(event) {
     const result = await response.json();
     cartList.appendChild(createCartItemElement(result))
       .addEventListener('click', cartItemClickListener);
+      saveCartList();
   } catch (error) {
     console.log(error);
   }
@@ -78,4 +92,5 @@ async function getProducts() {
 
 window.onload = function onload() { 
   getProducts();
+  recoverSavedList();
 };
