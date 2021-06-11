@@ -1,4 +1,6 @@
-// inicio de projeto!
+const QUERY_API = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const ITEM_API = 'https://api.mercadolibre.com/items/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,15 +27,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   return section;
 }
 
-// função chama a createProductItemElement que adiciona na tela os produtos vindos da api S2!
 async function getProductsApi() {
-  const getApi = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const getApi = await fetch(QUERY_API);
   const getApiResults = await getApi.json();
   const products = getApiResults.results;
   document.querySelector('.loading').remove();
-  // console.log(products)
   const itemsProducts = document.querySelector('.items');
-  // console.log(itemsProducts);
   products.forEach((element) => {
     const item = createProductItemElement(element);
     itemsProducts.appendChild(item);
@@ -55,12 +54,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const element = document.getElementsByClassName('cart__items');
-// console.log(element);
 async function getElementToCart(itemID) {
-  let elementChoice = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+  let elementChoice = await fetch(`${ITEM_API}${itemID}`);
   elementChoice = await elementChoice.json();
   element[0].appendChild(createCartItemElement(elementChoice));
-  // console.log(elementChoice);
 }
 
 document.addEventListener('click', ({ target }) => {
@@ -70,6 +67,12 @@ document.addEventListener('click', ({ target }) => {
   }
 });
 
+function clearCart() {
+  const listCart = document.querySelector('.cart__items');
+  listCart.innerText = '';
+}
+
 window.onload = function onload() {
   getProductsApi();
- };
+  clearCart();
+};
