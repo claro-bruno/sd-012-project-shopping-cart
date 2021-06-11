@@ -4,19 +4,29 @@ body {
   background: linear-gradient(0deg, rgb(62, 16, 87), rgb(60, 29, 145));
   font-size: 20px;
   background-repeat: no-repeat;
+  font-family: cafe, sans-serif;
+}
+
+#search {
+  padding: 10px;
+  align-self: flex-end;
+  margin-bottom: 25px;
 }
 
 .header {
-  height: 100px;
+  height: 120px;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   position: fixed;
   top: 0;
   width: 100%;
   background: linear-gradient(0deg, rgb(62, 16, 87), rgb(60, 29, 145));
   border-bottom: 1px solid rgb(155, 150, 150);
-  font-size: 30px;
+  font-size: 40px;
+  letter-spacing: 8px;
+  font-style: italic;
+  font-family: milestone, sans-serif;
 
 }
 
@@ -63,7 +73,7 @@ body {
   width: 200px;
   margin: 20px;
   border: 1px solid rgb(155, 150, 150);
-  background-color: rgb(62, 16, 87)
+  background-color: rgb(62, 16, 87);
 }
 
 .item .item__sku {
@@ -98,12 +108,34 @@ body {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  align-items: center;
+}
+
+.cart__title {
+  font-size: 100px;
 }
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-size: 26pt;
   text-align: center;
+}
+
+.cart__item {
+  margin-top: 30px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.empty-cart {
+  width: 150px;
+  font-size: 15px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 20px;
+  padding: 5px;
+  background-color: mediumaquamarine;
+  cursor: pointer;
 }
 
 .total-container {
@@ -121,4 +153,14 @@ body {
   flex-direction: column;
   position: fixed;
   top: 30%;
+}
+
+@font-face {
+  font-family: milestone;
+  src: url('./fonts/milestone/MilestoneFreeVersion-Script.otf');
+}
+
+@font-face {
+  font-family: cafe;
+  src: url('./fonts/louis_george_caf/Louis\ George\ Cafe.ttf');
 }

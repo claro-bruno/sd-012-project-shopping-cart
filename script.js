@@ -126,7 +126,7 @@ function addItems(results, items) {
 function createTotalPriceContainer() {
   const cart = document.querySelector('.cart');
   const totalContainer = createCustomElement('section', 'total-container', ' ');
-  cart.appendChild(totalContainer);
+  cart.firstElementChild.insertAdjacentElement('afterend', totalContainer);
   const text = createCustomElement('p', 'text-price', 'TOTAL R$');
   totalContainer.appendChild(text);
   const totalPrice = createCustomElement('p', 'total-price', 0);
