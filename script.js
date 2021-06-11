@@ -1,4 +1,4 @@
-const somaItems = [];
+let total = 0;
 const cartItens = () => document.querySelector('.cart__items');
 const pSomaTotal = () => document.querySelector('.total-price');
 
@@ -42,7 +42,9 @@ const salvaCarrinho = () => {
 };
 
 const carregaCarrinho = () => {
-  cartItens().innerHTML = localStorage.getItem('items'); 
+  if (localStorage !== null) {
+    cartItens().innerHTML = localStorage.getItem('items');
+  }
 };
 
 const createProductImageElement = (imageSource) => {
@@ -60,9 +62,8 @@ const criaSomaCart = () => {
 };
 
 const somaPreços = (salePrice) => {
-  somaItems.push(salePrice);
-  const total = somaItems.reduce((acc, num) => acc + num);
-  pSomaTotal().innerHTML = `Preço total: $${Math.round(total * 100) / 100}`;
+  total += salePrice;
+  pSomaTotal().innerHTML = Math.round(total * 100) / 100;
 };
 
 const createCustomElement = (element, className, innerText) => {
@@ -103,11 +104,23 @@ const adicionaItensPagina = async () => {
   try {
     const computadores = await pegarComputadoresML();
     const classItems = document.querySelector('.items');
-    computadores.map(({ id: sku, title: name, thumbnail: image }) =>
+    computadores.map(({ id: sku, title: name, thumbnail: image }) => 
       classItems.appendChild(createProductItemElement({ sku, name, image })));
   } catch (erro) {
     console.log(erro);
   }
+};
+
+const addItemsCart = (sku, name, salePrice) => {
+  const itensCart = createCartItemElement({ sku, name, salePrice });        
+  itensCart.addEventListener('click', () => {
+    total -= salePrice;
+    pSomaTotal().innerHTML = Math.round(total * 100) / 100;
+    salvaCarrinho();
+  });
+  cartItens().appendChild(itensCart);
+  salvaCarrinho();
+  somaPreços(salePrice);
 };
 
 const adicionaItensCarrinho = async () => {
@@ -118,9 +131,7 @@ const adicionaItensCarrinho = async () => {
         const itemSku = document.querySelectorAll('.item__sku')[index].innerHTML;
         const idComputadores = await pegarIdComputadorML(itemSku);
         const { id: sku, title: name, price: salePrice } = idComputadores;
-        cartItens().appendChild(createCartItemElement({ sku, name, salePrice }));
-        salvaCarrinho();
-        somaPreços(salePrice);
+        addItemsCart(sku, name, salePrice);
       }));
   } catch (erro) {
     console.log(erro);
@@ -132,7 +143,7 @@ const removerTudo = () => {
   buttonRemoveTudo.addEventListener('click', () => {
     document.querySelector('.cart__items').innerHTML = '';
     pSomaTotal().innerHTML = '';
-    localStorage.clear('lis');
+    localStorage.clear();
   });
 };
 
