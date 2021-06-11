@@ -2,6 +2,7 @@ const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const sectionItems = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const emptyCart = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -51,11 +52,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // fetch inicial para trazer o API do mercado livre
 const getApi = async () => {
   const promiseApi = await fetch(url);
+  await loadingStr();
   const response = await promiseApi.json();
   response.results.forEach((item) => {
     sectionItems.appendChild(createProductItemElement(item));
   });
 };
+
+const loadingStr = () => {
+  loading.remove();
+}
 
 // Traz o id pego pelo evento e o pesquisa no fetch.
 const getApiId = async (id) => {
@@ -74,6 +80,7 @@ const evtBtn = () => {
   });
 };
 
+// dá set = "" se o elemento pai tem filhos
 const clearCart = () => {
   emptyCart.addEventListener('click', () => {
     if (cartItems.firstChild) {
