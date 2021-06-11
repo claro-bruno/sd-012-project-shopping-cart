@@ -220,7 +220,7 @@ closeCart.addEventListener('click', () => {
 });
 
 const searchForm = document.querySelector('.search-form');
-const searchIcon = document.querySelector('.fa-search');
+const searchIcon = document.querySelector('.fa-search-plus');
 let activeSearch = false;
 
 searchIcon.addEventListener('click', () => {

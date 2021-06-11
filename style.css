@@ -187,14 +187,30 @@ img {
     height: 100%;
     transition: all 0.3s;
     box-shadow: 2px 2px 2px black;
+  }
 
+  .search-form .search-input {
+    width: 20%;
+  }
+
+  .search-form .search-btn {
+    width: 10% !important;
   }
 
   .top-bar-title {
     font-size: 5vw;
   }
   
-  .fa-shopping-cart, .fa-search, .fa-times {
+  .fa-shopping-cart, .fa-search-plus, .fa-times {
+    display: block !important;
+    margin-right: 5px;
+  }
+
+  .search-btn-text {
+    display: none;
+  }
+
+  .fa-search {
     display: block !important;
   }
 
@@ -215,6 +231,10 @@ img {
   }
 }
 
+.fa-search {
+  display: none;
+}
+
 .fa-times {
   display: none;
   position: absolute;
@@ -227,7 +247,7 @@ img {
   justify-content: space-around;
 }
 
-.fa-shopping-cart, .fa-search {
+.fa-shopping-cart, .fa-search-plus {
   display: none;
   font-size: 20pt;
   padding: 10%;
