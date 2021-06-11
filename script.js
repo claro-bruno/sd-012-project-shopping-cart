@@ -107,7 +107,6 @@ const createTotalPrice = () => {
 };
 
 window.onload = function onload() {
-  
   const cart = getCartItems(); 
   loadProducts('computador');
   createTotalPrice();
