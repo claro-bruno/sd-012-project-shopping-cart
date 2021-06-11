@@ -10,6 +10,12 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+function cartItemClickListener(event, { id, title, price }) {
+  const adress = document.querySelector('.cart__items');
+  const li = document.createElement('li');
+  adress.appendChild(li);
+  li.innerText = `SKU:${id} | NAME:${title} | PRICE: R$${price},00`;
+}
 
 function createProductItemElement(elemento) {
   const section = document.createElement('section');
@@ -18,41 +24,35 @@ function createProductItemElement(elemento) {
   section.appendChild(createCustomElement('span', 'item__sku', elemento.id));
   section.appendChild(createCustomElement('span', 'item__title', elemento.title));
   section.appendChild(createProductImageElement(elemento.thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const btnCart = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  btnCart.addEventListener('click', () => {
+    cartItemClickListener(section, elemento);
+  });
+  section.appendChild(btnCart);
+  
   return section;
-}
-function objectValues(values) {
-  return Object.values(values);
 }
 async function returnFetch(search) {
     const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
-    const json = await response.json();
-   const entries = objectValues(json.results);
+   const json = await response.json();
+   const entries = Object.values(json.results);
    entries.forEach((elemento) => {
-   
    const section = document.querySelector('.items');
   section.appendChild(createProductItemElement(elemento));
-  
    });
 }
-
 window.onload = function onload() {
-  returnFetch('computador');
+ returnFetch('computador');
 };
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
