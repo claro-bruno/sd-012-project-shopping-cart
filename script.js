@@ -34,10 +34,23 @@ const toLocalStorage = () => {
  localStorage.setItem('item', ol.innerHTML);
 };
 
+const soma = () => {
+  const myarray = document.querySelectorAll('.cart__item');
+  let acc = 0;
+  myarray.forEach((ele) => {
+    const n1 = Number(ele.innerHTML.slice(ele.innerHTML.indexOf('$') + 1));
+    acc += n1;
+  });
+   const total = document.querySelector('.total-price');
+   total.innerText = acc;     
+};
+
 function cartItemClickListener(event) {
  event.target.remove();
   toLocalStorage();
+  soma();
 }
+// obtive ajuda do Daivid Gonzaga https://github.com/tryber/sd-012-project-shopping-cart/pull/39
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -61,6 +74,7 @@ const callbutton = () => {
     (button.addEventListener('click', async (event) => {
       const iten = event.target.parentElement.firstChild.innerText;
       await addCart(iten);
+      soma();
       toLocalStorage();
     }));
   });
@@ -77,6 +91,7 @@ const fetchML = () => {
 
 const clearcart = () => {
   ol.innerHTML = '';
+  soma();
 };
 clean.addEventListener('click', clearcart);
 
@@ -84,4 +99,5 @@ window.onload = function onload() {
   fetchML();
   ol.innerHTML = localStorage.getItem('item');
   ol.childNodes.forEach((elm) => elm.addEventListener('click', cartItemClickListener));
+  soma();
 };
