@@ -37,7 +37,23 @@ function clearAllCart() {
     const cartItems = document.querySelector('.cart__items');
     cartItems.innerHTML = '';
     localStorage.clear('products');
+    const total = document.querySelector('.total-price');
+    total.innerHTML = 'Total:';
   });
+}
+
+function totalPrice() {
+  const produto = document.querySelectorAll('.cart__item');
+  const array = [];
+  produto.forEach((item) => {
+    const split = item.textContent.split('$');
+    const number = parseFloat(split[1]);
+    array.push(number);
+  });
+  const sum = array.reduce((acc, curr) => acc + curr, 0);
+  
+  const total = document.querySelector('.total-price');
+  total.innerHTML = `Total: ${sum}`;
 }
 
 function returnsSaveProductsLocalStorage() {
@@ -52,6 +68,7 @@ function returnsSaveProductsLocalStorage() {
         return addCartItems(li);
     });
   }
+  totalPrice();
 }
 
 function saveProductsLocalStorage(skuReceived) {
@@ -62,19 +79,6 @@ function saveProductsLocalStorage(skuReceived) {
     selectedProduct = `${localStorage.products}//${skuReceived}`;
   }  
   localStorage.setItem('products', selectedProduct);
-}
-
-function totalPrice() {
-  const produto = document.querySelectorAll('.cart__item');
-
-  const array = [];
-  produto.forEach((item) => {
-    const split = item.textContent.split('$');
-    const number = parseFloat(split[1]);
-    array.push(number);
-  });
-  console.log(array);
-  
 }
 
 function createCartItemElement(sku, name, salePrice) {
@@ -93,7 +97,7 @@ async function fetchAPIProduct({ id: skuReceived = this.id }) {
     const response = await fetch(`https://api.mercadolibre.com/items/${skuReceived}`);
     const { id: sku, title: name, price: salePrice } = await response.json();
     createCartItemElement(sku, name, salePrice);
-    // preco(salePrice);
+    totalPrice();
   } catch (error) { 
     alert('Ops, deu ruim no botao');
   }
@@ -146,8 +150,7 @@ async function fetchAPI() {
 
 window.onload = async function onload() { 
   await fetchAPI();
+  createTotalPriceElement();
   returnsSaveProductsLocalStorage();
   clearAllCart();
-  createTotalPriceElement();
-  totalPrice();
 };
