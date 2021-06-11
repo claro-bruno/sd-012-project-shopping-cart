@@ -1,10 +1,9 @@
 window.onload = function onload() { };
 const cartItems = document.querySelector('.cart__items');
 const eraseButton = document.querySelector('.empty-cart');
-const precoTotal = document.querySelector('.total-price');
+const totalPrice = document.querySelector('.total-price');
 const items = document.querySelector('.items');
 const totalSoma = [];
-const totalSubtracao = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,31 +39,21 @@ const storage = (key, value) => {
   localStorage.setItem(`${key}`, value);
 };
 
-const soma = (price) => {
-  totalSoma.push(price);
-  return totalSoma.reduce((total, valor) => (total * 100 + valor * 100) / 100, 0);
-};
-const subtracao = (price) => {
-  totalSubtracao.push(price);
-  return totalSubtracao.reduce((total, valor) => (total * 100 + valor * 100) / 100, 0);
-};
-const totalPrice = (mais = 0, menos = 0) => {
-  const preco = document.createElement('section');
-  const total = soma(mais) - subtracao(menos);
+// ex5
+const totalValue = (valor) => {
+  totalSoma.push(valor);
+  console.log(totalSoma);
+  const total = totalSoma.reduce((acc, value) => acc + value, 0);
   localStorage.setItem('totalPrice', total);
-  if (Number.isInteger(total)) {
-    preco.innerText = total;
-  } else {
-    preco.innerText = parseFloat(total).toFixed(2);
-  }
-  precoTotal.innerHTML = '';
-  precoTotal.appendChild(preco);
+  totalPrice.innerText = total;
+  console.log(total);
 };
 
 // ex3
 function cartItemClickListener(event) {
-  const valor = parseInt(event.target.innerHTML.split('$')[1], 10);
-  totalPrice(0, valor);
+  const valor = parseFloat(event.target.innerHTML.split('$')[1]);
+  console.log(event.target.innerHTML.split('$'));
+  totalValue(-valor);
   event.target.remove();
   storage('cartSave', cartItems.innerHTML);
 }
@@ -98,7 +87,7 @@ const addToCart = () => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((res) => res.json())
     .then((json) => {
-      totalPrice(json.price, 0);
+      totalValue(json.price);
       return cartItems.appendChild(createCartItemElement(json));
     })
     .then(() => storage('cartSave', cartItems.innerHTML));
@@ -111,8 +100,7 @@ const eraseCart = () => {
     localStorage.clear();
     cartItems.innerHTML = '';
   totalSoma.splice(0, totalSoma.length);
-  totalSubtracao.splice(0, totalSubtracao.length);
-  precoTotal.innerHTML = 'Total:';
+  totalPrice.innerHTML = 0;
   });
 };
 
@@ -124,5 +112,9 @@ window.addEventListener('load', async () => {
   addToCart();
   returnSaved();
   eraseCart();
-  totalPrice(localStorage.getItem('total'));
+  if (!localStorage.totalPrice) { 
+    totalValue(0);
+  } else {
+  totalValue(Number(localStorage.totalPrice));
+  }
 });
