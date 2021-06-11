@@ -1,3 +1,9 @@
+let arrayIds = [];
+
+const saveSelection = (event) => {
+  localStorage.setItem('item', `${event}`);
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,8 +35,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // }
 const ol = document.getElementsByClassName('cart__items');
 
-function cartItemClickListener(event) {
+function cartItemClickListener(event, sku) {
+  arrayIds.splice(arrayIds.indexOf(sku), 1);
   event.remove();
+  saveSelection(arrayIds);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -38,7 +46,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', (event) => {
-    cartItemClickListener(event.target);
+    cartItemClickListener(event.target, sku);
   });
   return li;
 }
@@ -46,7 +54,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('empty-cart')) {
     const item = document.querySelectorAll('.cart__item');
-    item.forEach((itens) => itens.remove());
+    item.forEach((itens) => { 
+      itens.remove(); 
+      saveSelection(arrayIds = []);
+    });
   }
 });
 
@@ -64,12 +75,23 @@ const findId = (id) => {
   .then((pc) => ol[0].appendChild(createCartItemElement(pc)));
 };
 
+const reloadPage = () => {
+  const idSaved = localStorage.getItem('item').split(',');
+  if (idSaved !== '') {
+    idSaved.forEach((id) => findId(id));
+  }
+};
+
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('item__add')) {
-    findId(event.target.parentElement.firstChild.innerText);
+    const id = event.target.parentElement.firstChild.innerText;
+    arrayIds.push(id);
+    findId(id);
+    saveSelection(arrayIds);
   }
 });
 
-window.onload = function onload() {
-  fetchAPI();
+window.onload = async function onload() {
+  const capture = await fetchAPI();
+  const reload = await reloadPage();
 };
