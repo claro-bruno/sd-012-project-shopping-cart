@@ -26,27 +26,48 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+   return item.querySelector('span.item__sku').innerText;  
+}
+function getButton(teste) {
+  return teste.querySelector('button.item__add');
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const catchId = () => {
+  // const buttons = document.querySelectorAll('.item__add');
+  const allItem = document.querySelectorAll('.item');
+  const ol = document.querySelector('.cart__items')
+  allItem.forEach((item) => {
+    const result = getSkuFromProductItem(item);
+    const button = getButton(item);
+    button.addEventListener('click', () => {
+      fetch(`https://api.mercadolibre.com/items/${result}`)
+      .then((response) => response.json())
+      .then((data) => createCartItemElement(data))
+      .then((li) => ol.appendChild(li));
+    });
+});
+};
+
 const fetchURL = (url) => {
   const idItem = document.querySelector('.items');
   fetch(url)
   .then((response) => response.json())
   .then((indice) => indice.results)
-  .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))));
+  .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))))
+  .then(() => catchId());
 };
 
 window.onload = function onload() {
