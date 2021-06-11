@@ -154,7 +154,8 @@ const addPc = async (url, ol, totalPrice) => {
 const addClick = (array, ol, totalPrice) => {
   array.forEach((element, index) => {
     const itemAdd = document.getElementsByClassName('item__add')[index];
-    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`, ol, totalPrice));
+    itemAdd.addEventListener('click',
+    async () => addPc(`${URL_ITEM}${element.id}`, ol, totalPrice));
   });
 };
 
