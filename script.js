@@ -4,6 +4,13 @@ window.onload = function onload() {
   if (localStorage.getItem('cartItens')) {
     ol.innerHTML = JSON.parse(localStorage.getItem('cartItens'));
   }
+  const limpar = document.querySelector('.empty-cart');
+  limpar.addEventListener('click', () => {
+    ol.innerHTML = '';
+    if (localStorage.getItem('cartItens')) {
+      localStorage.removeItem('cartItens');
+    }
+  })
   
 };
 
@@ -69,3 +76,4 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
