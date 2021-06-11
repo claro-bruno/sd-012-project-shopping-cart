@@ -4,6 +4,8 @@ const itemEndpoint = 'https://api.mercadolibre.com/items/';
 const itemsContainer = document.querySelector('.items');
 const cartContainer = document.querySelector('.cart__items');
 
+const totalPrice = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -34,14 +36,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const saveCart = () => {
+const saveCartToStorage = () => {
   const cart = document.querySelector('.cart__items');
   localStorage.setItem('cart', cart.innerHTML);
 };
 
+const decreaseTotal = (value) => {
+  const valueFloat = parseFloat(value);
+  const inStorage = parseFloat(localStorage.totalPrice);
+  localStorage.setItem('totalPrice', (inStorage - valueFloat));
+  totalPrice.innerText = `${localStorage.getItem('totalPrice')}`;
+};
+
 function cartItemClickListener(event) {
+  const itemValue = event.target.innerText.split('|')[2].split('$')[1];
+  decreaseTotal(itemValue);
   event.target.remove();
-  saveCart();
+  saveCartToStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -52,10 +63,18 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const increaseTotal = (value) => {
+  const valueFloat = parseFloat(value);
+  const inStorage = parseFloat(localStorage.getItem('totalPrice'));
+  localStorage.setItem('totalPrice', (inStorage + valueFloat));
+  totalPrice.innerText = `${localStorage.getItem('totalPrice')}`;
+};
+
 const addToCart = ({ id: sku, title: name, price: salePrice }) => {
+  increaseTotal(salePrice);
   const cartElement = createCartItemElement({ sku, name, salePrice });
   cartContainer.appendChild(cartElement);
-  saveCart();
+  saveCartToStorage();
 };
 
 const fetchAPI = (baseUrl, query, callback) => {
@@ -84,11 +103,14 @@ const addItems = (object) => {
 
 const reloadCart = () => {
   if (localStorage.cart !== undefined) {
-    console.log('Entrou');
     cartContainer.innerHTML = localStorage.getItem('cart');
     const cartItems = Object.values(document.getElementsByClassName('cart__item'));
     cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
   }
+  if (localStorage.totalPrice === undefined) {
+    localStorage.setItem('totalPrice', '0');
+  }
+  totalPrice.innerText = `${localStorage.getItem('totalPrice')}`;
 };
 
 window.onload = function onload() { 
