@@ -23,6 +23,7 @@ const getApi = async (url) => {
     addClick(results);
     loadStorage();
     buttonRemove();
+    removeLoading();
   } catch (error) {
     alert(error);
   }
@@ -172,6 +173,11 @@ const removeItens = () => {
 const buttonRemove = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', async () => removeItens());
+}
+
+const removeLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
 }
 
 window.onload = () => {
