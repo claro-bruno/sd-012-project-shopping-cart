@@ -67,13 +67,14 @@ function addButton() {
     }
   });
 }
-/*
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.remove()
+  if (event.target.classList.contains('cart__item')) {
+  event.target.remove();
+  }
 }
 
-function removeFromCart() {
+/* function removeFromCart() {
   document.getElementsByClassName('cart__item').addEventListener('click', cartItemClickListener)
 } */
 window.onload = function onload() { 
@@ -81,3 +82,5 @@ window.onload = function onload() {
   addButton();
   // removeFromCart()
 };
+
+document.addEventListener('click', cartItemClickListener);
