@@ -1,17 +1,25 @@
 function salvarLocal() {
   const ol = document.querySelector('ol.cart__items');
   localStorage.setItem('cart', ol.innerHTML);
+  const price = document.querySelector('span.total-price');
+  localStorage.setItem('cartPrice', price.innerHTML);
 }
 
 function loadLocal() {
+  const priceLoad = document.querySelector('span.total-price');
+  const value = localStorage.getItem('cartPrice');
+  if (value !== null) {
+    priceLoad.innerHTML = value;
+  }
+
   const ol = document.querySelector('ol.cart__items');
   const element = localStorage.getItem('cart');
   ol.innerHTML = element;
-  document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('cart__item')) {
-      event.target.remove();
-    }
-  });
+}
+
+function sumPrice(price) {
+  const atual = document.querySelector('.total-price');
+  atual.innerText = Math.round((parseFloat(atual.innerText) + price) * 100) / 100;
 }
 
 function createProductImageElement(imageSource) {
@@ -45,6 +53,10 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 function cartItemClickListener(event) {
+  const valueSplit = event.target.innerHTML.split('$');
+  const value = parseFloat(valueSplit[valueSplit.length - 1]);
+  const atual = document.querySelector('.total-price');
+  atual.innerHTML = Math.round((parseFloat(atual.innerHTML) - value) * 100) / 100;
   event.target.remove();
   salvarLocal();
 }
@@ -53,7 +65,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -81,6 +93,7 @@ const handleButton = (id) => {
   .then((response) => response.json())
   .then(({ id: sku, title: name, price: salePrice }) => {
     cart.appendChild(createCartItemElement({ sku, name, salePrice }));
+    sumPrice(salePrice);
     salvarLocal();
   });
 };
@@ -89,6 +102,18 @@ document.addEventListener('click', (event) => {
   if (event.target.classList.contains('item__add')) {
     const id = event.target.parentNode.firstChild.innerText;
     handleButton(id);
+  }
+});
+
+document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('cart__item')) {
+    // const valueSplit = event.target.innerHTML.split('$');
+    // const value = parseFloat(valueSplit[valueSplit.length -1]);
+    // const atual = document.querySelector('.total-price');
+    // atual.innerHTML = Math.round((parseFloat(atual.innerHTML) - value) * 100) / 100;
+    cartItemClickListener(event);
+    // event.target.remove();
+    // salvarLocal();
   }
 });
 
