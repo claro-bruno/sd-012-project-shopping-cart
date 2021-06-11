@@ -2,6 +2,7 @@ const items = document.querySelector('.items');
 const orderList = document.querySelector('.cart__items');
 const textPrice = document.querySelector('.total-price');
 const button = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -87,13 +88,15 @@ function getId(event) {
 // Requisito 2 cumprido com ajuda do colega Rodrigo Facury;
 
 function fetchList() {
+  loading.innerText = 'loading...'; // Requisito 7 feito a partir de code review no código do colega Patrick Dack
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
     .then((response) => response.json())
     .then((products) => products.results.forEach((product) => {
       const createItem = createProductItemElement(product);
       items.appendChild(createItem);
       createItem.lastChild.addEventListener('click', getId);
-    }));      
+    }))
+    .then(() => loading.remove());     
 }
 
 function getCart() {
