@@ -3,6 +3,13 @@ const cart = document.getElementsByClassName('cart')[0];
 const divPrices = document.createElement('div');
 divPrices.className = 'total-price';
 const items = document.getElementsByClassName('items')[0];
+const clearButton = document.getElementsByClassName('empty-cart')[0];
+
+const clearEverything = () => {
+  ol.innerHTML = '';
+  localStorage.setItem('cartItems', JSON.stringify([]));
+  divPrices.innerHTML = 0;
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -110,6 +117,7 @@ const getSavedCart = () => {
 };
 
 window.onload = function onload() {
+  clearButton.addEventListener('click', clearEverything);
   cart.appendChild(divPrices);
   getSavedCart();
   sumPrices();
