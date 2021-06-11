@@ -2,6 +2,7 @@ const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computa
 
 const listCart = document.querySelector('.cart__items');
 const ol = document.querySelector('.cart__items');
+const body = document.querySelector('body');
 
 // 5 requisito abaixo ----------------------------------------------------------
 
@@ -20,6 +21,25 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+// 7 requisito abaixo----------------------------------------------------------
+
+const loading = createCustomElement('section', 'loading', 'loading...');
+const loadingAppear = () => {  
+  body.appendChild(loading);
+};
+console.log(loading);
+
+const loadingDesapear = () => {
+  if (loading) body.removeChild(loading);
+};
+
+// const loadingCall = () => {
+//   const loading = document.querySelector('.loading');
+//   loading.remove();
+// }
+
+// ---------------------------------------------------------------------------
 
 // colocando "id: sku" estamos fazendo destruction do parâmetro
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -69,7 +89,7 @@ function loadLocalStorage() {
 
 // 2 requisito abaixo ----------------------------------------------------------
 
-const addItens = async (id) => {
+const addItens = async (id) => {  
   let idItem = await fetch(`https://api.mercadolibre.com/items/${id}`);
   idItem = await idItem.json();
   // console.log(idItem.price);
@@ -110,14 +130,27 @@ totalPrices();
 
 // 1 requisito abaixo ----------------------------------------------------------
 
-const fetchML = () => {
+const fetchML = async () => {
+  loadingAppear();
   const itens = document.querySelector('.items');
-  fetch(apiMercadoLivre)
-  .then((response) => response.json())
-  .then((response) => response.results)
-  .then((arr) => arr.forEach((item) => itens.appendChild(createProductItemElement(item))))
-  .then(() => addCart());
+  const response = await fetch(apiMercadoLivre);
+  const apiJson = await response.json();
+  const array = await apiJson.results;
+  await array.forEach((item) => itens.appendChild(createProductItemElement(item)));
+  addCart();
+  loadingDesapear();
 };
+
+// const fetchML = () => {
+//   loadingAppear();
+//   const itens = document.querySelector('.items');
+//   fetch(apiMercadoLivre)
+//   .then((response) => response.json())
+//   .then((response) => response.results)
+//   .then((arr) => arr.forEach((item) => itens.appendChild(createProductItemElement(item))))
+//   .then(() => addCart())
+//   .then(() => loadingDesapear());
+// };
 
 const emptyCart = document.querySelector('.empty-cart');
 
