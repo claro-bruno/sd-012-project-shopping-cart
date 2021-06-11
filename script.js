@@ -65,6 +65,9 @@ function fetchSearch(searchTerm) {
 
 fetchSearch('computador');
 
+// Aqui adicionei um event listener na página toda executando uma função para capturar quando o evento for realizado em algum item no carrinho, pois ao carregar o carrinho pelo localStorage não era possível removê-lo ao clicar em cima. 
+// Feito com a grande ajuda do Bruno Yamamoto da Turma 12 da Trybe!
+
 document.addEventListener('click', (event) => {
   if (event.target.className === 'cart__item') {
     cartItemClickListener(event);
