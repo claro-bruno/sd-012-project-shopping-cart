@@ -51,7 +51,7 @@ body {
 
 .search-form .search-btn, .search-form .search-input {
   border-radius: 5px;
-  padding: 10px;
+  padding: 2%;
   margin: auto 5px;
   border: 2px solid blue;
 }
