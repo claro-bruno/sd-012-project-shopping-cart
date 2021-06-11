@@ -49,6 +49,14 @@ function cartItemClickListener(event) {
   const itemsElement = event.path[1];
   const itemElement = event.path[0];
   itemsElement.removeChild(itemElement);
+  const itemElementSku = itemElement.innerText.split(' ')[1];
+  const cartItems = JSON.parse(localStorage.getItem('cart'));
+  console.log(cartItems);
+  let updatedCartItems;
+  if (cartItems) {
+    updatedCartItems = cartItems.filter((cartItem) => cartItem.sku !== itemElementSku);
+    localStorage.setItem('cart', JSON.stringify(updatedCartItems));
+  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -57,6 +65,12 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+function addCartItemToLocalStorage({ sku, name, salePrice }) {
+  const cartLocalStorage = JSON.parse(localStorage.getItem('cart')) || [];
+  cartLocalStorage.push({ sku, name, salePrice });
+  // console.log({ sku, name, salePrice });
+  localStorage.setItem('cart', JSON.stringify(cartLocalStorage));
 }
 function addOnClickEventListener() {
   const items = document.querySelectorAll('.item');
@@ -72,11 +86,26 @@ function addOnClickEventListener() {
       // console.log(createCartItemElement({ sku: id, name: title, salePrice: price }));
       const cartItemsElement = document.querySelector('.cart__items');
       cartItemsElement.appendChild(cartItemElement);
+      addCartItemToLocalStorage({ sku: id, name: title, salePrice: price });
     });
   });
 }
 
+function getCartFromLocalStorage() {
+  const cartItems = JSON.parse(localStorage.getItem('cart'));
+  // console.log(cartItems);
+  if (cartItems) {
+    cartItems.forEach(({ sku, name, salePrice }) => {
+      const cartItemElement = createCartItemElement({ sku, name, salePrice });
+      const cartItemsElement = document.querySelector('.cart__items');
+      cartItemsElement.appendChild(cartItemElement);  
+    });
+  }
+  return cartItems;
+}
+
 window.onload = async function onload() {
+  getCartFromLocalStorage();
   // console.log(itemsElement);
   const computers = await fetchList();
   // console.log(computers); 
