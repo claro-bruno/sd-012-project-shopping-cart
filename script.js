@@ -34,8 +34,24 @@ const saveLocalStorage = () => {
   // Estava salvando a própria OL na localStorage e não o conteúdo innerHTML dela, assim dando erro, consegui graças a ajuda do Nuwanda
 };
 
+const totalPrice = () => {
+  const totalPriceCart = document.querySelector('.total-price');
+  const produtosCarrinho = Object.values(document.getElementsByClassName('cart__item'));
+  if (produtosCarrinho.length === 0) {
+    totalPriceCart.innerText = 0;
+  }
+  let valorFinal = 0;
+  produtosCarrinho.forEach((produto) => {
+    const { innerText } = produto;
+  const price = parseFloat(innerText.substring(innerText.indexOf('$') + 1));
+    valorFinal += price;
+  });
+  totalPriceCart.innerText = valorFinal;
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  totalPrice();
   saveLocalStorage();
 }
 
@@ -58,14 +74,6 @@ const fetchAPI = () => {
   return produtos;
 };
 
-const priceCart = () => {
-  const sectionCart = document.querySelector('.cart');
-  const criarP = document.createElement('p');
-  criarP.className = 'total-price';
-  criarP.innerText = 'Preço Total: 0';
-  sectionCart.appendChild(criarP);
-};
-
 const loadLocalStorage = () => {
   const itensSalvos = localStorage.getItem('cart');
   const carrinho = document.querySelector('.cart__items');
@@ -81,7 +89,8 @@ const addItemToCart = () => {
     return fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((response) => response.json())
     .then((produto) => carrinho.appendChild(createCartItemElement(produto)))
-    .then(() => saveLocalStorage());
+    .then(() => saveLocalStorage())
+    .then(() => totalPrice());
   }));
 };
 
@@ -100,6 +109,6 @@ window.onload = function onload() {
   fetchAPI()
     .then(() => addItemToCart())
     .then(() => cleanCart());
-  priceCart();
   loadLocalStorage();
+  totalPrice();
 };
