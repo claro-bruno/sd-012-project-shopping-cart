@@ -13,9 +13,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener() {
+  const itemList = document.querySelector('.cart__items');
+  const li = document.querySelector('.cart__item');
+  itemList.removeChild(li);
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const element = document.querySelector('.cart__items');
@@ -23,7 +25,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   element.appendChild(li);
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
