@@ -1,8 +1,6 @@
 const items = document.querySelector('.items');
 const orderList = document.querySelector('.cart__items');
 
-window.onload = function onload() {};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,8 +31,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveLocal() {
+  const saveCart = [];
+  if (orderList !== null) {
+    orderList.childNodes.forEach((element) => {
+      saveCart.push(element.innerText);
+    });
+    localStorage.setItem('saveCart', JSON.stringify(saveCart));
+  }
+}
+
 function cartItemClickListener(event) {
-  return event.target.remove();
+  event.target.remove();
+  return saveLocal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -53,6 +62,7 @@ function getId(event) {
     .then((product) => {
       const createCart = createCartItemElement(product);
       orderList.appendChild(createCart);
+      saveLocal();
     });
 }
 // Requisito 2 cumprido com ajuda do colega Rodrigo Facury;
@@ -68,3 +78,20 @@ function fetchList() {
 }
 
 fetchList();
+
+function getCart() {
+  const storageCart = JSON.parse(localStorage.getItem('saveCart'));
+  if (storageCart !== null) {
+    storageCart.forEach((item) => {
+      const li = document.createElement('li');
+      li.className = 'cart__item';
+      li.innerText = item;
+      orderList.appendChild(li);
+      li.addEventListener('click', cartItemClickListener);
+    });
+  }
+}
+
+window.onload = function onload() {
+  getCart();
+};
