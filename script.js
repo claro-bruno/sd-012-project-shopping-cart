@@ -4,7 +4,8 @@ let priceT;
 const totalPrice = document.querySelector('.total-price');
 const ol = document.querySelector('.cart__items');
 
-if (Number.isNaN(parseFloat(localStorage.getItem('total'))) || localStorage.getItem('total') === null) {
+if (Number.isNaN(parseFloat(localStorage.getItem('total')))
+  || localStorage.getItem('total') === null) {
   priceT = 0;
 } else {
   priceT = parseFloat(localStorage.getItem('total'));
@@ -33,8 +34,6 @@ const createProductItemElement = ({ id, title, thumbnail }) => {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 };
-
-const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
 const updatePrice = (total) => {
   const spanPrice = document.createElement('span');
@@ -75,13 +74,6 @@ const listPcs = (array) => {
   const list = document.querySelector('.items');
   array.forEach((element) => {
     list.appendChild(createProductItemElement(element));
-  });
-};
-
-const addClick = (array) => {
-  array.forEach((element, index) => {
-    const itemAdd = document.getElementsByClassName('item__add')[index];
-    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`));
   });
 };
 
@@ -156,6 +148,13 @@ const addPc = async (url) => {
   } catch (error) {
     alert(error);
   }
+};
+
+const addClick = (array) => {
+  array.forEach((element, index) => {
+    const itemAdd = document.getElementsByClassName('item__add')[index];
+    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`));
+  });
 };
 
 const getApi = async (url) => {
