@@ -1,6 +1,7 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search';
 const API_ITEMS = 'https://api.mercadolibre.com/items/';
 const MSG_ERROR = 'Estamos passando por problemas. Por Favor, tente mais tarde!';
+const MSG_ERROR_SEARCH = 'Desculpa! Não foi possível encontrar a sua busca!';
 const body = document.querySelector('body');
 const items = document.querySelector('.items');
 const cart = document.querySelector('.cart__items');
@@ -87,9 +88,10 @@ const fetchProductList = async (item) => {
     const response = await fetch(`${API_URL}?q=${item}`);
     removeLoading();
     const obj = await response.json();
+    if (!obj.results.length) throw new Error(MSG_ERROR_SEARCH);
     createProductsList(obj);
   } catch (error) {
-    alert(MSG_ERROR);
+    items.innerHTML = `<h1>${error}</h1>`;
   }
 };
 
@@ -100,7 +102,8 @@ const fetchForId = async (id) => {
     removeLoading();
     return await response.json();
   } catch (error) {
-    alert(MSG_ERROR);
+    removeLoading();
+    items.innerHTML = `<h1>${error}</h1>`;
   }
 };
 
@@ -117,7 +120,11 @@ const addCart = () => {
       fetchForId(id)
       .then((item) => cart
         .appendChild(createCartItemElement(item)))
-      .then(() => saveLocalStorage());
+      .then(() => saveLocalStorage())
+      .catch(() => {
+        removeLoading();
+        items.innerHTML = `<h1>${MSG_ERROR}</h1>`;
+      });
     });
   });
 };
@@ -144,7 +151,11 @@ const loader = () => {
   .then(() => loadLocalStorage())
   .then(() => addCart())
   .then(() => totalPrice())
-  .then(() => clearCart());
+  .then(() => clearCart())
+  .catch(() => {
+    removeLoading();
+    items.innerHTML = `<h1>${MSG_ERROR}</h1>`;
+  });
 };
 
 const clearItems = () => {
