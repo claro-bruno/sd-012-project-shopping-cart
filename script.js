@@ -69,11 +69,11 @@ function getSkuFromProductItem(item) {
 function addProduct(event) {
   if (event.target.className === 'item__add') {
     const itemId = getSkuFromProductItem(event.target.parentNode);
-    fetch(`https://applicationCache.mercadolibre.com/items/${itemId}`)
+    fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
     .then((json) => {
-      const itemList = document.querySelector('.cart__items');
-      itemList.appendChild(createCartItemElement(json));
+      const itemsList = document.querySelector('.cart__items');
+      itemsList.appendChild(createCartItemElement(json));
     });
   }
 }
