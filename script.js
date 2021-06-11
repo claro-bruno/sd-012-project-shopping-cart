@@ -7,19 +7,10 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-// ORIGINAL "createCustomElement" ---------------
-// function createCustomElement(element, className, innerText) {
-//   const e = document.createElement(element);
-//   e.className = className;
-//   e.innerText = innerText;
-//   return e;
-// }
-// ----------------------------------------------
-
-function createCustomElement(product, newClass, text) {
-  const e = document.createElement(product);
-  e.className = newClass;
-  e.innerText = text;
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
   return e;
 }
 
@@ -40,9 +31,13 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// 3 requisito abaixo----------------------------------------------------------
+
 function cartItemClickListener(event) {
   event.target.remove();
 }
+
+// -----------------------------------------------------------------------------
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -52,22 +47,50 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const listCart = document.querySelector('.cart__items');
+const saveCart = () => {  
+  localStorage.setItem('myCart', listCart.innerHTML);
+  console.log(listCart.childElementCount);
+}
+
+function loadCart() {
+  listCart.innerHTML = localStorage.getItem('myCart');
+  const teste = document.querySelectorAll('.cart__item');
+  teste.forEach((li) => li.addEventListener('click' ,cartItemClickListener));
+}
+
+// 2 requisito abaixo ----------------------------------------------------------
+
 const addItens = async (id) => {
-  let item = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  item = await item.json();
-  const cart = document.querySelector('.cart__items');
-  cart.appendChild(createCartItemElement(item));
+  let idItem = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  idItem = await idItem.json();
+  // console.log(idItem);
+  const ol = document.querySelector('.cart__items');
+  ol.appendChild(createCartItemElement(idItem));
+  saveCart(id);  
 };
 
-const callback = () => {
+const addCart = () => {
   const btnAdd = document.querySelectorAll('.item__add');
 btnAdd.forEach((button) => {
   button.addEventListener('click', (event) => {
-    const teste = event.target.parentElement.firstChild.innerText; // para pegar o elemento
-    addItens(teste);
+    const getId = event.target.parentElement.firstChild.innerText; // para pegar o id
+    console.log(getId);
+    addItens(getId);
+    // saveCart(getId);
   });
 });
 };
+
+// 4 requisito tentativa frustada --------------------------------------------
+
+// const saveCart = () => {
+//   const ol = document.querySelector('.cart__items');
+//   localStorage.setItem('myCart', ol.innerHTML);
+//   console.log(ol.childElementCount);
+// }
+
+// 1 requisito abaixo ----------------------------------------------------------
 
 const fetchML = () => {
   const itens = document.querySelector('.items');
@@ -75,9 +98,11 @@ const fetchML = () => {
   .then((response) => response.json())
   .then((response) => response.results)
   .then((arr) => arr.forEach((item) => itens.appendChild(createProductItemElement(item))))
-  .then(() => callback());
+  .then(() => addCart());
 };
 
 window.onload = function onload() {
   fetchML();
+  loadCart();
+  
  };
