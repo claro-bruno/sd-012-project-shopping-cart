@@ -38,7 +38,6 @@ function localStorageCart() {
 function cartPrices() {
   const totalPrices = document.querySelector('.total-price');
   const cartList = [...document.querySelectorAll('.cart__item')];
-  totalPrices.innerText = 0;
   const cartSum = cartList.reduce((acc, cv) => acc + Number(cv.innerText.split('PRICE: $')[1]), 0);
   totalPrices.innerText = cartSum;
 }
