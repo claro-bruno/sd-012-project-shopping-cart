@@ -1,6 +1,7 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 let arrayCart;
+let totalPrice = 0;
 
 const getCart = () => {
   const localStorageCart = localStorage.getItem('Cart');
@@ -15,6 +16,11 @@ const getCart = () => {
 
 getCart();
 
+const createSalePrice = () => {
+  const priceP = document.querySelector('.total-price');
+  priceP.innerText = totalPrice;
+};
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,6 +33,11 @@ const createCustomElement = (element, className, innerText) => {
   e.className = className;
   e.innerText = innerText;
   return e;
+};
+
+const sumTotalPrice = (salePrice) => {
+  totalPrice += salePrice;
+  createSalePrice();
 };
 
 const createProductItemElement = ({ id: sku, title: name, thumbnail: image }) => {
@@ -43,8 +54,10 @@ const createProductItemElement = ({ id: sku, title: name, thumbnail: image }) =>
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
-const cartItemClickListener = (event) => {
+const cartItemClickListener = (event, salePrice) => {
   const cart = document.getElementById('cart__items');
+  totalPrice -= salePrice;
+  createSalePrice();
   cart.removeChild(event.target);
 };
 
@@ -54,7 +67,8 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   cart.appendChild(li);
-  li.addEventListener('click', (event) => cartItemClickListener(event));
+  sumTotalPrice(salePrice);
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   return li;
 };
 
@@ -96,6 +110,8 @@ const buttonEmptyCart = () => {
   const cart = document.getElementById('cart__items');
   buttonEmpty.addEventListener('click', () => {
     cart.innerHTML = '';
+    totalPrice = 0;
+    createSalePrice();
     localStorage.setItem('Cart', []);
   });
 };
@@ -103,5 +119,6 @@ const buttonEmptyCart = () => {
 window.onload = function onload() {
   fetchApi(API_URL).then(() => buttonAddCart());
   buttonEmptyCart();
+  createSalePrice();
   arrayCart.forEach((item) => createCartItemElement(item));
 };
