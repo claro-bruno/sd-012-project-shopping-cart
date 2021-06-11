@@ -20,9 +20,9 @@ function createButton(element, className, id, innerText) {
   return e;
 }
 
-function appendChildCartItems(li) {
+function addCartItems(li) {
   const cartItems = document.querySelector('.cart__items');
-      cartItems.appendChild(li);
+    cartItems.appendChild(li);
 }
 
 function cleanItemFromCart(event) {
@@ -40,7 +40,7 @@ function clearAllCart() {
   });
 }
 
-function returnsSaveProducts() {
+function returnsSaveProductsLocalStorage() {
   if (localStorage.getItem('products')) {
     const contentLocalStorage = localStorage.getItem('products');
     const split = contentLocalStorage.split('//');    
@@ -49,14 +49,14 @@ function returnsSaveProducts() {
         li.className = 'cart__item';
         li.innerHTML = item;
         li.addEventListener('click', cleanItemFromCart);
-        return appendChildCartItems(li);
+        return addCartItems(li);
     });
   }
 }
 
 function saveProductsLocalStorage(skuReceived) {
   let selectedProduct = skuReceived;
-    if (!localStorage.products) {
+  if (!localStorage.products) {
     localStorage.setItem('products', selectedProduct);
   } else {
     selectedProduct = `${localStorage.products}//${skuReceived}`;
@@ -64,16 +64,33 @@ function saveProductsLocalStorage(skuReceived) {
   localStorage.setItem('products', selectedProduct);
 }
 
+/* function totalPrice(salePrice) {
+
+  console.log(typeof salePrice);
+  // let price = 0;
+  // let totalPrice1 = price + salePrice;
+
+  // const totalPrice1 = price + salePrice;
+
+  // console.log(totalPrice1);
+
+  const h4 = document.createElement('h4');
+  h4.className = 'total-price';
+  h4.innerText = 'Total:';
+
+  const sectionCart = document.querySelector('.cart');
+  sectionCart.appendChild(h4);
+} */
+
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
-      li.className = 'cart__item';
-      const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-      li.innerText = productTextFormat;
-      li.addEventListener('click', cleanItemFromCart);
-      appendChildCartItems(li);
-
-      saveProductsLocalStorage(productTextFormat);
-      clearAllCart();
+  li.className = 'cart__item';
+  const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = productTextFormat;
+  addCartItems(li);
+  li.addEventListener('click', cleanItemFromCart);
+  
+  saveProductsLocalStorage(productTextFormat);
 }
 
 async function fetchAPIProduct({ id: skuReceived = this.id }) {
@@ -124,5 +141,6 @@ async function fetchAPI() {
 
 window.onload = async function onload() { 
   await fetchAPI();
-  returnsSaveProducts();
+  returnsSaveProductsLocalStorage();
+  clearAllCart();
 };
