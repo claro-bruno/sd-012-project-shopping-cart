@@ -1,3 +1,18 @@
+let arrayCartList;
+
+const getCartItems = () => {
+  // const valueLi = document.querySelectorAll('.cart__items').value;
+  const localStorageCart = localStorage.getItem('Cart');
+  if (localStorageCart === null || localStorageCart === '') {
+    arrayCartList = [];
+    localStorage.setItem('Cart', arrayCartList);
+  } else {
+    const localStorageConvert = JSON.parse(localStorageCart);
+    arrayCartList = localStorageConvert;
+  }
+};
+getCartItems();
+
 function createProductImageElement(imageSource) { // cria elemento do tipo img
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,27 +44,37 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 // }
 
 function cartItemClickListener() { // o produto do carrinho é removido ao ser clicado. (remover class: projeto to-do-list)
-  const acessFather = document.querySelector('.cart__items');
+  const acessFather = document.querySelector('#cart__items');
   const accessChild = document.querySelector('.cart__item');
   acessFather.removeChild(accessChild);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // esses elementos devem estar na hierarquia de <ol class="cart__items"></ol>, no carrinho de compras.
+  const cart = document.getElementById('cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  cart.appendChild(li);
   li.addEventListener('click', cartItemClickListener); // ao clicar em um item com classe 'li', chama a função 'cartItemClickListener' que remove o 'li' do carrinho.
   return li;
 }
 
+// function createLocalStorage(itemList){
+//   createCartItemElement()
+//   let classes = [itemList]
+//   storage.setItem("classes", JSON.stringify(classes))
+//   let cls = JSON.parse(storage.getItem("classes"))
+//   console.log(cls) // ["2019/set", "2019/oct"]
+// }
+
 const fetchObject = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
-
   .then((response) => response.json())
-
-  .then((obj) => document.querySelector('.cart__items')
-
-  .appendChild(createCartItemElement(obj)));
+  .then((obj) => {
+    arrayCartList.push(obj);
+    localStorage.setItem('Cart', JSON.stringify(arrayCartList));
+    createCartItemElement(obj);
+  });
 };
 
 const eventButtun = () => {
@@ -62,14 +87,13 @@ const eventButtun = () => {
 const fetchResults = () => {
   const getParent = document.getElementsByClassName('items');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-
   .then((response) => response.json())
-
   .then((array) => array.results.forEach((item) => getParent[0]
-
   .appendChild(createProductItemElement(item)))).then(() => eventButtun());
 };
 
 window.onload = function onload() {
   fetchResults();
+
+  arrayCartList.forEach((item) => createCartItemElement(item));
 };
