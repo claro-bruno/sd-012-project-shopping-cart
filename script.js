@@ -50,7 +50,8 @@ const getSkuFromProductItem = (item) => {
 };
 
 const cartItemClickListener = (event) => {
-  // coloque seu código aqui
+  const ol = document.querySelector('.cart__items');
+  ol.removeChild(event.target);
 };
 
 const createCartItemElement = ({ id, title, price }) => {
