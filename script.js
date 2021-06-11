@@ -34,8 +34,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
   // coloque seu código aqui
+  const OlItem = document.querySelector('.cart__items');
+  OlItem.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,7 +53,6 @@ const cartShop = async (itemID) => {
   fetchCart = await fetchCart.json();
   const olCart = document.querySelector('.cart__items');
   olCart.appendChild((createCartItemElement(fetchCart)));
-  console.log(fetchCart);
 };
 
 const createButton = () => {
