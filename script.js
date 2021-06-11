@@ -32,13 +32,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
     const checkLocalStorage = localStorage.getItem('itensCartList');
     const arrayJson = JSON.parse(checkLocalStorage);
     const newArray = arrayJson.filter(({ id }) => id !== aidi);
-    console.log(newArray, aidi);
     localStorage.setItem('itensCartList', JSON.stringify(newArray));
   };
   
   function cartItemClickListener(event) {
       // coloque seu código aqui
+      const catchTotalPrice = document.querySelector('.total-price');
       const id = event.target.innerText.split('|')[0].replace(/SKU: /g, '').trim();
+      const price = event.target.innerText.split('|')[2].replace(/PRICE:\s\$/g, '').trim();
+      catchTotalPrice.innerText = (Number(catchTotalPrice.innerText) - Number(price));
       removeItemLocalStorage(id);
       event.target.remove();
   }
@@ -56,7 +58,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
         try {
           const respons = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
           const data = await respons.json();
-          const dataResults = await data.results;
+          const dataResults = data.results;
           return dataResults.forEach(({ id, title, thumbnail }) => {
             const item = createProductItemElement({ id, title, thumbnail });
             catchItemsList.appendChild(item);
@@ -76,6 +78,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
         localStorage.setItem('itensCartList', JSON.stringify(arrayJs));
       };
 
+      const sumPrices = (price) => {
+        const catchTotalPrice = document.querySelector('.total-price');
+        catchTotalPrice.innerText = Number(catchTotalPrice.innerText) + Number(price);
+      };
+
       const fetchItem = (aidi) => {
         const catchCart = document.querySelector('.cart__items');
       fetch(`https://api.mercadolibre.com/items/${aidi}`)
@@ -83,6 +90,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
         .then(({ id, title, price }) => {
           catchCart.appendChild(createCartItemElement({ id, title, price }));
           saveLocalStorage({ id, title, price });
+          sumPrices(price);
         });
       };
       
@@ -105,6 +113,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
           const arrayJs = JSON.parse(checkLocalStorage);
           arrayJs.forEach((item) => {
             catchCart.appendChild(createCartItemElement(item));
+            sumPrices(item.price);
           });
         }
       };
