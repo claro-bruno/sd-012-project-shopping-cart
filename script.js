@@ -33,37 +33,44 @@ function clearAllCart() {
   });
 }
 
-// teste junto com ronald - nao deu certo ainda
-function saveProductsLocalStorage(skuReceived) {
-  let teste;
-  if (localStorage.products) {
-    teste = localStorage.products;
-    console.log(teste);
-    teste += skuReceived;
-    console.log(teste);
-  }   
-  localStorage.setItem('products', teste); // não esta salvando todos os produtos clicados
-}
+/* function returnsSaveProducts() {
+  const productsCart = document.querySelectorAll('.cart__item');
 
-/* abaixo funcao usada no projeto to do list
-function returnsSaveProducts() {
-  const products = document.querySelectorAll('.cart__item');
   if (localStorage.getItem('products') !== undefined) {
-    products.innerHTML = localStorage.getItem('products');
+    productsCart.forEach((item) => {
+      item.innerHTML = localStorage.getItem('products');
+    });
+    // productsCart.innerHTML = localStorage.getItem('products');
   }
 } */
+
+function saveProductsLocalStorage(skuReceived) {
+  let selectedProduct = skuReceived;
+  
+  if (!localStorage.products) {
+    localStorage.setItem('products', selectedProduct);
+  } else {
+    selectedProduct = `${localStorage.products},
+      ${skuReceived}`;
+  }
+
+  localStorage.setItem('products', selectedProduct);
+
+  // returnsSaveProducts();
+}
 
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
       li.className = 'cart__item';
-      const textFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-      li.innerText = textFormat;
+      const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+      li.innerText = productTextFormat;
       li.addEventListener('click', cleanItemFromCart);
     
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(li);
       
-      saveProductsLocalStorage(textFormat); // não esta salvando todos os produtos clicados
+      saveProductsLocalStorage(productTextFormat);
+      
       clearAllCart();
 }
 
@@ -72,6 +79,9 @@ async function fetchAPIProduct({ id: skuReceived = this.id }) {
     const response = await fetch(`https://api.mercadolibre.com/items/${skuReceived}`);
     const { id: sku, title: name, price: salePrice } = await response.json();
     createCartItemElement(sku, name, salePrice);
+
+    // const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    // saveProductsLocalStorage(productTextFormat);
   } catch (error) { 
     alert('Ops, deu ruim');
   }
