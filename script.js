@@ -66,21 +66,33 @@ function addButton() {
       return addToCart(id);
     }
   });
+  window.localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
 }
 function cartItemClickListener(event) {
   // coloque seu código aqui
   if (event.target.classList.contains('cart__item')) {
   event.target.remove();
   }
+  localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
 }
 
-/* function removeFromCart() {
-  document.getElementsByClassName('cart__item').addEventListener('click', cartItemClickListener)
-} */
+function removeAll(event) {
+  if (event.target.classList.contains('empty-cart')) {
+    cartItems.innerHTML = '';
+  }
+}
+
+function salvarLista() {
+  localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
+}
+
 window.onload = function onload() { 
   fetchApi();
   addButton();
-  // removeFromCart()
+  salvarLista();
+  const listaSalva = localStorage.getItem('itemsCarrinho');
+  cartItems.innerHTML = listaSalva;
 };
 
 document.addEventListener('click', cartItemClickListener);
+document.addEventListener('click', removeAll);
