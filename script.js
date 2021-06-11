@@ -20,6 +20,11 @@ function createButton(element, className, id, innerText) {
   return e;
 }
 
+function appendChildCartItems(li) {
+  const cartItems = document.querySelector('.cart__items');
+      cartItems.appendChild(li);
+}
+
 function cleanItemFromCart(event) {
   const deleteProduct = event;
   deleteProduct.target.outerHTML = '';
@@ -34,30 +39,25 @@ function clearAllCart() {
 }
 
 function returnsSaveProducts() {
-  if (localStorage.getItem('products') !== undefined) {
-    const conteudo = localStorage.getItem('products');
-    const split = conteudo.split('//');
-    console.log(split);
-    
+  if (localStorage.getItem('products')) {
+    const contentLocalStorage = localStorage.getItem('products');
+    const split = contentLocalStorage.split('//');    
     split.map((item) => {
       const li = document.createElement('li');
         li.className = 'cart__item';
-        li.innerText = item;
+        li.innerHTML = item;
         li.addEventListener('click', cleanItemFromCart);
-      
-        const cartItems = document.querySelector('.cart__items');
-        cartItems.appendChild(li);
+        return appendChildCartItems(li);
     });
   }
 }
 
 function saveProductsLocalStorage(skuReceived) {
-  let selectedProduct = `${skuReceived} //`;
+  let selectedProduct = skuReceived;
     if (!localStorage.products) {
     localStorage.setItem('products', selectedProduct);
   } else {
-    selectedProduct = `${localStorage.products}
-      ${skuReceived} //`;
+    selectedProduct = `${localStorage.products}//${skuReceived}`;
   }  
   localStorage.setItem('products', selectedProduct);
 }
@@ -68,12 +68,9 @@ function createCartItemElement(sku, name, salePrice) {
       const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
       li.innerText = productTextFormat;
       li.addEventListener('click', cleanItemFromCart);
-    
-      const cartItems = document.querySelector('.cart__items');
-      cartItems.appendChild(li);
-      
+      appendChildCartItems(li);
+
       saveProductsLocalStorage(productTextFormat);
-      
       clearAllCart();
 }
 
@@ -82,9 +79,6 @@ async function fetchAPIProduct({ id: skuReceived = this.id }) {
     const response = await fetch(`https://api.mercadolibre.com/items/${skuReceived}`);
     const { id: sku, title: name, price: salePrice } = await response.json();
     createCartItemElement(sku, name, salePrice);
-
-    // const productTextFormat = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-    // saveProductsLocalStorage(productTextFormat);
   } catch (error) { 
     alert('Ops, deu ruim');
   }
@@ -126,7 +120,7 @@ async function fetchAPI() {
   }
 }
 
-window.onload = function onload() { 
-  fetchAPI();
+window.onload = async function onload() { 
+  await fetchAPI();
   returnsSaveProducts();
 };
