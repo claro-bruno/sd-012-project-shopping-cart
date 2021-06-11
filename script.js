@@ -27,6 +27,15 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function saveLocalStage() {
+  const liContent = cartItem.innerHTML.toString();
+  localStorage.setItem('products', liContent);
+}
+function removeItemS(event) {
+  event.addEventListener('click', event.remove());
+  saveLocalStage();
+}
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -56,6 +65,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   cartItem.appendChild(li);
+  saveLocalStage(); 
   return li;
 }
 
@@ -78,6 +88,7 @@ const clearCart = () => {
   const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
     cartItem.innerText = '';
+    saveLocalStage();
   });
 };
 
@@ -100,4 +111,10 @@ const fetchAPI = (search) => {
 window.onload = function onload() { 
   fetchAPI('computador');
   clearCart();
+  const contentSave = localStorage.getItem('products');
+  if (contentSave) {
+    cartItem.innerHTML = contentSave;
+    const getLi = document.querySelectorAll('.cart__item');
+    getLi.forEach((item) => item.addEventListener('click', () => removeItemS(item)));
+  }
 };
