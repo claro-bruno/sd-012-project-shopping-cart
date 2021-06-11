@@ -1,6 +1,7 @@
 const BASE_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const ITEM_URL = 'https://api.mercadolibre.com/items/';
 const CART_ITEMS = '.cart__items';
+const LOCAL_STORAGE_KEY = 'shopCart';
 let itemStorage = [];
 
 const updateTotalPrice = () => {
@@ -12,7 +13,7 @@ const updateTotalPrice = () => {
 const addLocalStorage = (item) => {
   itemStorage.push(item);
   const itemStorageString = JSON.stringify(itemStorage);
-  localStorage.setItem('shopCart', itemStorageString);
+  localStorage.setItem(LOCAL_STORAGE_KEY, itemStorageString);
   updateTotalPrice();
 };
 
@@ -20,7 +21,7 @@ const rmvLocalStorage = (cartItem) => {
   const itemSKU = cartItem.innerText.substr(5, 13);
   itemStorage = itemStorage.filter((item) => item.id !== itemSKU);
   const itemStorageString = JSON.stringify(itemStorage);
-  localStorage.setItem('shopCart', itemStorageString);
+  localStorage.setItem(LOCAL_STORAGE_KEY, itemStorageString);
   updateTotalPrice();
 };
 
@@ -65,8 +66,8 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
 };
 
 const getLocalStorage = () => {
-  if (localStorage.getItem('shopCart') !== null) {
-    itemStorage = JSON.parse(localStorage.getItem('shopCart'));
+  if (localStorage.getItem(LOCAL_STORAGE_KEY) !== null) {
+    itemStorage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
     itemStorage.forEach((item) => {
       const parentElement = document.querySelector(CART_ITEMS);
       parentElement.appendChild(createCartItemElement(item));
@@ -89,21 +90,25 @@ const createItemList = async (item) => {
   } 
 };
 
+const createCartItem = async (item) => {
+  try {
+    const itemID = getSkuFromProductItem(item);
+    const itemFromApi = await fetch(`${ITEM_URL}${itemID}`);
+    const itemObj = await itemFromApi.json();
+    const parentElement = document.querySelector(CART_ITEMS);
+    parentElement.appendChild(createCartItemElement(itemObj));
+    addLocalStorage(itemObj);
+    } catch (error) {
+      console.log('Erro ao adicionar item no carrinho.');
+    }
+};
+
 const addButtonsEvent = async () => {
   const itemList = document.querySelectorAll('.item');
   itemList.forEach((item) => {
     const button = item.querySelector('button');
-    button.addEventListener('click', async () => {
-      try {
-      const itemID = getSkuFromProductItem(item);
-      const itemFromApi = await fetch(`${ITEM_URL}${itemID}`);
-      const itemObj = await itemFromApi.json();
-      const parentElement = document.querySelector(CART_ITEMS);
-      parentElement.appendChild(createCartItemElement(itemObj));
-      addLocalStorage(itemObj);
-      } catch (error) {
-        console.log('Erro ao adicionar item no carrinho.');
-      }
+    button.addEventListener('click', () => {
+      createCartItem(item);
     });
   });
 };
@@ -111,12 +116,12 @@ const addButtonsEvent = async () => {
 const eraseCart = () => {
   const eraseButton = document.querySelector('.empty-cart');
   eraseButton.addEventListener('click', () => {
-    const cartItems = document.querySelector(CART_ITEMS);
-    const totalPrice = document.querySelector('.total-price');
+    const shopCart = document.querySelector(CART_ITEMS);
+    const cartItem = document.querySelectorAll('.cart__item');
     itemStorage = [];
-    cartItems.innerHTML = '';
-    totalPrice.innerHTML = '';
+    cartItem.forEach((item) => shopCart.removeChild(item));
     localStorage.clear();
+    updateTotalPrice();
   });
 };
 
