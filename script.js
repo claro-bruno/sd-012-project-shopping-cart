@@ -118,7 +118,9 @@ const getProduct = (search) => new Promise((resolve, reject) => {
 });
 
 window.onload = async () => {
+  itemsList.innerHTML = '<span class="loading">loading...<span/>';
   loadCart();
   const products = await getProduct('computador');
+  itemsList.innerHTML = '';
   return products.forEach((product) => itemsList.appendChild(createProductItemElement(product)));
 };
