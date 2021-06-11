@@ -105,6 +105,11 @@ const buttonAddCart = () => {
   });
 };
 
+const removeLoadingText = () => {
+  const body = document.querySelector('body');
+  body.removeChild(body.firstElementChild);
+};
+
 const buttonEmptyCart = () => {
   const buttonEmpty = document.getElementById('empty-cart');
   const cart = document.getElementById('cart__items');
@@ -117,7 +122,10 @@ const buttonEmptyCart = () => {
 };
 
 window.onload = function onload() {
-  fetchApi(API_URL).then(() => buttonAddCart());
+  fetchApi(API_URL).then(() => {
+    removeLoadingText();
+    buttonAddCart();
+  });
   buttonEmptyCart();
   createSalePrice();
   arrayCart.forEach((item) => createCartItemElement(item));
