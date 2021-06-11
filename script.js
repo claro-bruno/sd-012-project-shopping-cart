@@ -202,9 +202,11 @@ let active = false;
 cartIcon.addEventListener('click', () => {
   if (!active) {
     cartContainer.classList.remove('hidden');
+    cartIcon.style.backgroundColor = 'white';
     active = true;
   } else {
     cartContainer.classList.add('hidden');
+    cartIcon.style.backgroundColor = 'initial';
     active = false;
   }
 });

@@ -168,13 +168,13 @@ img {
 @media screen and (max-width: 1024px) {
   .cart.hidden {
     position: absolute !important;
-    right: -100vw !important;
+    right: 100vw !important;
     transition: all 0.3s;
   }
 
   .cart {
     position: absolute !important; 
-    right: -30px;
+    right: 45vw !important;
     transition: all 0.3s;
     width: 50% !important;
     box-shadow: 2px 2px 5px 2px black;
@@ -212,7 +212,7 @@ img {
 .fa-times {
   display: none;
   position: absolute;
-  left: 10px;
+  right: 10px;
 }
 
 .icons {
@@ -224,6 +224,9 @@ img {
 .fa-shopping-cart, .fa-search {
   display: none;
   font-size: 20pt;
+  padding: 10px;
+  box-shadow: 0 1px 2px 1px black;
+  border-radius: 5px;
 }
 
 .cart {
