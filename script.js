@@ -16,20 +16,15 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-const getPc = (pcId, callback) => {
+const getPc = () => {
   const section = document.querySelector('.items');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador').then((response) => {
     response.json().then((computador) => {
-    //  createProductItemElement(computador.results);
     computador.results.forEach(({id: sku, title: name, thumbnail: image}) => 
     section.appendChild(createProductItemElement({sku, name, image})));
     })
   })
 }
-// const fetchPc = () => {
-//   getPc.forEach(pcId,getPc());
-// }
-
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -38,9 +33,18 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const botao = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  botao.addEventListener('click', () => adicionarCarr(section))
+  section.appendChild(botao);
   return section;
+}
+async function adicionarCarr(item) {
+  const id = getSkuFromProductItem(item);
+  let produto = await fetch(`https://api.mercadolibre.com/items/${id}`);
+    produto = await produto.json();
+    const {id: sku, title: name, price: salePrice} = produto;
+    const ol = document.querySelector('.cart__items');
+    ol.appendChild(createCartItemElement({sku, name, salePrice}));
 }
 
 function getSkuFromProductItem(item) {
