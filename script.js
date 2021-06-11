@@ -1,9 +1,13 @@
 const ol = document.getElementsByClassName('cart__items')[0];
 const cart = document.getElementsByClassName('cart')[0];
-const divPrices = document.createElement('div');
-divPrices.className = 'total-price';
 const items = document.getElementsByClassName('items')[0];
 const clearButton = document.getElementsByClassName('empty-cart')[0];
+const divPrices = document.createElement('div');
+
+const createTotalPrice = () => {
+  divPrices.className = 'total-price';
+  cart.appendChild(divPrices);
+};
 
 const createLoading = () => {
   const loading = document.createElement('span');
@@ -122,7 +126,7 @@ const createItems = () => {
 
 const getSavedCart = () => {
   const savedCart = JSON.parse(localStorage.getItem('cartItems'));
-    if (savedCart !== null) {
+  if (savedCart !== null) {
     savedCart.forEach((item) => {
       const newLi = document.createElement('li');
       newLi.innerText = item;
@@ -135,7 +139,7 @@ const getSavedCart = () => {
 
 window.onload = function onload() {
   clearButton.addEventListener('click', clearEverything);
-  cart.appendChild(divPrices);
+  createTotalPrice();
   getSavedCart();
   sumPrices();
   createItems();
