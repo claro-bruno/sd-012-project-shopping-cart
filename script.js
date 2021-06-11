@@ -4,7 +4,6 @@ const totalValue = document.querySelector('.total-price');
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const content = event.target.innerHTML;
-  console.log(event.target);
   const number = content.slice(content.indexOf('$') + 1, content.length);
   totalValue.innerText = (parseFloat(totalValue.innerText) - number).toFixed(1);
   localStorage.removeItem(event.target.id);
@@ -15,7 +14,7 @@ function cartItemClickListener(event) {
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.id = Math.floor(Math.random() * (999 - 111) + 111);
+  li.id = id;
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -25,16 +24,12 @@ const addToCart = async (event) => {
   const id = event.target.parentElement.firstChild.innerHTML;
   let searchAPI = await fetch(`https://api.mercadolibre.com/items/${id}`);
   searchAPI = await searchAPI.json();
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.id = Math.floor(Math.random() * (999 - 111) + 111);
-  li.innerText = `SKU: ${searchAPI.id} | NAME: ${searchAPI.title} | PRICE: $${searchAPI.price}`;
-  li.addEventListener('click', cartItemClickListener);
-  await localStorage.setItem(`${li.id}`, 
+  searchAPI.id = searchAPI.id + Math.floor(Math.random() * (999 - 111) + 111);
+  await localStorage.setItem(`${searchAPI.id}`, 
   JSON.stringify({ id: searchAPI.id, title: searchAPI.title, price: searchAPI.price }));
   totalValue.innerText = parseFloat(totalValue.innerText) + searchAPI.price;
   localStorage.setItem('value', totalValue.innerText);
-  olCart.appendChild(li);
+  olCart.appendChild(createCartItemElement(searchAPI));
 };
 
 function createProductImageElement(imageSource) {
