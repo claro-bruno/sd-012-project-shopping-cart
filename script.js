@@ -82,12 +82,16 @@ const clearCart = () => {
 };
 
 const fetchAPI = (search) => {
+  const loading = document.querySelector('.loading');
+  loading.innerHTML = 'loading...';
+
   fetch(`${URL_BASE}?q=${search}`)
   .then((response) => response.json())
   .then((data) => {
     data.results.forEach((result) => {
       const getItem = document.querySelector('.items');
       getItem.appendChild(createProductItemElement(result));
+      loading.remove();
     });
     addInCart();
   });
