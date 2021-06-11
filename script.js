@@ -28,8 +28,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener() {
-  // coloque seu código aqui
+function cartItemClickListener(event) {
+  // getId(event.target.parentElement.firstChild.innerText);
+  // calculatePrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -54,21 +55,36 @@ const getAPI = async () => {
   return api;
 };
 
+const calculatePrice = () => {
+  const totalPriceSelect = document.querySelector('.total-price');
+  const selectCartItems = document.getElementsByClassName('cart__item');
+  const arrayLi = [...selectCartItems];
+  const resultArray = arrayLi.reduce((acc, curr) => {
+    const priceText = curr.innerText.split('$')[1];
+    const priceNumber = Number(priceText);
+    return acc + priceNumber;
+  }, 0);
+  totalPriceSelect.innerText = resultArray;
+};
+
 // Requisito 2:
 const cartItems = 'cart__items';
-const cartChild = document.getElementsByClassName(cartItems);
+const cartChild = document.getElementsByClassName(cartItems)[0];
+const cartChildLast = document.getElementsByClassName(cartItems).lastElementChild;
 let local = document.querySelector(`.${cartItems}`);
 
 const getId = async (id) => {
   const apiId = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const apiId1 = await apiId.json();
-  cartChild[0].appendChild(createCartItemElement(apiId1));
+  cartChild.appendChild(createCartItemElement(apiId1));
   localStorage.setItem('set', local.innerHTML);
+  calculatePrice();
 };
 
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('item__add')) {
     getId(event.target.parentElement.firstChild.innerText);
+    calculatePrice();
   }
 });
 
@@ -77,6 +93,7 @@ document.addEventListener('click', (event) => {
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('cart__item')) {
     event.target.remove();
+    calculatePrice();
     localStorage.setItem('set', local.innerHTML);
   }
 });
@@ -94,4 +111,5 @@ window.onload = function onload() {
   local = document.querySelector('.cart__items');
   local.innerHTML = localStorage.getItem('set');
   emptyButton();
+  calculatePrice();
 };
