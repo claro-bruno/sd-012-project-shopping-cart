@@ -91,6 +91,8 @@ function addItemCar() {
 // }
 
 window.onload = function onload() {
+    const loading = document.querySelector('.loading');
+    loading.innerHTML = 'loading...';
     const contentSave = localStorage.getItem('products');
     if (contentSave) {
     fatherCart.innerHTML = contentSave;
@@ -101,5 +103,8 @@ window.onload = function onload() {
   fetch(url)
   .then((r) => r.json())
   .then((r) => spreadProducts(r.results))
-  .then(() => addItemCar());
+  .then(() => {
+    addItemCar();
+    loading.remove();
+  });
 };
