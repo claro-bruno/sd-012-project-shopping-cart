@@ -34,12 +34,37 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const hideLoadingText = () => {
+  const loadingText = document.querySelector('.loading');
+  const parent = loadingText.parentNode;
+  parent.removeChild(loadingText);
+};
+
+const reloadTotalPrice = () => {
+  let cartItems = document.querySelectorAll('.cart__item');
+
+  cartItems = Object.values(cartItems);
+  const totalPrice = cartItems.reduce((acc, curr) => {
+    const accPrice = acc + Number(curr.innerHTML.split('$')[1]);
+    return accPrice;
+  }, 0);
+
+  const spanTotalPrice = document.querySelector('.total-price');
+  spanTotalPrice.innerHTML = totalPrice;
+};
+
 const saveLocalStorage = () => {
   localStorage.setItem('cartShopping', cartList.innerHTML);
 };
 
-const loadLocalStorage = () => {
+const loadCartList = () => {
   cartList.innerHTML = localStorage.getItem('cartShopping');
+};
+
+const clearCart = () => {
+  localStorage.clear();
+  loadCartList();
+  reloadTotalPrice();
 };
 
 function cartItemClickListener(event) {
@@ -66,9 +91,9 @@ const appendComputers = (computers) => {
 };
 
 const appendCartComputers = (computer) => {
-  const cartItems = document.querySelector('.cart__items');
   const { id, title, price } = computer;
-  cartItems.appendChild(createCartItemElement({ id, title, price }));
+  cartList.appendChild(createCartItemElement({ id, title, price }));
+  reloadTotalPrice();
 };
 
 const fetchAPI = async (endPoint) => {
@@ -77,6 +102,7 @@ const fetchAPI = async (endPoint) => {
     const object = await response.json();
     if (endPoint === END_POINT_ALL_COMPUTERS) {
       appendComputers(object.results);
+      hideLoadingText();
     } else {
       appendCartComputers(object);
       saveLocalStorage();
@@ -91,8 +117,11 @@ const listener = (event) => {
     const computer = event.target.parentNode;
     const computerId = computer.children[0].innerHTML;
     fetchAPI(END_POINT_ID_COMPUTER + computerId);
-  } if (event.target.classList.contains('cart__item')) {
+  } else if (event.target.classList.contains('cart__item')) {
     cartItemClickListener(event);
+    reloadTotalPrice();
+  } else if (event.target.classList.contains('empty-cart')) {
+    clearCart();
   } else {
         // se não, exclua esse evento dos registros
         event.target.removeEventListener('click', listener);
@@ -106,5 +135,6 @@ const setupEvents = () => {
 window.onload = () => {
   setupEvents();
   fetchAPI(END_POINT_ALL_COMPUTERS);
-  loadLocalStorage();
+  loadCartList();
+  reloadTotalPrice();
 };
