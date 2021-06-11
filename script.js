@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -13,31 +12,44 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const ol = document.querySelector('.cart__items');
+
+const attLocalStorage = () => {
+  // locarStorage.setItem('chave', 'valor') para criar chave valor
+  // localStorage.getItem('chave') para acessar chave valor
+  // localStorage.removeItem('chave') para remover chave valor
+  // localStorage.clear() para limpar o localStorage
+  localStorage.setItem('storage', ol.innerHTML);
+};
+
 function cartItemClickListener() {
-  const itemList = document.querySelector('.cart__items');
   const li = document.querySelector('.cart__item');
-  itemList.removeChild(li);
+  ol.removeChild(li);
+  attLocalStorage();
 }
 
+const cartList = () => {
+  ol.innerHTML = localStorage.getItem('storage');
+  const productsList = document.querySelectorAll('.cart__item');
+  productsList.forEach((product) => product.addEventListener('click', cartItemClickListener));
+};
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const element = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  element.appendChild(li);
+  ol.appendChild(li);
   li.addEventListener('click', cartItemClickListener);
+  attLocalStorage();
   return li;
 }
 
 const addItemToCart = (event) => {
   const clickId = event.target.parentElement.firstElementChild.innerText;
-  console.log(clickId);
   fetch(`https://api.mercadolibre.com/items/${clickId}`)
   .then((response) => response.json())
-  .then((item) => {
-    console.log(item);
-    createCartItemElement(item);
-  });
+  .then((item) => createCartItemElement(item));
+  // .then((data) => addLocalStorage(data));
 };
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -71,4 +83,5 @@ const fetchAPI = () => {
 
 window.onload = function onload() { 
   fetchAPI();
+  cartList();
 };
