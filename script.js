@@ -1,3 +1,5 @@
+const cartItems = document.querySelector('.cart__items');
+
 // usado no requisito 1
 function createProductImageElement(imageSource) {
  const img = document.createElement('img');
@@ -33,9 +35,23 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // return item.querySelector('span.item__sku').innerText;
 // }
 
-// usado no requisito 3
+// usei : https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/setItem
+// https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/getItem mas só soube que teria q usar o set e o get 
+//  no localStorage, depois que consultei repositório de colegas e tive ajuda do colega Igor Fernandes 
+const atLocalStorage = () => {
+  const cart = cartItems.innerHTML;
+  localStorage.setItem('cart', cart);
+};
+
+const getLocalStorage = () => {
+  const getItem = localStorage.getItem('cart');
+  cartItems.innerHTML = getItem;
+};
+
+// usado no requisito 3 e 4
 function cartItemClickListener(event) {
   event.target.remove();
+  atLocalStorage();
 }
  
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -59,15 +75,15 @@ async function fetchApi1() {
   }
 }
 
-// usado no requisito 2, para realizar o requisito 2 e 3 tive que consultar o repositório de alguns colegas como
+// usado no requisito 2 e 4
+// para realizar o requisito 2 e 3 tive que consultar o repositório de alguns colegas como
 // o da Marcela Silva, não copiei o código em si mas precisei da ajuda para terminar meu raciocínio
-const cartItems = document.querySelector('.cart__items');
-
 async function fetchAPIProduct(id) {
   try {
     const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
     const product = await response.json();
     cartItems.appendChild(createCartItemElement(product));
+    atLocalStorage();
   } catch (error) { 
     alert('Atenção, algo deu errado!');
   }
@@ -82,4 +98,5 @@ document.addEventListener('click', async (event) => {
   
 window.onload = () => {
   fetchApi1();
+  getLocalStorage();
 };
