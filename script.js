@@ -1,5 +1,6 @@
 const items = document.querySelector('.items');
 const orderList = document.querySelector('.cart__items');
+const textPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,6 +32,21 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const total = 0;
+
+function sum() {
+  let number = 0;
+  if (orderList.childNodes !== null) {
+    orderList.childNodes.forEach((element) => {
+      number += parseFloat(element.innerText.split('$')[1]);
+      textPrice.innerText = total + number;
+    });
+    if (orderList.childNodes.length === 0) {
+      textPrice.innerText = 0;
+    }
+  } 
+}
+
 function saveLocal() {
   const saveCart = [];
   if (orderList !== null) {
@@ -43,7 +59,8 @@ function saveLocal() {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  return saveLocal();
+  saveLocal();
+  sum();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -63,6 +80,7 @@ function getId(event) {
       const createCart = createCartItemElement(product);
       orderList.appendChild(createCart);
       saveLocal();
+      sum();
     });
 }
 // Requisito 2 cumprido com ajuda do colega Rodrigo Facury;
@@ -77,8 +95,6 @@ function fetchList() {
     }));      
 }
 
-fetchList();
-
 function getCart() {
   const storageCart = JSON.parse(localStorage.getItem('saveCart'));
   if (storageCart !== null) {
@@ -92,6 +108,10 @@ function getCart() {
   }
 }
 
+// requisito 4 ccompleto após code review no código do Rodrigo Facury;
+
 window.onload = function onload() {
+  fetchList();
   getCart();
+  sum();
 };
