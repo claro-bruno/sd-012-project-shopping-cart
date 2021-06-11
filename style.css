@@ -25,7 +25,7 @@
 
 .items {
   display: flex;
-  flex-basis: 70%;
+  flex-basis: 60%;
   flex-wrap: wrap;
   justify-content: center;
 }
