@@ -32,9 +32,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// function cartItemClickListener(event) {
-  
-// }
+function cartItemClickListener(event) {
+  if (event.target.className === 'cart__item') {
+      event.target.remove();
+  }
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
