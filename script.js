@@ -53,7 +53,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// fetch inicial para trazer o API do mercado livre
+// fetch inicial para trazer o API do mercado livre.
 const getApi = async () => {
   const promiseApi = await fetch(url);
   const waitLoad = await loadingStr();
