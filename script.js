@@ -6,6 +6,8 @@ const cartContainer = document.querySelector('.cart__items');
 
 const totalPrice = document.querySelector('.total-price');
 
+const btnClear = document.querySelector('.empty-cart');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -113,7 +115,15 @@ const reloadCart = () => {
   totalPrice.innerText = `${localStorage.getItem('totalPrice')}`;
 };
 
+const clearCart = () => {
+  cartContainer.innerHTML = '';
+  localStorage.cart = '';
+  localStorage.totalPrice = 0;
+  totalPrice.innerText = 0;
+};
+
 window.onload = function onload() { 
   fetchAPI(mlbEndpoint, 'computador', addItems);
   reloadCart();
+  btnClear.addEventListener('click', clearCart);
 };
