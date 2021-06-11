@@ -73,23 +73,18 @@ const addItemsInCart = () => {
   arrayOfButtons.forEach((button) => {
     button.addEventListener('click', async () => {
       const id = button.parentNode.firstChild.innerText;
-
       try {
         addLoading();
-
         const fetchObject = await fetch(`https://api.mercadolibre.com/items/${id}`);
         const object = await fetchObject.json();
         totalPrice.push(object.price);
         carItems.appendChild(createCartItemElement(object));
-
         totalCalc();
-
         localStorage.setItem('carList', carItems.innerHTML);
       } catch (error) {
         console.log(error);
       }
       removeLoading();
-
     }); 
   });
 };
