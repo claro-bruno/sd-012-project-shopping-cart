@@ -5,6 +5,20 @@ divPrices.className = 'total-price';
 const items = document.getElementsByClassName('items')[0];
 const clearButton = document.getElementsByClassName('empty-cart')[0];
 
+const createLoading = () => {
+  const loading = document.createElement('span');
+  loading.className = 'loading';
+  loading.innerHTML = 'loading...';
+  cart.appendChild(loading);
+};
+
+const removeLoading = () => {
+  const loading = document.getElementsByClassName('loading')[0];
+  loading.remove();
+};
+
+// requisito 7 resolvido baseado no projeto do colega Patrick Dack; Link da PR: https://github.com/tryber/sd-012-project-shopping-cart/pull/107/commits/cc4dc00790c09e8542a75fe8b15660c4fbd9f131
+
 const clearEverything = () => {
   ol.innerHTML = '';
   localStorage.setItem('cartItems', JSON.stringify([]));
@@ -81,6 +95,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const getItemInformation = (event) => {
   const element = event.target.parentElement;
   const id = getSkuFromProductItem(element);
+  createLoading();
   return fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json());
 };
@@ -89,18 +104,21 @@ const addItemToCart = (event) => {
   getItemInformation(event)
     .then((object) => ol.appendChild(createCartItemElement(object)))
     .then(() => saveLocalStorage())
-    .then(() => sumPrices());
+    .then(() => sumPrices())
+    .then(() => removeLoading());
 };
 
 const createItems = () => {
-fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-.then((response) => response.json())
-.then((products) => products.results
-  .forEach((product) => {
-    const itemCreated = createProductItemElement(product);
-    itemCreated.lastElementChild.addEventListener('click', addItemToCart);
-    items.appendChild(itemCreated);
-  }));
+  createLoading();
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  .then((response) => response.json())
+  .then((products) => products.results
+    .forEach((product) => {
+      const itemCreated = createProductItemElement(product);
+      itemCreated.lastElementChild.addEventListener('click', addItemToCart);
+      items.appendChild(itemCreated);
+    }))
+  .then(() => removeLoading());
 };
 
 const getSavedCart = () => {
