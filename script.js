@@ -28,9 +28,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener(event) {
+// function cartItemClickListener(event) {
 // coloque seu código aqui
-}
+// }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -48,5 +48,5 @@ function apiFetch() {
 }
 
 window.onload = function onload() {
-  apiFetch()
+
 };
