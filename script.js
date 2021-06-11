@@ -1,5 +1,12 @@
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
+const listCart = document.querySelector('.cart__items');
+const ol = document.querySelector('.cart__items');
+
+// 5 requisito abaixo ----------------------------------------------------------
+
+const totalResult = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -35,6 +42,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  localStorage.removeItem(event.target);
 }
 
 // -----------------------------------------------------------------------------
@@ -47,13 +55,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const listCart = document.querySelector('.cart__items');
-const saveCart = () => {  
+// 4 requisito abaixo e na função onload ---------------------------------------
+
+const saveLocalStorage = () => {
   localStorage.setItem('myCart', listCart.innerHTML);
-  console.log(listCart.childElementCount);
 };
 
-function loadCart() {
+function loadLocalStorage() {
   listCart.innerHTML = localStorage.getItem('myCart');
   const teste = document.querySelectorAll('.cart__item');
   teste.forEach((li) => li.addEventListener('click', cartItemClickListener));
@@ -64,10 +72,10 @@ function loadCart() {
 const addItens = async (id) => {
   let idItem = await fetch(`https://api.mercadolibre.com/items/${id}`);
   idItem = await idItem.json();
-  // console.log(idItem);
-  const ol = document.querySelector('.cart__items');
+  // console.log(idItem.price);
+  // const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement(idItem));
-  saveCart();
+  saveLocalStorage();
 };
 
 const addCart = () => {
@@ -75,20 +83,30 @@ const addCart = () => {
 btnAdd.forEach((button) => {
   button.addEventListener('click', (event) => {
     const getId = event.target.parentElement.firstChild.innerText; // para pegar o id
-    console.log(getId);
     addItens(getId);
-    // saveCart(getId);
   });
 });
 };
 
-// 4 requisito tentativa frustada --------------------------------------------
+// 5 requisito abaixo ----------------------------------------------------------
 
-// const saveCart = () => {
-//   const ol = document.querySelector('.cart__items');
-//   localStorage.setItem('myCart', ol.innerHTML);
-//   console.log(ol.childElementCount);
-// }
+const currentPrice = () => {
+  totalResult.innerText = 0;
+};
+currentPrice();
+
+const totalPrices = () => {
+  const prices = listCart.childNodes; // pega todas as "li" da "ol"
+  console.log(prices);
+  const regExp = /\d*\.?\d*$/;
+  let result = 0;
+  prices.forEach((price) => {
+    result += parseFloat(price.innerHTML.match(regExp));
+  });
+  totalResult.innerHTML = result;
+  console.log('TESTE RESULT', result);
+};
+totalPrices();
 
 // 1 requisito abaixo ----------------------------------------------------------
 
@@ -101,7 +119,16 @@ const fetchML = () => {
   .then(() => addCart());
 };
 
+const emptyCart = document.querySelector('.empty-cart');
+
+const turnEmptyCart = () => {
+  emptyCart.addEventListener('click', () => {
+    ol.innerHTML = '';
+  });
+};
+turnEmptyCart();
+
 window.onload = function onload() {
   fetchML();
-  loadCart();  
+  loadLocalStorage();  
  };
