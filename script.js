@@ -3,6 +3,18 @@ function getOlElement() {
   return olElement;
 }
 
+function addLoadingText() {
+  const span = document.createElement('span');
+  span.className = 'loading';
+  span.innerText = 'loading...';
+  document.querySelector('.container').appendChild(span);
+}
+
+function clearLoadingText() {
+  const span = document.querySelector('.loading');
+  span.parentNode.removeChild(span);
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -76,6 +88,7 @@ async function fetchComputerAPI() {
 } 
 
 async function fetchComputerByID(itemID) {
+
   const url = `https://api.mercadolibre.com/items/${itemID}`;
   const response = await fetch(url);
   const data = await response.json();
@@ -107,7 +120,9 @@ function clearCart() {
 }
 
 window.onload = async function onload() { 
+  addLoadingText();
   await fetchComputerAPI();
+  clearLoadingText();
   addItemToCart();
 
   if (localStorage.getItem('list')) {
