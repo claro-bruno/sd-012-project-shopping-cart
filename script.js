@@ -1,8 +1,6 @@
 const URL_PC = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const URL_ITEM = 'https://api.mercadolibre.com/items/';
 let priceT;
-const totalPrice = document.querySelector('.total-price');
-const ol = document.querySelector('.cart__items');
 
 if (Number.isNaN(parseFloat(localStorage.getItem('total')))
   || localStorage.getItem('total') === null) {
@@ -46,26 +44,27 @@ const updatePrice = (total) => {
   }
 };
 
-const loadPrice = () => {
+const loadPrice = (totalPrice) => {
   updatePrice(totalPrice);
 };
 
-const sumPrice = (object) => {
+const sumPrice = (object, totalPrice) => {
   priceT += object.price;
   updatePrice(totalPrice);
   localStorage.setItem('total', priceT);
 };
 
-const subPrice = (number) => {
+const subPrice = (number, totalPrice) => {
   priceT -= number;
   updatePrice(totalPrice);
   localStorage.setItem('total', priceT);
 };
 
-const saveStorage = () => {
+const saveStorage = (ol) => {
+  const lis = ol.children;
   const array = [];
-  for (let i = 0; i < ol.length; i += 1) {
-    array.push(ol[i].outerHTML);
+  for (let i = 0; i < lis.length; i += 1) {
+    array.push(lis[i].outerHTML);
   }
   localStorage.setItem('pcs', JSON.stringify(array));
 };
@@ -77,7 +76,7 @@ const listPcs = (array) => {
   });
 };
 
-const removeItens = () => {
+const removeItens = (ol) => {
   priceT = 0;
   const cart = document.querySelector('.cart');
   const totalText = document.querySelector('.total-text');
@@ -86,7 +85,7 @@ const removeItens = () => {
   const newOl = document.createElement('ol');
   newOl.className = 'cart__items';
   cart.appendChild(newOl);
-  saveStorage();
+  saveStorage(newOl);
   const newTotalText = document.createElement('span');
   newTotalText.className = 'total-text';
   newTotalText.innerText = 'Total: R$ ';
@@ -98,9 +97,9 @@ const removeItens = () => {
   localStorage.setItem('total', priceT);
 };
 
-const buttonRemove = () => {
+const buttonRemove = (ol) => {
   const button = document.querySelector('.empty-cart');
-  button.addEventListener('click', async () => removeItens());
+  button.addEventListener('click', async () => removeItens(ol));
 };
 
 const removeLoading = () => {
@@ -109,12 +108,14 @@ const removeLoading = () => {
 };
 
 const cartItemClickListener = (event) => {
-  ol.removeChild(event.target);
-  saveStorage();
+  const olC = document.querySelector('.cart__items');
+  const totalPriceC = document.querySelector('.total-price'); 
+  olC.removeChild(event.target);
+  saveStorage(olC);
   const liText = event.target.innerText;
   const indexIni = liText.indexOf('$');
   const number = parseFloat(liText.slice(indexIni + 1));
-  subPrice(number);
+  subPrice(number, totalPriceC);
 };
 
 const createCartItemElement = ({ id, title, price }) => {
@@ -125,7 +126,7 @@ const createCartItemElement = ({ id, title, price }) => {
   return li;
 };
 
-const loadStorage = () => {
+const loadStorage = (ol, totalPrice) => {
   const array = JSON.parse(localStorage.getItem('pcs'));
   if (array !== null) {
     for (let i = 0; i < array.length; i += 1) {
@@ -135,25 +136,25 @@ const loadStorage = () => {
       ol.appendChild(li.firstChild);
     }
   }
-  loadPrice();
+  loadPrice(totalPrice);
 };
 
-const addPc = async (url) => {
+const addPc = async (url, ol, totalPrice) => {
   try {
     const response = await fetch(url);
     const object = await response.json();
     ol.appendChild(createCartItemElement(object));
-    sumPrice(object);
-    saveStorage();
+    sumPrice(object, totalPrice);
+    saveStorage(ol);
   } catch (error) {
     alert(error);
   }
 };
 
-const addClick = (array) => {
+const addClick = (array, ol, totalPrice) => {
   array.forEach((element, index) => {
     const itemAdd = document.getElementsByClassName('item__add')[index];
-    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`));
+    itemAdd.addEventListener('click', async () => addPc(`${URL_ITEM}${element.id}`, ol, totalPrice));
   });
 };
 
@@ -161,10 +162,12 @@ const getApi = async (url) => {
   try {
     const response = await fetch(url);
     const { results } = await response.json();
+    const ol = document.querySelector('.cart__items');
+    const totalPrice = document.querySelector('.total-price');
     listPcs(results);
-    addClick(results);
-    loadStorage();
-    buttonRemove();
+    addClick(results, ol, totalPrice);
+    loadStorage(ol, totalPrice);
+    buttonRemove(ol);
     removeLoading();
   } catch (error) {
     alert(error);
