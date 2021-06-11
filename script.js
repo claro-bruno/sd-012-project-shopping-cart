@@ -1,3 +1,5 @@
+const getOlCartItems = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,23 +26,34 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Requisito 5
 const createTotalPrice = () => {
   const getSectionCart = document.querySelector('.cart');
   getSectionCart.appendChild(createCustomElement('footer', 'total-price', 'Preço Total:'));
 };
 
+// Requisito 5 - Referência: Natalia Souza - turma 11.
 const sumPrices = () => {
-  const getCartProducts = Array(...document.querySelectorAll('.cart__item'));
+  const turnCartItensIntoArray = Array(...document.querySelectorAll('.cart__item'));
   const getTotalPrices = document.querySelector('.total-price');
-  const sumTotalPrices = getCartProducts.reduce((acc, price) => 
+  const sumTotalPrices = turnCartItensIntoArray.reduce((acc, price) => 
   acc + Number(price.innerText.split('$')[1]), 0);
   getTotalPrices.innerText = sumTotalPrices;
+};
+
+// Requisito 6
+const addClearEventToButtonCart = () => {
+  const getButtonCart = document.querySelector('.empty-cart');
+  getButtonCart.addEventListener('click', () => {
+  getOlCartItems.innerHTML = null;
+  sumPrices(); // chama a funçao para atualizar a soma após o carrinho ser esvaziado.
+  });
 };
 
 // Requisito 3
 function cartItemClickListener(event) {
   event.remove();
-  sumPrices();
+  sumPrices(); // chama a funçao para atualizar a soma após a retirada de um item do carrinho.
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -57,12 +70,11 @@ function getSkuFromProductItem(item) {
 
 // Requisito 2 - Referência: Rodrigo Merlone.
 const addProductToCart = async (idProduct) => {
-  const getOlCartItems = document.querySelector('.cart__items');
   const apiURL = `https://api.mercadolibre.com/items/${idProduct}`;
   const response = await fetch(apiURL);
   const data = await response.json();
   getOlCartItems.appendChild(createCartItemElement(data));
-  sumPrices();
+  sumPrices(); // chama a funçao para atualizar a soma após a introduçao de um item no carrinho.
 };
 
 // Requisito 2 - Referência: Natalia Souza - turma 11.
@@ -82,10 +94,11 @@ const addProductsToSectionItens = async () => {
   const arrayResults = data.results;
   await arrayResults.forEach((product) => 
   getSectionItems.appendChild(createProductItemElement(product)));
-  addEventListenerToItemsButtons();
+  addEventListenerToItemsButtons(); // chama a funçao para garantir que será executada após a criaçao da lista de produtos.
 };
 
 window.onload = function onload() {
   addProductsToSectionItens();
   createTotalPrice();
+  addClearEventToButtonCart();
 };
