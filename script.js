@@ -24,8 +24,23 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+const createTotalPrice = () => {
+  const getSectionCart = document.querySelector('.cart');
+  getSectionCart.appendChild(createCustomElement('footer', 'total-price', 'Preço Total:'));
+};
+
+const sumPrices = () => {
+  const getCartProducts = Array(...document.querySelectorAll('.cart__item'));
+  const getTotalPrices = document.querySelector('.total-price');
+  const sumTotalPrices = getCartProducts.reduce((acc, price) => 
+  acc + Number(price.innerText.split('$')[1]), 0);
+  getTotalPrices.innerText = sumTotalPrices;
+};
+
+// Requisito 3
 function cartItemClickListener(event) {
-  return event.remove();
+  event.remove();
+  sumPrices();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -40,24 +55,25 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 2 - Referẽncia: Caroline Benichio.
+// Requisito 2 - Referência: Rodrigo Merlone.
 const addProductToCart = async (idProduct) => {
   const getOlCartItems = document.querySelector('.cart__items');
   const apiURL = `https://api.mercadolibre.com/items/${idProduct}`;
   const response = await fetch(apiURL);
   const data = await response.json();
-  return getOlCartItems.appendChild(createCartItemElement(data));
+  getOlCartItems.appendChild(createCartItemElement(data));
+  sumPrices();
 };
 
-// Requisito 2 - Referẽncia: Caroline Benichio.
+// Requisito 2 - Referência: Natalia Souza - turma 11.
 const addEventListenerToItemsButtons = () => {
   const getItemsButtons = document.querySelectorAll('.item__add');
   getItemsButtons.forEach((button) => 
-    button.addEventListener('click', (event) =>
+    button.addEventListener('click', (event) => 
       addProductToCart(getSkuFromProductItem(event.target.parentNode))));
 };
 
-// Requisito 1 - Referẽncias: Natalia Souza - turma 11, Caroline Benichio. 
+// Requisito 1 - Referências: Natalia Souza - turma 11, Caroline Benichio. 
 const addProductsToSectionItens = async () => {
   const getSectionItems = document.querySelector('.items');
   const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
@@ -71,4 +87,5 @@ const addProductsToSectionItens = async () => {
 
 window.onload = function onload() {
   addProductsToSectionItens();
+  createTotalPrice();
 };

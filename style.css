@@ -64,6 +64,7 @@
 }
 
 .cart {
+  border: 2px solid blue;
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
