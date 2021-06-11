@@ -88,7 +88,6 @@ async function fetchComputerAPI() {
 } 
 
 async function fetchComputerByID(itemID) {
-
   const url = `https://api.mercadolibre.com/items/${itemID}`;
   const response = await fetch(url);
   const data = await response.json();
