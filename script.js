@@ -33,13 +33,14 @@ function getSkuFromProductItem(item) {
 function localStorageCart() {
   localStorage.setItem('shopping-data', JSON.stringify(shoppingCart));
 }
-// REQUISITO 5: Função que 
+// REQUISITO 5: Função que soma os valores dos produtos selecionados:
+// OBS: Consegui graças à ajuda dos plantões e de 2 alunos da turma 12.
 function cartPrices() {
   const totalPrices = document.querySelector('.total-price');
-  const cartItemList = [...document.querySelectorAll('.cart__item')];
+  const cartList = [...document.querySelectorAll('.cart__item')];
   totalPrices.innerText = 0;
-  const cartPriceSum = cartItemList.reduce((accumulator, currentValue) => accumulator + Number(currentValue.innerText.split('PRICE: $')[1]), 0);
-  totalPrices.innerText = cartPriceSum;
+  const cartSum = cartList.reduce((acc, cv) => acc + Number(cv.innerText.split('PRICE: $')[1]), 0);
+  totalPrices.innerText = cartSum;
 }
 // REQUISITO 3 - Remove do carrinho os itens clicados:
 function cartItemClickListener(event) {
