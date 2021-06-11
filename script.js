@@ -1,3 +1,4 @@
+const getSectionItems = document.querySelector('.items');
 const getOlCartItems = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
@@ -25,6 +26,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
+
+const createLoading = () => {
+  getSectionItems.appendChild(createCustomElement('p', 'loading', 'loading...'));
+};
 
 // Requisito 5
 const createTotalPrice = () => {
@@ -87,11 +92,11 @@ const addEventListenerToItemsButtons = () => {
 
 // Requisito 1 - Referências: Natalia Souza - turma 11, Caroline Benichio. 
 const addProductsToSectionItens = async () => {
-  const getSectionItems = document.querySelector('.items');
   const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const response = await fetch(apiURL);
   const data = await response.json();
   const arrayResults = data.results;
+  document.querySelector('.loading').remove(); // requisito 7 - remove o loading depois de transformar o response em json.
   await arrayResults.forEach((product) => 
   getSectionItems.appendChild(createProductItemElement(product)));
   addEventListenerToItemsButtons(); // chama a funçao para garantir que será executada após a criaçao da lista de produtos.
@@ -101,4 +106,5 @@ window.onload = function onload() {
   addProductsToSectionItens();
   createTotalPrice();
   addClearEventToButtonCart();
+  createLoading();
 };
