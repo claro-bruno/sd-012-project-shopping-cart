@@ -1,6 +1,8 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const itemsSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
+let price = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,7 +42,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  price += Math.round(salePrice * 100) / 100;
+  totalPrice.innerHTML = price;
   return li;
 }
 
@@ -55,7 +58,6 @@ function addToCart(id) {
   const productURL = `https://api.mercadolibre.com/items/${id}`;
   fetch(productURL)
   .then((response) => response.json())
-  // .then((data) => console.log(data))
   .then((data) => cartItems.appendChild(createCartItemElement(data)));
 }
 
@@ -68,9 +70,13 @@ function addButton() {
   });
   window.localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
 }
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   if (event.target.classList.contains('cart__item')) {
+  const stringValue = event.target.innerText.match(/\d+.\d+$/gm);
+  price -= Math.round(parseFloat(stringValue) * 100) / 100;
+  totalPrice.innerHTML = price;
   event.target.remove();
   }
   localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
@@ -79,17 +85,14 @@ function cartItemClickListener(event) {
 function removeAll(event) {
   if (event.target.classList.contains('empty-cart')) {
     cartItems.innerHTML = '';
+    price = 0;
+    totalPrice.innerHTML = price;
   }
-}
-
-function salvarLista() {
-  localStorage.setItem('itemsCarrinho', cartItems.innerHTML);
 }
 
 window.onload = function onload() { 
   fetchApi();
   addButton();
-  salvarLista();
   const listaSalva = localStorage.getItem('itemsCarrinho');
   cartItems.innerHTML = listaSalva;
 };
