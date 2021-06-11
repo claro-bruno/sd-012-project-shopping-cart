@@ -30,11 +30,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 function updatePrice() {
   let total = 0;
   const cartItem = document.querySelectorAll('.cart__item');
-  // console.log(cartItem);
   cartItem.forEach((element) => {
-      const price = +element.innerText.split('$')[1]; // esse + foi indicação de um colega na monitoria, poderia ter sido Number()
+      const price = +element.innerText.split('$')[1];
       total += price;
-      // console.log(total);
   });
   const totalPrice = document.querySelector('.total-price');
   totalPrice.innerText = total;
@@ -79,7 +77,6 @@ function cartItemClickListener(event) {
   cartItems.removeChild(event.target);
   localStorageSave(); // 4
   updatePrice(); // 5
-  // updateLocalStorage(); // 5
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -101,7 +98,9 @@ async function fetchApi() {
   apiResults.forEach((item) => items.appendChild(createProductItemElement(item)));
 }
 
-// 2, 3 
+// 7 - Consultei o repositório do Thalles para resolver essa parte. https://github.com/tryber/sd-012-project-shopping-cart/pull/9
+
+// 2, 3
 async function buttonAdd(id) {
   const fetchItems = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const product = await fetchItems.json();  
