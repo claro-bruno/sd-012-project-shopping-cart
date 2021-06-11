@@ -87,6 +87,12 @@ const getItems = () => {
   }
 };
 
+// 7
+function loadingAlert() {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+}
+
 // 1
 const fetchAPI = async () => { 
   const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
@@ -95,6 +101,7 @@ const fetchAPI = async () => {
   const arrayResult = apiJSON.results; // pega só o 'results' do retorno
   await arrayResult.forEach((item) => items[0].appendChild(createProductItemElement(item)));
   buttonEvents();
+  loadingAlert();
 };
 
 // 6
