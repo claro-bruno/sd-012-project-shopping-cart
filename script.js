@@ -1,4 +1,19 @@
 let arrayCartList;
+const total = document.querySelector('.total-price');
+const esvaziar = document.querySelector('.empty-cart');
+
+// requisito 5
+function calc() {
+  let total2 = 0;
+  const itemsForCalc = document.querySelectorAll('.cart__item');
+  itemsForCalc.forEach((item) => {
+    const preco = Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1));
+    total2 += preco;
+  });
+  total.innerText = total2;
+  console.log(total2);
+  // total.innerText = parseFloat(total.innerText) + price;
+}
 
 const getCartItems = () => {
   // const valueLi = document.querySelectorAll('.cart__items').value;
@@ -42,11 +57,16 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 // function getSkuFromProductItem(item) { // ???
 //   return item.querySelector('span.item__sku').innerText;
 // }
+function clear() {
+  esvaziar.innerHTML = '';
+}
+esvaziar.addEventListener('click', clear);
 
 function cartItemClickListener() { // o produto do carrinho é removido ao ser clicado. (remover class: projeto to-do-list)
   const acessFather = document.querySelector('#cart__items');
   const accessChild = document.querySelector('.cart__item');
   acessFather.removeChild(accessChild);
+  calc();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // esses elementos devem estar na hierarquia de <ol class="cart__items"></ol>, no carrinho de compras.
@@ -64,31 +84,20 @@ function addToArray(obj) {
   localStorage.setItem('Cart', JSON.stringify(arrayCartList)); // converte 
 }
 
-const fetchObject = (id) => {
-  fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((response) => response.json())
-  .then((obj) => {
-    addToArray(obj);
-    createCartItemElement(obj);
-  });
+const fetchObject = async (id) => {
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const data = await response.json();
+  console.log(data.price);
+  calc();
+    addToArray(data);
+    createCartItemElement(data);
 };
-// requisito 5
-function calc() {
-  let total = 0;
-  const itemsForCalc = document.querySelectorAll('.cart__item');
-  itemsForCalc.forEach((item) => {
-    const preco = Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1));
-    total += preco;
-  });
-  const sumTotal = document.querySelector('.total-price');
-  sumTotal.innerText = total;
-}
 
 const getToCarList = () => {
   const eachButtun = document.querySelectorAll('.item__add');
-   eachButtun.forEach((button) => button.addEventListener('click', async ({ target }) => {
-     await fetchObject(target.parentNode.firstChild.innerText);
-     calc();
+  eachButtun.forEach((button) => button.addEventListener('click', async ({ target }) => {
+    await fetchObject(target.parentNode.firstChild.innerText);
+    calc();
     }));
   };
 
@@ -101,7 +110,7 @@ const fetchResults = () => {
 };
 
 window.onload = function onload() {
-  calc();
   fetchResults();
   arrayCartList.forEach((item) => createCartItemElement(item));
+  calc();
 };
