@@ -28,6 +28,7 @@ function appendChildCartItems(li) {
 function cleanItemFromCart(event) {
   const deleteProduct = event;
   deleteProduct.target.outerHTML = '';
+  // falta deletar o item do localStorage  
 }
 
 function clearAllCart() {
