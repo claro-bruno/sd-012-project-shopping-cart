@@ -1,5 +1,7 @@
 const sectionItems = document.querySelector('.items');
+
 const ol = document.querySelector('.cart__items');
+
 let priceTotal = 0;
 
 const spanPrice = document.createElement('span');

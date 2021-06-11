@@ -1,4 +1,4 @@
-.top-bar {
+/* .top-bar {
   align-items: center;
   display: flex;
   height: 100px;
@@ -15,6 +15,39 @@
 .top-bar .input-terms-group {
   align-items: flex-start;
   display: flex;
+} */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* body {
+  opacity: 1;
+  background-image: radial-gradient(#aaaaaa 1px, #ffff 1px);
+  background-size: 20px 20px;
+} */
+
+body {
+  background-color: rgb(241, 250, 238);
+  font-family: Arial, sans-serif;
+  line-height: 19px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  padding: 10px 50px;
+  margin-bottom: 10px;
+  background-color: rgb(0, 117, 162);
+}
+
+h1 {
+  font-family: Bungee, cursive;
+  color: white;
 }
 
 .container {
@@ -31,14 +64,26 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 1px solid white;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
   height: auto;
-  margin: 5px;
+  margin: 8px;
   width: 200px;
+  background-color: white;
+  box-shadow: 2px 2px 3px rgb(170, 170, 170);
+  transition: all 0.1s;
+}
+
+.item:hover {
+
+  /* -moz-transform: scale(1.05);
+  -webkit-transform: scale(1.05); */
+  transform: scale(1.05);
 }
 
 .item .item__sku {
@@ -49,28 +94,118 @@
   flex-grow: 1;
   padding: 10px;
   text-align: center;
+  color: rgb(64, 64, 64);
+  font-size: 16px;
 }
 
 .item .item__image {
   width: 100%;
 }
 
-.item .item__add {
-  background-color: green;
+button {
   border: 0;
+  border-radius: 10px;
+  box-shadow: 2px 2px 3px rgb(170, 170, 170);
   cursor: pointer;
-  margin: 0;
+  margin: 8px 0;
   padding: 5px;
+  color: white;
+}
+
+.item .item__add {
+  background-color: rgb(41, 191, 18);
+  width: 150px;
+}
+
+button:hover , .item .item__add:hover {
+  background-color: rgb(37, 175, 16);
+  box-shadow: 2px 2px 3px rgb(170, 170, 170);
+}
+
+button:active , .item .item__add:active {
+  background-color: rgb(37, 175, 16);
+  box-shadow: 1px 1px 1px rgb(170, 170, 170);
 }
 
 .cart {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  align-items: center;
+  background-color: white;
+  padding: 40px;
+  margin-top: 10px;
+  margin-right: 2%;
+  box-shadow: 2px 2px 3px rgb(170, 170, 170);
+  border: 1px solid rgb(250, 250, 250);
+  border-radius: 5px;
+  height: fit-content;
 }
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
   text-align: center;
+  color: rgb(64, 64, 64);
+  font-size: 24px;
+  font-weight: 500;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgb(170, 170, 170);
+}
+
+.cart .cart__item {
+  padding: 10px 0;
+  text-align: center;
+  color: rgb(64, 64, 64);
+  font-size: 12px;
+  border-bottom: 1px solid rgb(170, 170, 170);
+}
+
+ol {
+  height: 40vh;
+}
+
+p {
+  padding: 10px;
+  color: rgb(64, 64, 64);
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.empty-cart , .checkout {
+  width: 250px;
+  font-size: 18px;
+}
+
+.checkout {
+  background-color: rgb(41, 191, 18);
+  font-weight: 600;
+}
+
+.empty-cart {
+  background-color: rgb(80, 182, 185);
+}
+
+.empty-cart:hover {
+  background-color: rgb(65, 170, 173);
+}
+
+.empty-cart:active {
+  background-color: rgb(65, 170, 173);
+}
+
+/* A customização da scrollbar foi adicionada com base no seguinte link:
+https://www.digitalocean.com/community/tutorials/css-scrollbars-pt */
+
+body::-webkit-scrollbar , .cart .cart__items::-webkit-scrollbar {
+  width: 8px;
+}
+
+body::-webkit-scrollbar-track , .cart .cart__items::-webkit-scrollbar-track {
+  background: rgb(241, 250, 238);
+}
+
+body::-webkit-scrollbar-thumb , .cart .cart__items::-webkit-scrollbar-thumb {
+  background-color: rgb(233, 233, 233);
+  border-radius: 20px;
 }
