@@ -1,3 +1,5 @@
+const olItems = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,8 +30,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const inLocalStorage = () => {
+  const inOl = document.getElementsByClassName('cart__items');
+  localStorage.setItem('item', inOl[0].innerHTML);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  inLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -39,15 +47,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
 async function clickToAddItems(item, index) {
   const addItemButton = document.getElementsByClassName('item__add')[index];
   const itemID = item.id;
   addItemButton.addEventListener('click', async () => {
-    const olItems = document.querySelector('.cart__items');
     const responseItem = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
     const responseItemJSON = await responseItem.json();
     const liItem = createCartItemElement(responseItemJSON);
     olItems.appendChild(liItem);
+    inLocalStorage();
   });
 }
 
@@ -57,7 +66,6 @@ async function catchMercadoLivreApi() {
     fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseListJSON = await responseList.json();
   const productsList = responseListJSON.results;
-  console.log(productsList);
   productsList.forEach((item, index) => {
     const product = createProductItemElement(item);
     sectionItems.appendChild(product);
@@ -65,6 +73,15 @@ async function catchMercadoLivreApi() {
   });
 }
 
+const checkCart = () => {
+  if (localStorage.item !== undefined) {
+    olItems.innerHTML = localStorage.getItem('item');
+    const cartItems = Object.values(document.getElementsByClassName('cart__item'));
+    cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  }
+};
+
 window.onload = function onload() {
   catchMercadoLivreApi();
+  checkCart();
 };
