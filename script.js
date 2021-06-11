@@ -45,31 +45,35 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function itemClickListener(event) {
-  if (event.target.className === 'item__add') {
-    const itemId = getSkuFromProductItem(event.target.parentNode);
-    fetch(`${itemEndpoint}${itemId}`)
-      .then((response) => response.json())
-      .then(({ id: sku, title: name, price: salePrice }) => {
-        const cartElement = createCartItemElement({ sku, name, salePrice });
-        cartContainer.appendChild(cartElement);
-      });
-  }
-}
+const addToCart = ({ id: sku, title: name, price: salePrice }) => {
+  const cartElement = createCartItemElement({ sku, name, salePrice });
+  cartContainer.appendChild(cartElement);
+};
 
-const fetchAPI = (baseUrl, query) => {
+const fetchAPI = (baseUrl, query, callback) => {
   fetch(`${baseUrl}${query}`)
     .then((response) => response.json())
       .then((object) => {
-    const { results } = object;
-    results.forEach(({ id: sku, title: name, thumbnail: image }) => {
-      const element = createProductItemElement({ sku, name, image });
-      element.addEventListener('click', itemClickListener);
-      itemsContainer.appendChild(element);
-    });
+        callback(object);
+      });
+};
+
+function itemClickListener(event) {
+  if (event.target.className === 'item__add') {
+    const itemId = getSkuFromProductItem(event.target.parentNode);
+    fetchAPI(itemEndpoint, itemId, addToCart);
+  }
+}
+
+const addItems = (object) => {
+  const { results } = object;
+  results.forEach(({ id: sku, title: name, thumbnail: image }) => {
+    const element = createProductItemElement({ sku, name, image });
+    element.addEventListener('click', itemClickListener);
+    itemsContainer.appendChild(element);
   });
 };
 
 window.onload = function onload() { 
-  fetchAPI(mlbEndpoint, 'computador');
+  fetchAPI(mlbEndpoint, 'computador', addItems);
 };
