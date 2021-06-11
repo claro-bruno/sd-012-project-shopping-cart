@@ -1,6 +1,7 @@
 const items = document.querySelector('.items');
 const orderList = document.querySelector('.cart__items');
 const textPrice = document.querySelector('.total-price');
+const button = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -109,6 +110,12 @@ function getCart() {
 }
 
 // requisito 4 ccompleto após code review no código do Rodrigo Facury;
+
+button.addEventListener('click', () => {
+  textPrice.innerText = '';
+  orderList.innerHTML = '';
+  localStorage.removeItem('saveCart');
+});
 
 window.onload = function onload() {
   fetchList();
