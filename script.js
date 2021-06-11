@@ -1,6 +1,8 @@
 const URL_PC = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const URL_ITEM = 'https://api.mercadolibre.com/items/';
 let priceT;
+const totalPrice = document.querySelector('.total-price');
+const ol = document.querySelector('.cart__items');
 
 if (Number.isNaN(parseFloat(localStorage.getItem('total'))) || localStorage.getItem('total') === null) {
   priceT = 0;
@@ -46,45 +48,27 @@ const updatePrice = (total) => {
 };
 
 const loadPrice = () => {
-  const total = document.querySelector('.total-price');
-  updatePrice(total);
+  updatePrice(totalPrice);
 };
 
 const sumPrice = (object) => {
-  const total = document.querySelector('.total-price');
   priceT += object.price;
-  updatePrice(total);
+  updatePrice(totalPrice);
   localStorage.setItem('total', priceT);
 };
 
 const subPrice = (number) => {
-  const total = document.querySelector('.total-price');
   priceT -= number;
-  updatePrice(total);
+  updatePrice(totalPrice);
   localStorage.setItem('total', priceT);
 };
 
 const saveStorage = () => {
   const array = [];
-  const ol = document.querySelectorAll('.cart__item');
   for (let i = 0; i < ol.length; i += 1) {
     array.push(ol[i].outerHTML);
   }
   localStorage.setItem('pcs', JSON.stringify(array));
-};
-
-const loadStorage = () => {
-  const ol = document.querySelector('.cart__items');
-  const array = JSON.parse(localStorage.getItem('pcs'));
-  if (array !== null) {
-    for (let i = 0; i < array.length; i += 1) {
-      const li = document.createElement('li');
-      li.innerHTML = array[i];
-      li.firstChild.addEventListener('click', cartItemClickListener);
-      ol.appendChild(li.firstChild);
-    }
-  }
-  loadPrice();
 };
 
 const listPcs = (array) => {
@@ -93,19 +77,6 @@ const listPcs = (array) => {
     list.appendChild(createProductItemElement(element));
   });
 };
-
-const addPc = async (url) => {
-  try {
-    const response = await fetch(url);
-    const object = await response.json();
-    const ol = document.querySelector('.cart__items');
-    ol.appendChild(createCartItemElement(object));
-    sumPrice(object);
-    saveStorage();
-  } catch (error) {
-    alert(error);
-  }
-}
 
 const addClick = (array) => {
   array.forEach((element, index) => {
@@ -118,7 +89,6 @@ const removeItens = () => {
   priceT = 0;
   const cart = document.querySelector('.cart');
   const totalText = document.querySelector('.total-text');
-  const ol = document.querySelector('.cart__items');
   cart.removeChild(totalText);
   cart.removeChild(ol);
   const newOl = document.createElement('ol');
@@ -147,7 +117,6 @@ const removeLoading = () => {
 };
 
 const cartItemClickListener = (event) => {
-  const ol = document.querySelector('.cart__items');
   ol.removeChild(event.target);
   saveStorage();
   const liText = event.target.innerText;
@@ -162,6 +131,31 @@ const createCartItemElement = ({ id, title, price }) => {
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+};
+
+const loadStorage = () => {
+  const array = JSON.parse(localStorage.getItem('pcs'));
+  if (array !== null) {
+    for (let i = 0; i < array.length; i += 1) {
+      const li = document.createElement('li');
+      li.innerHTML = array[i];
+      li.firstChild.addEventListener('click', cartItemClickListener);
+      ol.appendChild(li.firstChild);
+    }
+  }
+  loadPrice();
+};
+
+const addPc = async (url) => {
+  try {
+    const response = await fetch(url);
+    const object = await response.json();
+    ol.appendChild(createCartItemElement(object));
+    sumPrice(object);
+    saveStorage();
+  } catch (error) {
+    alert(error);
+  }
 };
 
 const getApi = async (url) => {
