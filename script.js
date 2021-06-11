@@ -76,13 +76,17 @@ const getLocalStorage = () => {
 };
 
 const createItemList = async (item) => {
-  const apiPromise = await fetch(`${BASE_URL}${item}`);
-  const apiObj = await apiPromise.json();
-  const itemResults = apiObj.results;
-  const parentElement = document.querySelector('.items');
-  itemResults
-    .forEach((element) => parentElement
-      .appendChild(createProductItemElement(element)));
+  try {
+    const apiPromise = await fetch(`${BASE_URL}${item}`);
+    const apiObj = await apiPromise.json();
+    const itemResults = apiObj.results;
+    const parentElement = document.querySelector('.items');
+    itemResults
+      .forEach((element) => parentElement
+        .appendChild(createProductItemElement(element)));
+  } catch (error) {
+    console.log('Erro na criação dos items da página');
+  } 
 };
 
 const addButtonsEvent = async () => {
@@ -90,12 +94,16 @@ const addButtonsEvent = async () => {
   itemList.forEach((item) => {
     const button = item.querySelector('button');
     button.addEventListener('click', async () => {
+      try {
       const itemID = getSkuFromProductItem(item);
       const itemFromApi = await fetch(`${ITEM_URL}${itemID}`);
       const itemObj = await itemFromApi.json();
       const parentElement = document.querySelector(CART_ITEMS);
       parentElement.appendChild(createCartItemElement(itemObj));
       addLocalStorage(itemObj);
+      } catch (error) {
+        console.log('Erro ao adicionar item no carrinho.');
+      }
     });
   });
 };
@@ -119,9 +127,13 @@ const removeLoading = () => {
 };
 
 window.onload = async () => {
+  try {
   await createItemList('computador');
   addButtonsEvent();
   getLocalStorage();
   eraseCart();
   removeLoading();
+  } catch (error) {
+    console.log('Erro na window.onload');
+  }
 };
