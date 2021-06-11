@@ -6,7 +6,7 @@ const loading = document.querySelector('.loading');
 const removeLoading = () => sectionPCs.removeChild(loading);
 
 const saveStorage = () => {
-  localStorage.setItem('zéDoPeixe', JSON.stringify(carrinho.innerHTML));
+  localStorage.setItem('fundaorules', JSON.stringify(carrinho.innerHTML));
 };
 
 const limparCarrinho = () => {
@@ -83,7 +83,7 @@ function getItemId() {
 
 const loadStorage = () => {
   if (localStorage) {
-    carrinho.innerHTML = JSON.parse(localStorage.getItem('zéDoPeixe'));
+    carrinho.innerHTML = JSON.parse(localStorage.getItem('fundaorules'));
   }
   const carrinhoResetado = document.getElementsByClassName('cart__item');
   Object.values(carrinhoResetado).forEach((item) => {
