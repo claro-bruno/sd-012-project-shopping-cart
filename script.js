@@ -1,5 +1,5 @@
 const cartList = document.getElementsByClassName('cart__items');
-// const totalPriceElement = document.getElementsByClassName('total-price');
+const totalPriceElement = document.getElementsByClassName('total-price');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,6 +14,36 @@ const getItemFromAPI = async (id) => {
     item = result;
   });
   return item;
+};
+
+const getPrice = async (item) => {
+  const words = item.split(' ');
+  const itemID = words[1];
+  const itemGeted = await getItemFromAPI(itemID);
+  return itemGeted.price;
+};
+
+// Para conseguir implementar essa função, entrei nesse site https://itnext.io/why-async-await-in-a-foreach-is-not-working-5f13118f90d
+// o meu problema era: awair não funcionava dentro de um forEach.
+// Solução: o async/await aparentemente não funciona dentro de um forEach segundo o site aqui listado então a solução for usar um for.
+const calculateTotal = () => {
+  const keys = Object.keys(localStorage);
+  const items = keys.filter((key) => key.startsWith('SKU'));
+  const pricePromise = new Promise(async (resolve, reject) => {
+    const values = [];
+    for (let index = 0; index < items.length; index += 1) {
+      values.push(await getPrice(items[index]));
+    }
+    resolve(values);
+  }); 
+  pricePromise.then((result) => {
+    let total = 0;
+    if (result.length > 0) {
+      total = result.reduce((acc, curr) => acc + curr);
+    } 
+    console.log(total);
+    totalPriceElement[0].innerHTML = `Preço total: $${total}`;
+  });
 };
 
 function createCustomElement(element, className, innerText) {
@@ -40,8 +70,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 } */
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui    
-  localStorage.removeItem(event.target.innerHTML);  
+  // coloque seu código aqui
+  localStorage.removeItem(event.target.innerHTML);
+  calculateTotal();
   cartList[0].removeChild(event.target);
 }
 
@@ -51,6 +82,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   localStorage.setItem(li.innerText, sku);
+  calculateTotal();
   return li;
 }
 
@@ -92,6 +124,7 @@ const getCartItems = () => {
     itemElement.addEventListener('click', cartItemClickListener);
     cartList[0].appendChild(itemElement);
   });
+  calculateTotal();
 };
 
 window.onload = function onload() {
