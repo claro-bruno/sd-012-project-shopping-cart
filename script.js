@@ -30,9 +30,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getIdItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 const hideLoadingText = () => {
   const loadingText = document.querySelector('.loading');
@@ -115,8 +115,7 @@ const fetchAPI = async (endPoint) => {
 const listener = (event) => {
   if (event.target.classList.contains('item__add')) {
     const computer = event.target.parentNode;
-    const computerId = computer.children[0].innerHTML;
-    fetchAPI(END_POINT_ID_COMPUTER + computerId);
+    fetchAPI(END_POINT_ID_COMPUTER + getIdItem(computer));
   } else if (event.target.classList.contains('cart__item')) {
     cartItemClickListener(event);
     reloadTotalPrice();
