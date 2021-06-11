@@ -1,3 +1,7 @@
+body {
+  font-family: monospace;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -31,7 +35,8 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 1px solid black;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -73,4 +78,46 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.cart__item {
+  box-shadow: 3px 3px 3px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 10px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.empty-cart {
+  color: #fff;
+  background-color: rgb(255, 97, 70);
+  height: 40px;
+  margin-top: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:focus {
+  outline: 0;
+}
+
+.loading {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  position: relative;
+  left: 50%;
+  top: 400px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
