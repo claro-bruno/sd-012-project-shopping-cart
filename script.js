@@ -41,6 +41,10 @@ function cartItemClickListener(event) {
   }
 }
 
+const loadingStr = () => {
+  loading.remove();
+};
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -52,16 +56,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // fetch inicial para trazer o API do mercado livre
 const getApi = async () => {
   const promiseApi = await fetch(url);
-  await loadingStr();
+  const waitLoad = await loadingStr();
   const response = await promiseApi.json();
   response.results.forEach((item) => {
     sectionItems.appendChild(createProductItemElement(item));
   });
 };
-
-const loadingStr = () => {
-  loading.remove();
-}
 
 // Traz o id pego pelo evento e o pesquisa no fetch.
 const getApiId = async (id) => {
