@@ -1,5 +1,6 @@
 window.onload = function onload() { 
   getPc();
+
   const ol = document.querySelector('.cart__items');
   if (localStorage.getItem('cartItens')) {
     ol.innerHTML = JSON.parse(localStorage.getItem('cartItens'));
@@ -28,9 +29,14 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 const getPc = () => {
+  const loading = document.createElement('p');
+  loading.innerText = 'loading...';
+  loading.className = 'loading';
   const section = document.querySelector('.items');
+  section.appendChild(loading);
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador').then((response) => {
     response.json().then((computador) => {
+      section.removeChild(loading);
     computador.results.forEach(({id: sku, title: name, thumbnail: image}) => 
     section.appendChild(createProductItemElement({sku, name, image})));
     })
