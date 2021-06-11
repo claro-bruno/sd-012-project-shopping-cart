@@ -88,10 +88,11 @@ function createProductItemElement({
   price,
 }) {
   const section = document.createElement('section');
+  const img = image.replace(/-I.jpg/g, '-O.jpg');
   section.className = 'item';
   
   section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createProductImageElement(img));
   section.appendChild(createCustomElement('span', 'item__price', `$ ${Number(price).toFixed(2)}`));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));

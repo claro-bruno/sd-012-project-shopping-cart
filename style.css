@@ -12,6 +12,7 @@ body {
   font-family: FiraSans, Ubuntu, Cantrell, sans-serif;
   margin: 0;
   padding: 0;
+  background-color:rgba(100, 148, 237, 0.651);
 }
 
 .top-bar {
@@ -22,8 +23,8 @@ body {
   justify-content: space-around;
   margin-bottom: 10px;
   width: 100%;
-  background-color: blue;
-  color: white;
+  background-color: lavender;
+  color: blue;
   box-shadow: 0 2px 2px black;
 }
 
@@ -52,26 +53,30 @@ body {
   border-radius: 5px;
   padding: 10px;
   margin: auto 5px;
+  border: 2px solid blue;
+}
+
+::placeholder {
+  font-style: italic;
 }
 
 .search-form .search-btn {
-  border: 2px solid lavender;
   background-color: transparent;
   cursor: pointer;
-  color: lavender;
+  color: blue;
   font-weight: 600;
   transition: all 0.5 s;
 }
 
 .search-form .search-btn:hover {
-  background-color: lavender;
+  background-color: blue;
   transition: all 0.5s;
-  color: blue;
+  color: lavender;
 }
 
-.search-form .search-input {
+/* .search-form .search-input {
   border: none;
-}
+} */
 
 .search-form .search-input:focus {
   outline: none;
@@ -95,6 +100,7 @@ body {
 
 .item {
   border: 2px solid rgba(0, 0, 255, 0);
+  background-color: lavender;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -115,6 +121,10 @@ body {
 
 .item .item__sku {
   display: none;
+}
+
+img {
+  border-radius: 20px;
 }
 
 .item .item__title {
