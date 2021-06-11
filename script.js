@@ -65,6 +65,16 @@ document.addEventListener('click', async (event) => {
   }
 });
 
+function carCleaner() {
+  carr.innerHTML = '';
+}
+
+const bttCarCleaner = (() => {
+  const bttClear = document.querySelector('.empty-cart');
+  bttClear.addEventListener('click', carCleaner);
+});
+
 window.onload = function onload() { 
   searchComputer();
+  bttCarCleaner();
 };
