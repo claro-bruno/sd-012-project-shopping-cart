@@ -1,4 +1,6 @@
-window.onload = function onload() { };
+window.onload = function onload() {};
+const BASE_ML = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+const currencyList = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,25 +16,40 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id, title, thumbnail }) { // troca do sku, name, image, para o id, title, thumbnail
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__sku', id)); // troca do sku para o id
+  section.appendChild(createCustomElement('span', 'item__title', title)); // troca do name para title
+  section.appendChild(createProductImageElement(thumbnail)); // troca do image para thumbnail
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+
+// Requisição da api
+
+const getItens = (results) => {
+  const objeto = {};
+  const list = document.querySelector('.items');
+  console.log(results);
+  results.forEach((result) => {
+    objeto.sku = result.id;
+    objeto.name = result.title;
+    objeto.image = result.thumbnail;
+    const product = createProductItemElement(objeto);
+    list.appendChild(product);
+  })
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+function getApi() {
+  fetch(`${BASE_ML}computador`)
+  .then((response) => response.json())
+  .then((result) => getItens(result.results));
 }
+
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -41,3 +58,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// Botao para limpar 
+
+function cleanRates(){
+  currencyList.innerHTML = '';
+}
+
+window.onload = function onload() {
+  getApi();
+};
