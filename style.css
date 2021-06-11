@@ -156,12 +156,25 @@ body {
 }
 
 @media screen and (max-width: 1024px) {
-  .cart {
-    position: fixed !important;
+  .cart.hidden {
+    position: absolute !important;
     right: -100vw !important;
+    transition: all 0.3s;
+  }
+
+  .cart {
+    position: absolute !important; 
+    right: -30px;
+    transition: all 0.3s;
+    width: 50% !important;
+    box-shadow: 2px 2px 5px 2px black;
+  }
+
+  .top-bar-title {
+    font-size: 30pt;
   }
   
-  .fa-shopping-cart, .fa-search {
+  .fa-shopping-cart, .fa-search, .fa-times {
     display: block !important;
   }
 
@@ -173,11 +186,7 @@ body {
     justify-content: space-between;
   }
 
-  .item {
-    flex-grow: 1;
-  }
-
-  .items {
+  .item, .items {
     flex-grow: 1;
   }
 
@@ -188,6 +197,12 @@ body {
   .item:hover {
     border: none;
   }
+}
+
+.fa-times {
+  display: none;
+  position: absolute;
+  left: 10px;
 }
 
 .icons {

@@ -5,12 +5,12 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-const cart = document.querySelector('.cart__items');
+const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
   
 const saveCart = () => {
   // console.log(cart.innerHTML);
-  localStorage.setItem('Cart', JSON.stringify(cart.innerHTML));
+  localStorage.setItem('Cart', JSON.stringify(cartItems.innerHTML));
   localStorage.setItem('Total', JSON.stringify(totalPrice.innerHTML));
 };
 
@@ -35,8 +35,8 @@ function cartItemClickListener(event) {
 
 const loadCart = () => {
   const savedCart = localStorage.getItem('Cart');
-  cart.innerHTML = JSON.parse(savedCart);
-  Object.values(cart.children).forEach((child) => {
+  cartItems.innerHTML = JSON.parse(savedCart);
+  Object.values(cartItems.children).forEach((child) => {
     child.addEventListener('click', cartItemClickListener);
   });
   const loadedPrice = localStorage.getItem('Total');
@@ -64,7 +64,7 @@ const addToCart = (e) => {
     fetch(`https://api.mercadolibre.com/items/${addedId}`)
     .then((result) => result.json())
     .then((json) => {
-      pass(cart.appendChild(createCartItemElement(json)));
+      pass(cartItems.appendChild(createCartItemElement(json)));
       saveCart();
     })
     .catch((error) => fail(error));
@@ -131,7 +131,7 @@ const loadProducts = (query) => {
 };
 
 const emptyCart = () => {
-  cart.innerHTML = '';
+  cartItems.innerHTML = '';
   updateTotal(0);
   localStorage.clear();
 };
@@ -192,6 +192,26 @@ formBtn.addEventListener('click', async () => {
   productsList.forEach((product) => itemsSection.appendChild(createProductItemElement(product)));
   addsHoverToItems();
   formInput.value = '';
+});
+
+const cartContainer = document.querySelector('.cart');
+const cartIcon = document.querySelector('.fa-shopping-cart');
+let active = false;
+
+cartIcon.addEventListener('click', () => {
+  if (!active) {
+    cartContainer.classList.remove('hidden');
+    active = true;
+  } else {
+    cartContainer.classList.add('hidden');
+    active = false;
+  }
+});
+
+const closeCart = document.querySelector('.fa-times');
+closeCart.addEventListener('click', () => {
+  cartContainer.classList.add('hidden');
+  active = false;
 });
 
 window.addEventListener('load', async () => {
