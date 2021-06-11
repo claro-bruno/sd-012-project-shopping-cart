@@ -33,7 +33,7 @@ function getButton(teste) {
   return teste.querySelector('button.item__add');
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener(_event) {
   
 }
 
@@ -48,7 +48,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const catchId = () => {
   // const buttons = document.querySelectorAll('.item__add');
   const allItem = document.querySelectorAll('.item');
-  const ol = document.querySelector('.cart__items')
+  const ol = document.querySelector('.cart__items');
   allItem.forEach((item) => {
     const result = getSkuFromProductItem(item);
     const button = getButton(item);
