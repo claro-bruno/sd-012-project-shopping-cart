@@ -64,23 +64,18 @@ function saveProductsLocalStorage(skuReceived) {
   localStorage.setItem('products', selectedProduct);
 }
 
-/* function totalPrice(salePrice) {
+function totalPrice() {
+  const produto = document.querySelectorAll('.cart__item');
 
-  console.log(typeof salePrice);
-  // let price = 0;
-  // let totalPrice1 = price + salePrice;
-
-  // const totalPrice1 = price + salePrice;
-
-  // console.log(totalPrice1);
-
-  const h4 = document.createElement('h4');
-  h4.className = 'total-price';
-  h4.innerText = 'Total:';
-
-  const sectionCart = document.querySelector('.cart');
-  sectionCart.appendChild(h4);
-} */
+  const array = [];
+  produto.forEach((item) => {
+    const split = item.textContent.split('$');
+    const number = parseFloat(split[1]);
+    array.push(number);
+  });
+  console.log(array);
+  
+}
 
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
@@ -98,14 +93,24 @@ async function fetchAPIProduct({ id: skuReceived = this.id }) {
     const response = await fetch(`https://api.mercadolibre.com/items/${skuReceived}`);
     const { id: sku, title: name, price: salePrice } = await response.json();
     createCartItemElement(sku, name, salePrice);
+    // preco(salePrice);
   } catch (error) { 
-    alert('Ops, deu ruim');
+    alert('Ops, deu ruim no botao');
   }
 }
 
 function buttonItemAdd() {
   const button = document.querySelectorAll('.item__add');
   button.forEach((btn) => btn.addEventListener('click', fetchAPIProduct));
+}
+
+function createTotalPriceElement() {
+  const h4 = document.createElement('h4');
+  h4.className = 'total-price';
+  h4.innerText = 'Total:';
+
+  const sectionCart = document.querySelector('.cart');
+  sectionCart.appendChild(h4);
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -135,7 +140,7 @@ async function fetchAPI() {
     const { results } = await response.json();
     results.forEach((item) => createProductItemElement(item));
   } catch (error) { 
-    alert('Ops, deu ruim');
+    alert('Ops, deu ruim no inicio');
   }
 }
 
@@ -143,4 +148,6 @@ window.onload = async function onload() {
   await fetchAPI();
   returnsSaveProductsLocalStorage();
   clearAllCart();
+  createTotalPriceElement();
+  totalPrice();
 };
