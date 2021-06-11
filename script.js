@@ -18,6 +18,7 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  event.target.parentNode.removeChild(event.target);
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -34,7 +35,8 @@ async function addToCart(event) {
   try {
     const response = await fetch(`${apiLink}${productToAdd}`);
     const result = await response.json();
-    cartList.appendChild(createCartItemElement(result));
+    cartList.appendChild(createCartItemElement(result))
+      .addEventListener('click', cartItemClickListener);
   } catch (error) {
     console.log(error);
   }
