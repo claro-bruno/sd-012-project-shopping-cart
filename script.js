@@ -54,6 +54,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
    cart.removeChild(event.target);
+   saveLocalStorage()
    totalPrice();
 }
 
@@ -130,8 +131,6 @@ const addCart = () => {
   });
 };
 
-document.addEventListener('click', () => saveLocalStorage());
-
 const loadLocalStorage = () => {
   const cartSaved = localStorage.getItem('cart');
   if (cartSaved) {
@@ -178,9 +177,9 @@ const searchEngine = () => {
       addFoundItems(searchInput.value);
       loader();
       searchInput.value = '';
-      pressEnter.style.color = 'gold';
+      pressEnter.style.color = '0';
     } else {
-      pressEnter.style.color = 'black';
+      pressEnter.style.opacity = '0.7';
     }
   });
 };
