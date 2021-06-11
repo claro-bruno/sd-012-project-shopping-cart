@@ -27,9 +27,19 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // function getSkuFromProductItem(item) {
   //   return item.querySelector('span.item__sku').innerText;
   // }
+
+  const removeItemLocalStorage = (aidi) => {
+    const checkLocalStorage = localStorage.getItem('itensCartList');
+    const arrayJson = JSON.parse(checkLocalStorage);
+    const newArray = arrayJson.filter(({ id }) => id !== aidi);
+    console.log(newArray, aidi);
+    localStorage.setItem('itensCartList', JSON.stringify(newArray));
+  };
   
   function cartItemClickListener(event) {
       // coloque seu código aqui
+      const id = event.target.innerText.split('|')[0].replace(/SKU: /g, '').trim();
+      removeItemLocalStorage(id);
       event.target.remove();
   }
     
@@ -56,12 +66,23 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
         }
       };
 
+      const saveLocalStorage = (object) => {
+        let checkLocalStorage = localStorage.getItem('itensCartList');
+        if (!checkLocalStorage) {
+          checkLocalStorage = '[]';
+        }
+        const arrayJs = JSON.parse(checkLocalStorage);
+        arrayJs.push(object);
+        localStorage.setItem('itensCartList', JSON.stringify(arrayJs));
+      };
+
       const fetchItem = (aidi) => {
         const catchCart = document.querySelector('.cart__items');
       fetch(`https://api.mercadolibre.com/items/${aidi}`)
         .then((response) => response.json())
         .then(({ id, title, price }) => {
           catchCart.appendChild(createCartItemElement({ id, title, price }));
+          saveLocalStorage({ id, title, price });
         });
       };
       
@@ -77,6 +98,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
       window.onload = async function onload() {
         await fetchComputadores();
-        await addClickCatchId();
-        cartItemClickListener();
+        addClickCatchId();
+        const checkLocalStorage = localStorage.getItem('itensCartList');
+        const catchCart = document.querySelector('.cart__items');
+        if (checkLocalStorage) {
+          const arrayJs = JSON.parse(checkLocalStorage);
+          arrayJs.forEach((item) => {
+            catchCart.appendChild(createCartItemElement(item));
+          });
+        }
       };
