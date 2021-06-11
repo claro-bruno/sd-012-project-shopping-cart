@@ -51,12 +51,12 @@ const listCart = document.querySelector('.cart__items');
 const saveCart = () => {  
   localStorage.setItem('myCart', listCart.innerHTML);
   console.log(listCart.childElementCount);
-}
+};
 
 function loadCart() {
   listCart.innerHTML = localStorage.getItem('myCart');
   const teste = document.querySelectorAll('.cart__item');
-  teste.forEach((li) => li.addEventListener('click' ,cartItemClickListener));
+  teste.forEach((li) => li.addEventListener('click', cartItemClickListener));
 }
 
 // 2 requisito abaixo ----------------------------------------------------------
@@ -67,7 +67,7 @@ const addItens = async (id) => {
   // console.log(idItem);
   const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement(idItem));
-  saveCart(id);  
+  saveCart();
 };
 
 const addCart = () => {
@@ -103,6 +103,5 @@ const fetchML = () => {
 
 window.onload = function onload() {
   fetchML();
-  loadCart();
-  
+  loadCart();  
  };
