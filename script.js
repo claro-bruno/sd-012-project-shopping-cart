@@ -5,9 +5,30 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event) {
+async function calculatePrice(price, subtract) {
+  const totalPriceDiv = document.getElementsByClassName('total-price')[0];
+  const priceOnCart = parseFloat(totalPriceDiv.innerText);
+  if (subtract) {
+    totalPriceDiv.innerHTML = priceOnCart - price;
+  } else {
+    totalPriceDiv.innerHTML = priceOnCart + price;
+  }
+}
+
+const fetchItem = async (itemID) => {
+  try {
+    const itemFetch = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+    const itemJson = await itemFetch.json();
+    return itemJson;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+async function cartItemClickListener(event) {
+  const itemJson = await fetchItem(event.target.id);
+  calculatePrice(itemJson.price, true);
   event.target.parentElement.removeChild(event.target);
-  console.log(event.target);
 }
 
 function createCustomElement(element, className, innerText) {
@@ -29,7 +50,8 @@ function saveToCart(itemObj) {
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
+  li.classList.add('cart__item');
+  li.id = sku;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -40,11 +62,16 @@ function appendCartItem(itemObj, fromClick) {
   const { id: sku, title: name, price: salePrice } = itemObj;
   const cartItem = createCartItemElement({ sku, name, salePrice });
   cartContainer.appendChild(cartItem);
+  calculatePrice(salePrice);
   if (fromClick) saveToCart(itemObj);
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 function addItemCart(event) {
-  const itemId = event.target.parentElement.firstChild.innerHTML;
+  const itemId = getSkuFromProductItem(event.target.parentElement);
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((res) => res.json())
     .then((elem) => appendCartItem(elem, true));
@@ -63,10 +90,6 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
-
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
 
 function appendItem(jsonResults) {
   const itemSection = document.querySelector('.items');
@@ -104,7 +127,8 @@ function clearCart() {
 window.onload = function onload() {
   getItem('computador');
 
-  document.getElementsByClassName('empty-cart')[0].addEventListener('click', clearCart);
-
   if (localStorage.cart) loadSavedCart();
+
+  document.getElementsByClassName('empty-cart')[0].addEventListener('click', clearCart);
+  // calculatePrice();
 };
