@@ -1,4 +1,3 @@
-window.onload = function onload() { };
 const itemsContainer = document.querySelector('.items');
 const cartItemsContainer = document.querySelector('.cart__items');
 
@@ -18,13 +17,13 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
 }
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -37,6 +36,7 @@ function fetchCartItem(event) {
   .then((response) => response.json())
   .then((jsonData) => {
     cartItemsContainer.appendChild(createCartItemElement(jsonData));
+    localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
   });
 }
 
@@ -64,3 +64,13 @@ function fetchSearch(searchTerm) {
 }
 
 fetchSearch('computador');
+
+document.addEventListener('click', (event) => {
+  if (event.target.className === 'cart__item') {
+    cartItemClickListener(event);
+  }
+});
+
+window.onload = function onload() {
+  cartItemsContainer.innerHTML = localStorage.getItem('actualCart');
+};
