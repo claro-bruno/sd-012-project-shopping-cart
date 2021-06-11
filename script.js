@@ -3,10 +3,6 @@ const API_MERCADO_LIVRE = 'https://api.mercadolibre.com/sites/MLB/search?q=compu
 const listOrdener = 'ol.cart__items';
 const productList = 'product-list';
 
-window.onload = function onload() {
-  fetchListItems();
-};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -46,12 +42,12 @@ function fetchListItems() {
   return item.querySelector('span.item__sku').innerText;
 } */
 
-function cartItemClickListener(event) {
+/* function cartItemClickListener(event) {
   // código aqui
   const listItens = document.querySelector(listOrdener);
   event.target.remove();
   localStorage.setItem(`${productList}`, listItens.innerHTML);
-}
+} */
 
 /* function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -60,3 +56,6 @@ function cartItemClickListener(event) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 } */
+window.onload = function onload() {
+  fetchListItems();
+};
