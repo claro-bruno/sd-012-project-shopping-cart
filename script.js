@@ -1,7 +1,12 @@
+let totalcart = 0;
+
 const getCartItems = () => document.querySelector('.cart__items');
 
-  function cartItemClickListener(event) {
+  function cartItemClickListener(event, price) {
   const ol = document.querySelector('ol');
+  const ptotal = document.querySelector('.total-price p');
+  totalcart -= price;
+  ptotal.innerText = totalcart;
   ol.removeChild(event.target);
 }
 
@@ -9,7 +14,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   return li;
 }
 
@@ -23,14 +28,15 @@ function createProductImageElement(imageSource) {
  function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
-/* const updateTotalCar = (price) => {
+/*
+ const updateTotalCar = (price) => {
   const totalCartValue = document.querySelector('.total-price').innerText;
   const total = Number(totalCartValue) + Number(price);
   totalCartValue.innerHTML = 'qualquer coisa';
-}; */
+}; */ 
 
 const addPrductsCart = async (item) => {
+  const ptotal = document.querySelector('.total-price p');
   const idProduct = getSkuFromProductItem(item);
   const totalCartValue = document.querySelector('.total-price').innerText;
   const cart = getCartItems();
@@ -38,10 +44,10 @@ const addPrductsCart = async (item) => {
   let result = await fetch(url);
   result = await result.json();
   const { id: sku, title: name, price: salePrice } = result;
+  totalcart += salePrice;
+  ptotal.innerText = totalcart;
   const total = Number(totalCartValue) + Number(salePrice);
-  console.log(total);
   totalCartValue.innerText = total;
-  // updateTotalCar(salePrice);
   cart.appendChild(createCartItemElement({ sku, name, salePrice }));
   if (localStorage.getItem('shoppingCart') === null) {
     localStorage.setItem('shoppingCart', JSON.stringify(cart.innerHTML));
@@ -102,7 +108,9 @@ const clearCart = () => {
 const createTotalPrice = () => {
   const parentCart = document.querySelector('.cart');
   const btnClearCart = document.querySelector('.empty-cart');
-  parentCart.appendChild(createCustomElement('span', 'total-price', 0));
+  parentCart.appendChild(createCustomElement('span', 'total-price', ''));
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.appendChild(createCustomElement('p', '', totalcart));
   btnClearCart.addEventListener('click', clearCart);
 };
 
