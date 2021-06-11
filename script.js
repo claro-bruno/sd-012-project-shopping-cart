@@ -115,15 +115,26 @@ const showProducts = (object) => {
   });
 };
 
+function loadingScreen() {
+  const container = document.querySelector('.container');
+  const loadingSpan = document.createElement('span');
+  loadingSpan.className = 'loading';
+  loadingSpan.innerHTML = 'Loading..';
+  container.appendChild(loadingSpan);
+}
+
+function removeLoadingScreen() {
+  const loadingSpan = document.querySelector('.loading');
+  loadingSpan.parentNode.removeChild(loadingSpan);
+}
+
 async function getProducts() {
+  loadingScreen();
   try {
-    const loading = document.getElementById('loading');
-    console.log(loading);
-    loading.style.visibility = 'visible';
     const response = await fetch(API_URL);
     const { results } = await response.json();
     showProducts(results);
-    loading.style.visibility = 'hidden';
+    removeLoadingScreen();
   } catch (error) {
     return error;
   }
