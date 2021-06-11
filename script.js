@@ -33,18 +33,18 @@ function getSkuFromProductItem(item) {
 function localStorageCart() {
   localStorage.setItem('shopping-data', JSON.stringify(shoppingCart));
 }
-// REQUISITO 5:
-// function cartTotalCost() {
-//   const totalCost = shoppingCart.reduce((accumulator, currentValue) => {
-//     const itemCost = currentValue.salePrice;
-//     return accumulator + itemCost;
-//   }, 0);
-//   document.querySelector('.total-price').textContent = Math.round(totalCost * 100) / 100;
-// }
+// REQUISITO 5: Função que 
+function cartPrices() {
+  const totalPrices = document.querySelector('.total-price');
+  const cartItemList = [...document.querySelectorAll('.cart__item')];
+  totalPrices.innerText = 0;
+  const cartPriceSum = cartItemList.reduce((accumulator, currentValue) => accumulator + Number(currentValue.innerText.split('PRICE: $')[1]), 0);
+  totalPrices.innerText = cartPriceSum;
+}
 // REQUISITO 3 - Remove do carrinho os itens clicados:
 function cartItemClickListener(event) {
   event.target.remove();
-  // cartTotalCost();
+  cartPrices();
   localStorageCart();
 }
 
@@ -83,7 +83,7 @@ async function addToCart(event) {
   removeLoading();
   shoppingCart.push({ sku, name: title, salePrice: price });
   insertCartItem();
-  // cartTotalCost();
+  cartPrices();
   localStorageCart();
 }
 // REQUISITO 4.2 - Resgata os itens do carrinho salvo no Local Storage:
@@ -92,7 +92,7 @@ function retrieveLocalStorage() {
   if (dataToRetrieve) {
     shoppingCart = [...dataToRetrieve];
     insertCartItem();
-    // cartTotalCost();
+    cartPrices();
   }
 }
 // REQUISITO 1 - Insere a lista de produtos na página:
@@ -119,6 +119,7 @@ function clearCart() {
     document.querySelector('.cart__items').innerHTML = ' ';
     localStorage.clear();
     shoppingCart = [];
+    document.querySelector('.total-price').innerHTML = ' ';
   });
 }
 
