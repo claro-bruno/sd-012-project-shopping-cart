@@ -26,7 +26,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// 5
+// 5 - Ajuda dos colegas Camila e Roberval
 function updatePrice() {
   let total = 0;
   const cartItem = document.querySelectorAll('.cart__item');
@@ -38,7 +38,7 @@ function updatePrice() {
   totalPrice.innerText = total;
 }
 
-// 4
+// 4 - AJuda dos instrutores Isaac e Gisele
 const localStorageSave = () => {
   const cart = cartItems.innerHTML;
   localStorage.setItem('cart', cart);
@@ -67,10 +67,6 @@ function eventCleanCart() {
   emptyCart.addEventListener('click', cleanCart);
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 // 3
 function cartItemClickListener(event) {
   // coloque seu código aqui event
@@ -87,7 +83,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// 1
+// 1 - AJuda da instrutora Gisele
 async function fetchApi() {
   const apiFetch = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const apiFetchJson = await apiFetch.json();
@@ -100,7 +96,7 @@ async function fetchApi() {
 
 // 7 - Consultei o repositório do Thalles para resolver essa parte. https://github.com/tryber/sd-012-project-shopping-cart/pull/9
 
-// 2, 3
+// 2, 3 -  Ajuda dos colegas José Carlos e André Moreno.
 async function buttonAdd(id) {
   const fetchItems = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const product = await fetchItems.json();  
