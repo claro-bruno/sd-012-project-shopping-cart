@@ -1,4 +1,4 @@
-window.onload = function onload() { };
+const takeSectionItems = document.querySelector('.items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -25,7 +25,7 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
-
+/* 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -40,4 +40,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+} */
+
+// Pega API do Mercado Livre e renderiza produtos na tela na tela
+function takeProductsFromApi() {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json())
+    .then((secondResponse) => secondResponse.results)
+    .then((products) => {
+      products.forEach((product) => {
+        // const { id: sku, title: name, thumbnail: image } = product;
+
+        takeSectionItems.appendChild(createProductItemElement(product));
+      });
+    });
 }
+
+window.onload = function onload() {
+  takeProductsFromApi();
+};
