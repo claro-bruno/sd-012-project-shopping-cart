@@ -51,10 +51,10 @@ function fetchApi(url) {
 }
 
 function removeItemStorage(item) {
-  const skuRemove = item.innerText.split('|')[0].replace(/SKU:\s/g, '').trim();
+  const idRemove = Number(item.id);
   const items = localStorage.getItem('cart');
   const listItems = JSON.parse(items);
-  const newList = listItems.filter(({ sku }) => sku !== skuRemove);
+  const newList = listItems.filter(({ id }) => id !== idRemove);
   localStorage.setItem('cart', JSON.stringify(newList));
 }
 
@@ -91,11 +91,14 @@ function addInLocalStorage(item) {
 
 function addItemInCart(event) {
   const cartItem = document.querySelector('.cart__items');
-  const id = event.target.parentNode.firstChild.innerText;
-  fetchApi(`https://api.mercadolibre.com/items/${id}`)
+  const idItem = event.target.parentNode.firstChild.innerText;
+  fetchApi(`https://api.mercadolibre.com/items/${idItem}`)
     .then(({ id: sku, title: name, price: salePrice }) => {
-      cartItem.appendChild(createCartItemElement({ sku, name, salePrice }));
-      addInLocalStorage({ sku, name, salePrice });
+      const id = Date.now();
+      const li = createCartItemElement({ sku, name, salePrice });
+      li.id = id;
+      cartItem.appendChild(li);
+      addInLocalStorage({ sku, name, salePrice, id });
       sumTotal();
     })
     .catch(() => message('O item adicionado não está disponível'));
@@ -134,7 +137,9 @@ function loadCart(cartItems) {
   const items = localStorage.getItem('cart') || '[]';
   const listItems = JSON.parse(items); 
   listItems.forEach((item) => {
-    cartItems.appendChild(createCartItemElement(item));
+    const li = createCartItemElement(item);
+    li.id = item.id;
+    cartItems.appendChild(li);
   });
   sumTotal();
 }
