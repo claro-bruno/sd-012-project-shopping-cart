@@ -2,7 +2,6 @@ const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const sectionItems = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const emptyCart = document.querySelector('.empty-cart');
-const cart = document.querySelector('.cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
