@@ -19,7 +19,6 @@ const totalPrice = () => {
   prices.forEach(({ innerHTML }) => {
     result += parseFloat(innerHTML.match(regExp));
   });
-  console.log(result);
   total.innerHTML = result;
 };
 
