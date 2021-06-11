@@ -44,6 +44,7 @@ const totalPrice = () => {
   produtosCarrinho.forEach((produto) => {
     const { innerText } = produto;
   const price = parseFloat(innerText.substring(innerText.indexOf('$') + 1));
+  //  Método para pegar os caracteres a partir do $ na string visto no link https://bit.ly/2SucULQ
     valorFinal += price;
   });
   totalPriceCart.innerText = valorFinal;
@@ -101,6 +102,7 @@ const cleanCart = () => {
     if (produtosCarrinho.length > 0) {
     produtosCarrinho.forEach((produto) => produto.remove());
     localStorage.clear();
+    totalPrice();
     }
   });
 };
