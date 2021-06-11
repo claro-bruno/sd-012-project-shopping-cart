@@ -1,4 +1,5 @@
 const URL_PC = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const URL_ITEM = 'https://api.mercadolibre.com/items/';
 
 const listPcs = (array) => {
   const list = document.querySelector('.items');
@@ -12,26 +13,27 @@ const getApi = async (url) => {
     const response = await fetch(url);
     const { results } = await response.json();
     listPcs(results);
+    addClick(results);
   } catch (error) {
     alert(error);
   }
 };
 
-function createProductImageElement(imageSource) {
+const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-}
+};
 
-function createCustomElement(element, className, innerText) {
+const createCustomElement = (element, className, innerText) => {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
-}
+};
 
-function createProductItemElement({ id, title, thumbnail }) {
+const createProductItemElement = ({ id, title, thumbnail }) => {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -41,23 +43,41 @@ function createProductItemElement({ id, title, thumbnail }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
+};
 
-function getSkuFromProductItem(item) {
+const getSkuFromProductItem = (item) => {
   return item.querySelector('span.item__sku').innerText;
-}
+};
 
-function cartItemClickListener(event) {
+const cartItemClickListener = (event) => {
   // coloque seu código aqui
-}
+};
 
-function createCartItemElement({ sku, name, salePrice }) {
+const createCartItemElement = ({ id, title, price }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+};
+
+const addPc = async (url) => {
+  try {
+    const response = await fetch(url);
+    const object = await response.json();
+    const ol = document.querySelector('.cart__items');
+    ol.appendChild(createCartItemElement(object));
+  } catch (error) {
+    alert(error);
+  }
 }
+
+const addClick = (array) => {
+  array.forEach((element, index) => {
+    const item_add = document.getElementsByClassName('item__add')[index];
+    item_add.addEventListener('click', async () => addPc (`${URL_ITEM}${element.id}`));
+  });
+};
 
 window.onload = () => {
   getApi(URL_PC);
