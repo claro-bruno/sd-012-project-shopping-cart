@@ -83,3 +83,15 @@ body {
   font-size: 16pt;
   text-align: center;
 }
+
+.cart__item {
+  margin-bottom: 15px;
+}
+
+.total label {
+  font-weight: bold;
+}
+
+.total div {
+  display: inline-block;
+}
