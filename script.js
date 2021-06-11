@@ -5,6 +5,34 @@ const loading = document.querySelector('.loading');
 
 const removeLoading = () => sectionPCs.removeChild(loading);
 
+const saveStorage = () => {
+  localStorage.setItem('zéDoPeixe', JSON.stringify(carrinho.innerHTML));
+}
+
+const loadStorage = () => {
+  if(localStorage){
+    carrinho.innerHTML = JSON.parse(localStorage.getItem('zéDoPeixe'));
+  }
+  carrinhoResetado = document.getElementsByClassName('cart__item');
+  Object.values(carrinhoResetado).forEach((item) => {
+    item.addEventListener('click', cartItemClickListener)
+  });
+}
+
+const limparCarrinho = () => {
+  while (carrinho.firstChild) {
+    carrinho.removeChild(carrinho.firstChild);
+  }
+  saveStorage();
+}
+
+const fetchItem = (term = 'computador') => (
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${term}`)
+   .then((response) => response.json())
+   .then((jsonPCs) => jsonPCs.results)
+   .catch((err) => alert(err))
+);
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -46,6 +74,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  saveStorage();
   return li;
 }
 
@@ -56,24 +85,11 @@ function getItemId() {
       const idItem = getSkuFromProductItem(event.target.parentNode).toString();
       fetch(`https://api.mercadolibre.com/items/${idItem}`)
         .then((response) => response.json())
-        .then((id) => carrinho.appendChild(createCartItemElement(id)));
+        .then((id) => carrinho.appendChild(createCartItemElement(id)))
+        .then(() => saveStorage())
     });
   });
 }
-
-// requsito 1
-const fetchItem = (term = 'computador') => (
-   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${term}`)
-    .then((response) => response.json())
-    .then((jsonPCs) => jsonPCs.results)
-    .catch((err) => alert(err))
-);
-
-const limparCarrinho = () => {
-  while (carrinho.firstChild) {
-    carrinho.removeChild(carrinho.firstChild);
-  }
-};
 
 window.onload = () => {
   fetchItem()
@@ -85,4 +101,5 @@ window.onload = () => {
     })
     .then(() => getItemId());
   btnLimparCarrinho.addEventListener('click', limparCarrinho);
+  loadStorage();
 };
