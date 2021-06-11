@@ -1,7 +1,10 @@
+// Variáveis Globais
+let cartProducts = [];
+
 // Add Local Storage
 
-const addCartStorage = (cart) => {
-  localStorage.setItem('cart', cart.innerHTML);
+const addCartStorage = (array) => {
+  localStorage.setItem('cart', JSON.stringify(array));
 };
 
 const addPriceStorage = (totalPrice) => {
@@ -53,7 +56,13 @@ function cartItemClickListener(event) {
   const ol = li.parentNode;
   const priceItem = parseFloat(li.innerText.split('$')[1]);
   ol.removeChild(event.target);
-  addCartStorage(ol);
+  const indexToRemove = cartProducts.reduce((acc, currentValue, index) => {
+    const liSku = li.innerText.substr(5, 13);
+    const indexLi = liSku !== currentValue.sku ? acc : index;
+    return indexLi;
+  }, 0);
+  cartProducts.splice(indexToRemove, 1);
+  addCartStorage(cartProducts);
   updateCartPrice(priceItem * -1);
 }
 
@@ -93,24 +102,34 @@ const getPromiseItem = (itemId) => new Promise((resolve) => {
     .then((response) => response.json().then((computer) => resolve(computer)));
   });
 
+const addToCart = (itemObj) => {
+    const cart = document.querySelector('.cart__items');
+    const itemLi = createCartItemElement(itemObj);
+    cart.appendChild(itemLi);
+};
+
 const addProductToCart = (promise) => {
-  const cart = document.querySelector('.cart__items');
   promise.then((item) => {
     const { id: sku, title: name, price: salePrice } = item;
-    const itemLi = createCartItemElement({ sku, name, salePrice });
-    cart.appendChild(itemLi);
-    addCartStorage(cart);
+    addToCart({ sku, name, salePrice });
+    cartProducts.push({ sku, name, salePrice });
+    addCartStorage(cartProducts);
     updateCartPrice(salePrice);
   });
 };
 
-const addToCart = () => {
+const buttonClickProducts = () => {
   const itemsArray = Array.from(document.getElementsByClassName('item'));
   itemsArray.forEach((item) => {
     const sku = item.querySelector('.item__sku').innerText;
     const button = item.querySelector('.item__add');
     button.addEventListener('click', () => addProductToCart(getPromiseItem(sku)));
   });
+};
+
+const cleanCart = () => {
+  const cart = document.querySelector('ol');
+  while (cart.firstChild) cart.removeChild(cart.firstChild);
 };
 
 // Get Local Storage
@@ -123,29 +142,27 @@ const getPriceStorage = () => {
 const getcartStorage = () => {
   const cartStorage = localStorage.getItem('cart');
   if (cartStorage) {
-    const cart = document.querySelector('.cart__items');
-    cart.innerHTML = cartStorage;
-    Array.from(cart.children).forEach((li) => {
-      li.addEventListener('click', cartItemClickListener);
-    });
+    cleanCart();
+    cartProducts = JSON.parse(cartStorage);
+    cartProducts.forEach((product) => addToCart(product));
   }
 };
 
-const cleanCart = () => {
-  const cart = document.querySelector('ol');
+const emptyListenner = () => {
   const button = document.querySelector('.empty-cart');
   const priceParagraph = document.querySelector('.total-price');
   button.addEventListener('click', () => {
-    while (cart.firstChild) cart.removeChild(cart.firstChild);
+    cleanCart();
+    cartProducts = [];
     if (priceParagraph) priceParagraph.innerText = 0;
-    addCartStorage(cart);
+    addCartStorage(cartProducts);
     addPriceStorage(0);
   });
 };
 
 window.onload = function onload() {
-  addProductsToPage(getPromiseProducts()).then(() => addToCart());
   getcartStorage();
   getPriceStorage();
-  cleanCart();
+  addProductsToPage(getPromiseProducts()).then(() => buttonClickProducts());
+  emptyListenner();
  };
