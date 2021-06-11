@@ -34,8 +34,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveCart = () => {
+  const cart = document.querySelector('.cart__items');
+  localStorage.setItem('cart', cart.innerHTML);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -49,6 +55,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 const addToCart = ({ id: sku, title: name, price: salePrice }) => {
   const cartElement = createCartItemElement({ sku, name, salePrice });
   cartContainer.appendChild(cartElement);
+  saveCart();
 };
 
 const fetchAPI = (baseUrl, query, callback) => {
@@ -75,6 +82,16 @@ const addItems = (object) => {
   });
 };
 
+const reloadCart = () => {
+  if (localStorage.cart !== undefined) {
+    console.log('Entrou');
+    cartContainer.innerHTML = localStorage.getItem('cart');
+    const cartItems = Object.values(document.getElementsByClassName('cart__item'));
+    cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  }
+};
+
 window.onload = function onload() { 
   fetchAPI(mlbEndpoint, 'computador', addItems);
+  reloadCart();
 };
