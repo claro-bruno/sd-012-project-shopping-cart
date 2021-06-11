@@ -1,8 +1,3 @@
-window.onload = function onload() {
-  fetchAPI()
-  .then(() => buttonEvents());
-};
-
 const fetchAPI = () => {
    return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
    .then((response) => response.json())
@@ -74,3 +69,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+window.onload = function onload() {
+  fetchAPI()
+  .then(() => buttonEvents());
+};
