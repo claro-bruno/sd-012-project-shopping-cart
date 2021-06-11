@@ -1,6 +1,8 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const sectionItems = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const emptyCart = document.querySelector('.empty-cart');
+const cart = document.querySelector('.cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,6 +34,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// remove item clicado carrinho.
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
       event.target.remove();
@@ -46,6 +49,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// fetch inicial para trazer o API do mercado livre
 const getApi = async () => {
   const promiseApi = await fetch(url);
   const response = await promiseApi.json();
@@ -54,12 +58,14 @@ const getApi = async () => {
   });
 };
 
+// Traz o id pego pelo evento e o pesquisa no fetch.
 const getApiId = async (id) => {
   const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const response = await promiseId.json();
   cartItems.appendChild(createCartItemElement(response));
 };
 
+// evento de clique no qual é checado se o target tem certa classe, se sim o target é levado para funcao getSku e é chamado o getApiId.
 const evtBtn = () => {
   sectionItems.addEventListener('click', (event) => {
     if (event.target.className === 'item__add') {
@@ -69,16 +75,17 @@ const evtBtn = () => {
   });
 };
 
-// const evtBtn = () => {
-//   const btnAdd = document.getElementsByClassName('item__add');
-//   console.log(btnAdd)
-//   btnAdd.forEach((button) => button.addEventListener('click', (event) => {
-//     getApiId(getSkuFromProductItem(event.target.parentElement));
-//     console.log(event.target)
-//   }));
-// }
+const clearCart = () => {
+  emptyCart.addEventListener('click', () => {
+    if (cartItems.firstChild) {
+      cartItems.innerHTML = '';
+    }
+   })
+}
+
 
 window.onload = function onload() {
   getApi();
   evtBtn();
+  clearCart();
  };
