@@ -95,8 +95,17 @@ document.addEventListener('click', async (event) => {
     fetchAPIProduct(id);
   }
 });
+
+// uusado no requisito 6
+// mentoria do Isaac casa de cambio, ajudou nessa parte
+const removeItems = () => {
+  cartItems.innerHTML = '';
+};
   
 window.onload = () => {
   fetchApi1();
   getLocalStorage();
+
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', removeItems);
 };
