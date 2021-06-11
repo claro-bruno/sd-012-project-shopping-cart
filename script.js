@@ -25,9 +25,16 @@ const fetchItem = async (itemID) => {
   }
 };
 
+const removeSavedItem = async (itemID) => {
+  const cartArray = JSON.parse(localStorage.cart);
+  const removed = cartArray.filter((item) => item.id !== itemID);
+  localStorage.cart = JSON.stringify(removed);
+};
+
 async function cartItemClickListener(event) {
   const itemJson = await fetchItem(event.target.id);
   calculatePrice(itemJson.price, true);
+  removeSavedItem(itemJson.id);
   event.target.parentElement.removeChild(event.target);
 }
 
@@ -106,7 +113,6 @@ const getItem = async (item) => {
       .then((res) => res.json())
       .then((json) => {
         appendItem(json.results);
-        // resolve();
       });
   } catch (error) {
     console.log(error);
@@ -123,7 +129,7 @@ function clearCart() {
   const cartContainer = document.getElementsByClassName('cart__items')[0];
   cartContainer.innerHTML = '';
   totalPriceDiv.innerHTML = 0;
-  localStorage.cart = '';
+  localStorage.removeItem('cart');
 }
 
 window.onload = function onload() {
@@ -132,5 +138,4 @@ window.onload = function onload() {
   if (localStorage.cart) loadSavedCart();
 
   document.getElementsByClassName('empty-cart')[0].addEventListener('click', clearCart);
-  // calculatePrice();
 };
