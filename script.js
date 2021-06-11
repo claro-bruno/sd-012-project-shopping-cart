@@ -1,7 +1,3 @@
-// const { create } = require('eslint/lib/rules/*');
-
-window.onload = function onload() { };
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,14 +28,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //     return item.querySelector('span.item__sku').innerText;
 // }
   
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener());
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
