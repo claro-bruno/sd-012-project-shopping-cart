@@ -29,12 +29,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 function getSkuFromProductItem(item) {
    return item.querySelector('span.item__sku').innerText;  
 }
-function getButton(teste) {
-  return teste.querySelector('button.item__add');
+function getButton(botao) {
+  return botao.querySelector('button.item__add');
 }
 
-function cartItemClickListener(_event) {
-  
+function cartItemClickListener(event) {
+  if (event.className === 'cart__item') {
+    event.remove();
+   }
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -70,6 +72,9 @@ const fetchURL = (url) => {
   .then(() => catchId());
 };
 
+document.addEventListener('click', (event) => {
+  cartItemClickListener(event.target);
+});
 window.onload = function onload() {
   fetchURL(urlProducts);
 };
