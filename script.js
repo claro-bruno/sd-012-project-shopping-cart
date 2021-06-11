@@ -96,6 +96,7 @@ function itemClickListener(event) {
 
 const addItems = (object) => {
   const { results } = object;
+  itemsContainer.innerHTML = '';
   results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     const element = createProductItemElement({ sku, name, image });
     element.addEventListener('click', itemClickListener);
@@ -122,7 +123,15 @@ const clearCart = () => {
   totalPrice.innerText = 0;
 };
 
-window.onload = function onload() { 
+const createLoading = () => {
+  const loading = document.createElement('span');
+  loading.className = 'loading';
+  loading.innerText = 'loading...';
+  itemsContainer.appendChild(loading);
+};
+
+window.onload = function onload() {
+  createLoading();
   fetchAPI(mlbEndpoint, 'computador', addItems);
   reloadCart();
   btnClear.addEventListener('click', clearCart);
