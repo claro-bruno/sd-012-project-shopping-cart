@@ -8,8 +8,6 @@ if (parseFloat(localStorage.getItem('total')) === NaN || localStorage.getItem('t
   price = parseFloat(localStorage.getItem('total'));
 }
 
-console.log((price));
-
 const listPcs = (array) => {
   const list = document.querySelector('.items');
   array.forEach(element => {
@@ -24,6 +22,7 @@ const getApi = async (url) => {
     listPcs(results);
     addClick(results);
     loadStorage();
+    buttonRemove();
   } catch (error) {
     alert(error);
   }
@@ -147,6 +146,33 @@ const addClick = (array) => {
     item_add.addEventListener('click', async () => addPc (`${URL_ITEM}${element.id}`));
   });
 };
+
+const removeItens = () => {
+  price = 0;
+  const cart = document.querySelector('.cart');
+  const totalText = document.querySelector('.total-text');
+  const ol = document.querySelector('.cart__items');
+  cart.removeChild(totalText)
+  cart.removeChild(ol);
+  const newOl = document.createElement('ol');
+  newOl.className = 'cart__items';
+  cart.appendChild(newOl);
+  saveStorage();
+  const newTotalText = document.createElement('span');
+  newTotalText.className = 'total-text';
+  newTotalText.innerText = 'Total: R$ ';
+  cart.appendChild(newTotalText);
+  const newTotalPrice = document.createElement('span');
+  newTotalPrice.className = 'total-price';
+  newTotalText.appendChild(newTotalPrice);
+  updatePrice(newTotalPrice);
+  localStorage.setItem('total', price);
+}
+
+const buttonRemove = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', async () => removeItens());
+}
 
 window.onload = () => {
   getApi(URL_PC);
