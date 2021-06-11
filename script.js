@@ -1,5 +1,6 @@
 window.onload = function onload() { };
 const itemsContainer = document.querySelector('.items');
+const cartItemsContainer = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -15,6 +16,26 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function createCartItemElement({ id, title, price }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function fetchCartItem(event) {
+  fetch(`https://api.mercadolibre.com/items/${getSkuFromProductItem(event.target.parentNode)}`)
+  .then((response) => response.json())
+  .then((jsonData) => {
+    cartItemsContainer.appendChild(createCartItemElement(jsonData));
+  });
+}
+
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -22,7 +43,9 @@ function createProductItemElement({ id, title, thumbnail }) {
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  const buttonAddToCart = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  buttonAddToCart.addEventListener('click', fetchCartItem);
+  section.appendChild(buttonAddToCart);
 
   return section;
 }
@@ -38,18 +61,6 @@ function fetchSearch(searchTerm) {
 
 fetchSearch('computador');
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-// function cartItemClickListener(event) {
+// function cartItemClickListener() {
 //   // coloque seu código aqui
-// }
-
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
 // }
