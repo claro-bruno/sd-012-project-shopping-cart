@@ -14,10 +14,33 @@ const getApi = async (url) => {
     const { results } = await response.json();
     listPcs(results);
     addClick(results);
+    loadStorage();
   } catch (error) {
     alert(error);
   }
 };
+
+const saveStorage = () => {
+  const array = [];
+  const itens = document.querySelectorAll('.cart__item');
+  for (let i = 0; i < itens.length; i += 1) {
+    array.push(itens[i].outerHTML);
+  }
+  localStorage.setItem('pcs', JSON.stringify(array));
+};
+
+const loadStorage = () => {
+  const ol = document.querySelector('.cart__items');
+  const array = JSON.parse(localStorage.getItem('pcs'));
+  if (array !== null) {
+    for (let i = 0; i < array.length; i += 1) {
+      const li = document.createElement('li');
+      li.innerHTML = array[i];
+      li.firstChild.addEventListener('click', cartItemClickListener);
+      ol.appendChild(li.firstChild);
+    }
+  }
+}
 
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
@@ -52,6 +75,7 @@ const getSkuFromProductItem = (item) => {
 const cartItemClickListener = (event) => {
   const ol = document.querySelector('.cart__items');
   ol.removeChild(event.target);
+  saveStorage();
 };
 
 const createCartItemElement = ({ id, title, price }) => {
@@ -68,6 +92,7 @@ const addPc = async (url) => {
     const object = await response.json();
     const ol = document.querySelector('.cart__items');
     ol.appendChild(createCartItemElement(object));
+    saveStorage();
   } catch (error) {
     alert(error);
   }
