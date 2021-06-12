@@ -1,20 +1,18 @@
 const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-// const cart = JSON.parse(localStorage.getItem('cartProducts')) || [];
 
+// Funcoes auxiliares do requisito 1
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
-
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
-
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -26,20 +24,34 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   
   return section;
 }
+// Fim das funcoes auxiliares do requisito 1
 
+// Funcao Auxiliar, requisito 2.
 function getSkuFromProductItem(item) {
    return item.querySelector('span.item__sku').innerText;  
 }
+// Funcao Auxiliar, requisito 2.
 function getButton(botao) {
   return botao.querySelector('button.item__add');
 }
 
+const removeButton = () => {
+  const li = document.querySelectorAll('li.cart__item');
+  const value = document.querySelector('p.total-price');
+  li.forEach((removed) => removed.remove());
+  value.innerText = 0;
+  localStorage.removeItem('cart');
+  localStorage.removeItem('price');
+};
+
+// Funcao auxiliar do requisito 5
 const getPrice = (price) => {
   const totalPrice = document.querySelector('.total-price');
   const convert = parseFloat(totalPrice.innerText);
   totalPrice.innerText = convert + price;
 };
 
+// Funcao auxiliar do requisito 4
 const saveCart = () => {  
   // cart.push(product.innerText);
   // localStorage.setItem('cart', JSON.stringify(cart));
@@ -49,6 +61,7 @@ const saveCart = () => {
   localStorage.setItem('price', total.innerText);
 };
 
+// Funcao auxiliar do requisito 5
 const removePrice = (event) => {
   const price = event.innerText.split('$')[1];
   const totalPrice = document.querySelector('p.total-price');
@@ -56,6 +69,7 @@ const removePrice = (event) => {
   totalPrice.innerText = convert - price;
 };
 
+// Funcao auxiliar do requisito 4
 const checkIfSave = () => {
   const saved = localStorage.getItem('cart');
   const ol = document.querySelector('.cart__items');
@@ -66,6 +80,7 @@ const checkIfSave = () => {
   }
 };
 
+// Cumpre requisito 3.
 function cartItemClickListener(event) {
   if (event.className === 'cart__item') {
     removePrice(event);
@@ -74,6 +89,7 @@ function cartItemClickListener(event) {
    }
 }
 
+// Funcao auxiliar do requisito 2
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -81,7 +97,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
+// Cumpre requisito 2, está sendo chamada dentro do window.onload
 const catchId = () => {
   // const buttons = document.querySelectorAll('.item__add');
   const allItem = document.querySelectorAll('.item');
@@ -101,7 +117,7 @@ const catchId = () => {
     });
 });
 };
-
+// Cumpre requisito 1, está sendo chamada dentro do window.onload
 const fetchURL = (url) => {
   const idItem = document.querySelector('.items');
   fetch(url)
@@ -110,15 +126,16 @@ const fetchURL = (url) => {
   .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))))
   .then(() => catchId());
 };
-
+// Cumpre requisito 3.
 document.addEventListener('click', (event) => {
   cartItemClickListener(event.target);
 });
 window.onload = function onload() {
+// Cumpre requisito 1
   fetchURL(urlProducts);
+// Cumpre requisito 4
   checkIfSave();
+// Requisito 6
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', removeButton);
 };
-
-//  Adicoes e remocoes do local storage tem de ser computadas no local
-//  quando um elemento é adicionado ao carrinho, ele deve ser adicionado ao local
-// quando um elemento é retirado, ele deve ser excluido do local
