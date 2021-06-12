@@ -2,6 +2,9 @@ const API_URL = 'https://api.mercadolibre.com/sites/MLB/search';
 const API_ITEMS = 'https://api.mercadolibre.com/items/';
 const MSG_ERROR = 'Estamos passando por problemas. Por Favor, tente mais tarde!';
 const MSG_ERROR_SEARCH = 'Desculpa! Não foi possível encontrar a sua busca!';
+const MSG_INDEFINITE_SEARCH = 'Olá! O que você procura? =D';
+const searchInput = document.getElementById('search');
+const pressEnter = document.getElementById('search-span');
 const body = document.querySelector('body');
 const items = document.querySelector('.items');
 const cart = document.querySelector('.cart__items');
@@ -167,21 +170,32 @@ const addFoundItems = (value) => {
   search = value;
 };
 
-const searchEngine = () => {
-  const searchInput = document.querySelector('#search');
-  searchInput.addEventListener('keypress', (event) => {
-    const pressEnter = document.getElementById('search-span');
-    if (event.key === 'Enter' && !searchInput.value) return alert('O que você procura? =D');
-    if (event.key === 'Enter') {
-      clearItems();
-      addFoundItems(searchInput.value);
-      loader();
-      searchInput.value = '';
-      pressEnter.style.color = '0';
-    } else {
-      pressEnter.style.opacity = '0.7';
-    }
+const tipFocus = () => {
+  searchInput.addEventListener('focus', () => {
+    pressEnter.style.opacity = '0.7';
   });
+  searchInput.addEventListener('blur', () => {
+    pressEnter.style.opacity = '0';
+  });
+};
+
+const eventSearchItems = () => {
+  searchInput.addEventListener('search', () => {
+    if (!searchInput.value) {
+      pressEnter.style.opacity = '0';
+      return alert(MSG_INDEFINITE_SEARCH);
+    }
+    clearItems();
+    addFoundItems(searchInput.value);
+    loader();
+    searchInput.value = '';
+    pressEnter.style.opacity = '0';
+  });
+};
+
+const searchEngine = () => {
+  tipFocus();
+  eventSearchItems();
 };
 
 window.onload = function onload() {
