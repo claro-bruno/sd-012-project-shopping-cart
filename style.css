@@ -94,7 +94,7 @@ body {
   margin: 10px;
 }
 
-.item .item__add , .item__details {
+.item__add , .item__details {
   background-color: rgb(0, 100, 194);
   border: 0;
   color: white;

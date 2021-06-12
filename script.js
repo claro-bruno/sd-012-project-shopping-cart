@@ -103,12 +103,24 @@ function addItemInCart(event) {
       sumTotal();
     })
     .catch(() => message('O item adicionado não está disponível'));
-}   
+}
+
+function returnToItems(event, element) {
+  element.remove();
+  const items = document.querySelector('.items');
+  items.style.display = 'flex';
+}
+
+function renderImage(event) {
+  const image = document.querySelector('.picture-main');
+  image.src = event.target.src;
+}
 
 function fillMenuPictures(urls, menuPictures) {
   urls.forEach((url) => {
     const img = document.createElement('img');
     img.src = url;
+    img.addEventListener('click', renderImage);
     menuPictures.appendChild(img);
   });
 }
@@ -117,21 +129,29 @@ function createPicturesContainer(pictures, textDetails) {
   const picturesContainer = createCustomElement('div', 'pictures-container', '');
   const menuPictures = createCustomElement('div', 'pictures-menu', '');
   const urls = pictures.map(({ url }) => url);
-  fillMenuPictures(urls, menuPictures);
   menuPictures.appendChild(createCustomElement('div', 'text-details', textDetails));
+  fillMenuPictures(urls, menuPictures);
   const pictureMain = createCustomElement('img', 'picture-main', '');
   const [path] = urls;
   pictureMain.src = path;
-  picturesContainer.appendChild(pictureMain);
   picturesContainer.appendChild(menuPictures);
+  picturesContainer.appendChild(pictureMain);
   return picturesContainer;
 }
 
-function createDetailsContainer({ title, pictures, price, warranty }) {
+function createDetailsContainer({ title, pictures, price, warranty, id }) {
   const detailsContainer = createCustomElement('div', 'deatails-container', '');
+  const btnBack = document.createElement('button');
+  btnBack.innerHTML = '<i class="fas fa-chevron-left"></i>';
+  btnBack.addEventListener('click', (event) => returnToItems(event, detailsContainer));
+  detailsContainer.appendChild(btnBack);
+  detailsContainer.appendChild(createCustomElement('span', 'id-details', id));
   detailsContainer.appendChild(createCustomElement('h2', 'details-title', title));
   const textDetails = `Preço: ${price} \n Garantia: ${warranty}`;
   detailsContainer.appendChild(createPicturesContainer(pictures, textDetails));
+  const btn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho! ');
+  btn.addEventListener('click', addItemInCart);
+  detailsContainer.appendChild(btn);
   return detailsContainer;
 }
 
