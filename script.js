@@ -6,6 +6,11 @@ const valorProdutos = 'valor-produtos';
 
 let pricesArray = [];
 
+const getAPIJson = async (urlAPI) => {
+  const fetchAPI = await fetch(urlAPI);
+  return fetchAPI.json();
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -64,22 +69,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const saveList = (event) => {
-  const productID = event.parentNode.innerHTML;
-  localStorage.setItem(`${strinListaProdutos}`, productID);
+  const listStorage = event.innerHTML;
+  localStorage.setItem(`${strinListaProdutos}`, listStorage);
 };
 
-const fetchButton = (listofProducts, productURL, priceSpan) => {
-  const pacoca = priceSpan;
-  fetch(productURL)
-    .then((response) => response.json())
-    .then((data) => listofProducts.appendChild(createCartItemElement(data)))
-    .then((eachProduct) => {
-      const productText = eachProduct.innerText;
-      saveList(eachProduct);
-      pricesArray.push(parseFloat(productText.match(/\d+.\d+$/gm)[0]));
-      pacoca.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
-      localStorage.setItem(`${valorProdutos}`, pricesArray);
-    });
+const fetchButton = async (productURL) => {
+  const eachProdJson = await getAPIJson(productURL);
+  itemList.appendChild(createCartItemElement(eachProdJson));
+  pricesArray.push(eachProdJson.base_price);
+  saveList(itemList);
+  localStorage.setItem(`${valorProdutos}`, pricesArray);
 };
 
 const buttonEvents = async () => {
@@ -89,21 +88,17 @@ const buttonEvents = async () => {
     item.addEventListener('click', (evt) => {
       const productText = evt.target.parentNode.firstChild.innerText;
       const productURL = `https://api.mercadolibre.com/items/${productText}`;
-      fetchButton(itemList, productURL, priceDisplay);
+      fetchButton(productURL);
     });
   });
 };
 
-const jsonAppend = async (requested) => {
-  // error style learned from Roger Melo youtube channel
-  if (!requested) {
-    throw new Error('Não foi possível entrar em contato com a API');
-  }
+const displayAPIData = async (requested) => {
   const itemSection = document.querySelector('section.items');
   itemSection.firstChild.remove();
 
-  const jsonData = await requested.json();
-  jsonData.results.forEach((components) => {
+  const jsonInput = await requested;
+  jsonInput.results.forEach((components) => {
     itemSection.appendChild(createProductItemElement(components));
   });
 };
@@ -132,8 +127,7 @@ const clearButton = () => {
 };
 
 window.onload = async () => {
-  const fetchCatalog = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  await jsonAppend(fetchCatalog);
+  await displayAPIData(getAPIJson('https://api.mercadolibre.com/sites/MLB/search?q=computador'));
   buttonEvents();
   returnSavedList();
   clearButton();
