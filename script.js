@@ -1,13 +1,22 @@
 const OlItem = document.querySelector('.cart__items');
+const cartBtn = document.querySelector('.empty-cart');
+const total = document.querySelector('.total-price');
 let arrStorage = [];
 
 const getPrice = () => {
-  const total = document.querySelector('.total-price');
   let totalPrice = 0;
   arrStorage.forEach((element) => {
     totalPrice += element.price;
   });
   total.innerText = totalPrice;
+};
+
+const clearCart = () => {
+  cartBtn.addEventListener('click', () => {
+    localStorage.clear();
+    OlItem.innerHTML = '';
+    total.innerHTML = '';
+  });
 };
 
 const storage = (value) => {
@@ -17,7 +26,7 @@ const storage = (value) => {
   getPrice();
 };
 
-const rmvItemLS = (str) => {
+const removeItemFromLS = (str) => {
   const strId = str.innerText.substr(5, 13);
   arrStorage = arrStorage.filter((item) => item.id !== strId);
   const strStorage = JSON.stringify(arrStorage);
@@ -59,7 +68,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   OlItem.removeChild(event.target);
-  rmvItemLS(event.target);
+  removeItemFromLS(event.target);
   getPrice();
 }
 
@@ -116,4 +125,5 @@ window.onload = async function onload() {
   await fetchPC();
   createButton();
   getLocalStorage();
+  clearCart();
 };
