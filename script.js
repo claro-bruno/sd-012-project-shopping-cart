@@ -1,5 +1,6 @@
 const itemList = document.querySelector('ol.cart__items');
-const priceDisplay = document.querySelector('#price-span');
+const priceDisplay = document.querySelector('.total-price');
+const loadingText = document.querySelector('.loading');
 
 const strinListaProdutos = 'lista-produtos';
 const valorProdutos = 'valor-produtos';
@@ -45,8 +46,9 @@ function cartItemClickListener(event) {
 
 function gettingPrice(event) {
   const liText = event.target.innerText;
+  const priceFromString = parseFloat(liText.match(/\d+.\d+$/gm)[0]);
 
-  const indexOfNumber = pricesArray.indexOf(parseFloat(liText.match(/\d+.\d+$/gm)[0]));
+  const indexOfNumber = pricesArray.indexOf(priceFromString);
 
   pricesArray.splice(indexOfNumber, 1);
 
@@ -73,12 +75,15 @@ const saveList = (event) => {
   localStorage.setItem(`${strinListaProdutos}`, listStorage);
 };
 
-const fetchButton = async (productURL) => {
+const addToCart = async (productURL) => {
   const eachProdJson = await getAPIJson(productURL);
   itemList.appendChild(createCartItemElement(eachProdJson));
-  pricesArray.push(eachProdJson.base_price);
   saveList(itemList);
+
+  //  show priceDisplay update
+  pricesArray.push(eachProdJson.base_price);
   localStorage.setItem(`${valorProdutos}`, pricesArray);
+  priceDisplay.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
 };
 
 const buttonEvents = async () => {
@@ -88,14 +93,13 @@ const buttonEvents = async () => {
     item.addEventListener('click', (evt) => {
       const productText = evt.target.parentNode.firstChild.innerText;
       const productURL = `https://api.mercadolibre.com/items/${productText}`;
-      fetchButton(productURL);
+      addToCart(productURL);
     });
   });
 };
 
-const displayAPIData = async (requested) => {
+const productsAPIData = async (requested) => {
   const itemSection = document.querySelector('section.items');
-  itemSection.firstChild.remove();
 
   const jsonInput = await requested;
   jsonInput.results.forEach((components) => {
@@ -123,12 +127,14 @@ const clearButton = () => {
   button.addEventListener('click', () => {
     itemList.innerHTML = '';
     localStorage.clear();
+    priceDisplay.innerHTML = '0';
   });
 };
 
 window.onload = async () => {
-  await displayAPIData(getAPIJson('https://api.mercadolibre.com/sites/MLB/search?q=computador'));
-  buttonEvents();
+  await productsAPIData(getAPIJson('https://api.mercadolibre.com/sites/MLB/search?q=computador'));
+  loadingText.remove();
+  await buttonEvents();
   returnSavedList();
   clearButton();
 };
