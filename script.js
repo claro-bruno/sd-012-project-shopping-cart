@@ -1,7 +1,14 @@
+// Projeto feito com ajuda dos colegas: Igor Fernandes e Roberval Filho
 const OlItem = document.querySelector('.cart__items');
 const cartBtn = document.querySelector('.empty-cart');
 const total = document.querySelector('.total-price');
 let arrStorage = [];
+
+const preLoader = () => {
+  const body = document.querySelector('body');
+  const loadMsg = document.querySelector('.loading');
+  body.removeChild(loadMsg);
+};
 
 const getPrice = () => {
   let totalPrice = 0;
@@ -51,14 +58,14 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-  
+
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(
     createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
-    );
-    
+  );
+
   return section;
 }
 
@@ -84,7 +91,7 @@ const cartShop = async (itemID) => {
   let fetchCart = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
   fetchCart = await fetchCart.json();
   const olCart = document.querySelector('.cart__items');
-  olCart.appendChild((createCartItemElement(fetchCart)));
+  olCart.appendChild(createCartItemElement(fetchCart));
   storage(fetchCart);
 };
 
@@ -126,4 +133,5 @@ window.onload = async function onload() {
   createButton();
   getLocalStorage();
   clearCart();
+  preLoader();
 };
