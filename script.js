@@ -1,7 +1,9 @@
-const mercadoLivreURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const stringOrderedList = 'ol.cart__items';
 const strinListaProdutos = 'lista-produtos';
-const pricesArray = [];
+const priceSpanString = '#price-span';
+const valorProdutos = 'valor-produtos';
+
+let pricesArray = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -19,8 +21,8 @@ function createCustomElement(element, className, innerText) {
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
-  section.className = 'item';
   const img = image.replace(/-I.jpg/g, '-O.jpg');
+  section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
@@ -30,23 +32,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
 function cartItemClickListener(event) {
-  const itemList = document.querySelector(stringOrderedList);
-
+  const itemList = document.getElementsByClassName('cart__items');
   event.target.remove();
-
   localStorage.setItem(`${strinListaProdutos}`, itemList.innerHTML);
-  // se a OL length for maior que 0 preço dinamico
-  // preço dinamico =
-  // separar e procurar os preços.
-  // length -1
 }
 
 function gettingPrice(event) {
-  const priceSpan = document.querySelector('#price-span');
+  const priceSpan = document.querySelector(priceSpanString);
 
   const liText = event.target.innerText;
 
@@ -59,7 +52,7 @@ function gettingPrice(event) {
   } else {
     priceSpan.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
   }
-  localStorage.setItem('valor-produtos', pricesArray);
+  localStorage.setItem(`${valorProdutos}`, pricesArray);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -77,47 +70,43 @@ const saveList = (event) => {
   localStorage.setItem(`${strinListaProdutos}`, productID);
 };
 
+const fetchButton = (itemList, productURL, priceSpan) => {
+  fetch(productURL)
+    .then((response) => response.json())
+    .then((data) => itemList.appendChild(createCartItemElement(data)))
+    .then((eachProduct) => {
+      const productText = eachProduct.innerText;
+      saveList(eachProduct);
+      pricesArray.push(parseFloat(productText.match(/\d+.\d+$/gm)[0]));
+      priceSpan.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
+      localStorage.setItem(`${valorProdutos}`, pricesArray);
+    });
+};
+
 // eslint-disable-next-line max-lines-per-function
 const buttonListener = () => {
   const allButtons = document.querySelectorAll('button.item__add');
-  const priceSpan = document.querySelector('#price-span');
+  const priceSpan = document.querySelector(priceSpanString);
   let itemCode = '';
-
   allButtons.forEach((item) => {
     item.addEventListener('click', (evt) => {
       const itemList = document.querySelector(stringOrderedList);
       itemCode = evt.target.parentNode.firstChild.innerText;
       const productURL = `https://api.mercadolibre.com/items/${itemCode}`;
-      fetch(productURL)
-        .then((response) => response.json())
-        .then((data) => itemList.appendChild(createCartItemElement(data)))
-        .then((eachProduct) => {
-          const productText = eachProduct.innerText;
-          saveList(eachProduct);
-          pricesArray.push(parseFloat(productText.match(/\d+.\d+$/gm)[0]));
-          const totalPrice = pricesArray.reduce((acc, curr) => acc + curr);
-          priceSpan.innerHTML = totalPrice;
-          localStorage.setItem('valor-produtos', totalPrice);
-        });
+      fetchButton(itemList, productURL, priceSpan);
     });
   });
 };
 
-const getAPIJson = (requested) => {
+const jsonAppend = async (requested) => {
   // error style learned from Roger Melo youtube channel
   if (!requested) {
     throw new Error('Não foi possível entrar em contato com a API');
   }
-  return requested.json();
-};
-
-const appendJson = (jsonData) => {
-  if (!jsonData) {
-    throw new Error('Não foi possível obter o json para append');
-  }
   const itemSection = document.querySelector('section.items');
   itemSection.firstChild.remove();
 
+  const jsonData = await requested.json();
   jsonData.results.forEach((components) => {
     itemSection.appendChild(createProductItemElement(components));
   });
@@ -125,9 +114,20 @@ const appendJson = (jsonData) => {
 
 const returnSavedList = () => {
   const itemList = document.querySelector(stringOrderedList);
+  const priceSpan = document.querySelector(priceSpanString);
 
   itemList.innerHTML = localStorage.getItem(`${strinListaProdutos}`);
   itemList.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  itemList.childNodes.forEach((item) => item.addEventListener('click', gettingPrice));
+
+  if (!localStorage.getItem(`${valorProdutos}`)) {
+    priceSpan.innerHTML = '0';
+  } else {
+    pricesArray = localStorage.getItem(`${valorProdutos}`).split(',');
+    const dkqowe = pricesArray.map((xablinho) => Number(xablinho));
+    priceSpan.innerHTML = dkqowe.reduce((acc, curr) => acc + Number(curr), 0);
+    pricesArray = dkqowe;
+  }
 };
 
 const clearButton = () => {
@@ -140,8 +140,8 @@ const clearButton = () => {
 };
 
 window.onload = async () => {
-  const getJson = await fetch(mercadoLivreURL);
-  await getAPIJson(getJson).then(appendJson);
+  const fetchCatalog = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  await jsonAppend(fetchCatalog);
   buttonListener();
   returnSavedList();
   clearButton();
