@@ -30,7 +30,7 @@ const fetchItem = async (itemID) => {
 
 const removeSavedItem = async (itemID) => {
   const cartArray = JSON.parse(localStorage.cart);
-  const removed = cartArray.filter((item) => item.id !== itemID);
+  const removed = cartArray.filter((item) => item !== itemID);
   localStorage.cart = JSON.stringify(removed);
 };
 
@@ -94,31 +94,31 @@ async function addItemCart(event) {
   }
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image, price }) {
   const section = document.createElement('section');
   section.className = 'item';
   const itemAddBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
   itemAddBtn.addEventListener('click', addItemCart);
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createCustomElement('span', 'item__price', `R$ ${price}`));
   section.appendChild(itemAddBtn);
-
   return section;
 }
 
 function appendItems(jsonResults) {
   const itemSection = document.getElementsByClassName('items')[0];
   jsonResults.forEach((item) => {
-    const { id: sku, title: name, thumbnail: image } = item;
-    itemSection.appendChild(createProductItemElement({ sku, name, image }));
+    const { id: sku, title: name, thumbnail: image, price } = item;
+    itemSection.appendChild(createProductItemElement({ sku, name, image, price }));
   });
   itemSection.removeChild(document.querySelector('.loading'));
 }
 
 const getItems = async (item) => {
   const itemSection = document.getElementsByClassName('items')[0];
+  itemSection.innerHTML = '';
   const loadDiv = document.createElement('div');
   loadDiv.innerHTML = 'loading...';
   loadDiv.className = 'loading';
@@ -152,10 +152,18 @@ function clearCart() {
   localStorage.removeItem('cart');
 }
 
+function searchProduct() {
+  const item = document.getElementById('search-input').value;
+  console.log(item);
+  getItems(item);
+}
+
 window.onload = function onload() {
   getItems('computador');
 
   if (localStorage.cart) loadSavedCart();
 
   document.getElementsByClassName('empty-cart')[0].addEventListener('click', clearCart);
+
+  document.getElementById('search-btn').addEventListener('click', searchProduct);
 };
