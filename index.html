@@ -10,18 +10,26 @@
   </head>
 
   <body>
-    <header>
-      <h1>Computer Shop</h1>
+    <header class="top-bar">
+      <h1>Shop</h1>
+      <div>
+        <label for="search-input"></label>
+        <input type="text" id="search-input" placeholder="Buscar itens">
+        <button id="search-btn">Pesquisar!</button>
+      </div>
     </header>
     <section class="container">
       <section class="items">
       </section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
+        <div id="cart-btns">
+          <button class="empty-cart">Esvaziar carrinho</button>
+          <button class="buy">COMPRAR!</button>
+        </div>
         <ol class="cart__items"></ol>
         <section class="total">
-          <label for="">Total:</label>
+          <label for="">Total: R$</label>
           <div class="total-price">0</div>
         </section>
       </section>
