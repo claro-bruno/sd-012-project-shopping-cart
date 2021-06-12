@@ -38,11 +38,22 @@ function getSkuFromProductItem(item) {
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  const liText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = liText;
   li.addEventListener('click', cartItemClickListener);
+  saveItem(liText);
 
   return li;
 }
+
+const addCartItemElement = (text) => {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = text;
+  li.addEventListener('click', cartItemClickListener);
+
+  return li;
+};
 
 // Função que encontra o Id na API
 const fetchId = (sku) => {
@@ -51,7 +62,7 @@ const fetchId = (sku) => {
     .then((response) => response.json())
     .then((response) => {
       cart.appendChild(createCartItemElement(response));
-      saveItem(response);
+      // saveItem(response);
     })
     .catch((error) => (error));
 };
@@ -81,7 +92,7 @@ const loadItems = () => {
   const cartItemString = JSON.parse(cartItem);
   cartItemString.forEach((item) => {
     const cart = document.querySelector('.cart__items');
-    cart.appendChild(createCartItemElement(item));
+    cart.appendChild(addCartItemElement(item));
   });
 };
 
