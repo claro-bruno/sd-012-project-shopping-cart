@@ -25,7 +25,9 @@ const saveItem = (item) => {
 function cartItemClickListener(e) {
   const liText = e.target.innerText;
   e.target.remove();
-  array = array.filter((item) => item !== liText);
+  // array = array.filter((item) => item !== liText); // alternativa sem correção do texto do produto com espaço extra.
+  const indice = array.findIndex((item) => item === liText); // acha o index do primeiro elemento li.
+  array = array.filter((item, idx) => idx !== indice); // salva no array global todos os outros valores.
   saveItem();
 }
 
@@ -35,6 +37,19 @@ function getSkuFromProductItem(item) {
  }
 */
 
+// const totalprice = () => {
+
+// };
+
+const BtnRemove = () => {
+  const btnRmv = document.querySelector('.empty-cart');
+  const cart = document.querySelector('.cart__items');
+  btnRmv.addEventListener('click', () => {
+    cart.innerHTML = '';
+    localStorage.removeItem(nameKey);
+  });
+};
+
 // Função para criar elementos no carrinho
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -42,7 +57,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const liText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.innerText = liText;
   li.addEventListener('click', cartItemClickListener);
-  saveItem(liText);
 
   return li;
 }
@@ -63,7 +77,8 @@ const fetchId = (sku) => {
     .then((response) => response.json())
     .then((response) => {
       cart.appendChild(createCartItemElement(response));
-      // saveItem(response);
+      const allCartItems = document.querySelectorAll('.cart__items li');
+      saveItem(allCartItems[allCartItems.length - 1].innerText);
     })
     .catch((error) => (error));
 };
@@ -117,4 +132,5 @@ window.onload = function onload() {
     .catch((error) => error);
 
   loadItems();
+  BtnRemove();
 };
