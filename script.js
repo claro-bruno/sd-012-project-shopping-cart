@@ -1,4 +1,5 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const API_LINK = 'https://api.mercadolibre.com/items/';
 const productsSection = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
 const priceTag = document.getElementById('priceTag');
@@ -25,7 +26,7 @@ function saveCartList() {
 function totalPrices() {
   const listItems = document.querySelectorAll('.cart__item');
   let sumOfPrices = 0;
-  console.log(listItems);
+
   listItems.forEach((item) => {
     const valor = item.innerText;
     const posicaoInicial = valor.indexOf('$') + 1;
@@ -38,7 +39,6 @@ function totalPrices() {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   event.target.parentNode.removeChild(event.target);
   totalPrices();
   saveCartList();
@@ -54,18 +54,17 @@ function createCartItemElement({ id, title, price }) {
 
 function recoverSavedList() {
   cartList.innerHTML = localStorage.getItem('shopList');
-  const listItems = document.getElementsByTagName('li');
-  for (let index = 0; index < listItems.length; index += 1) {
-    listItems[index].addEventListener('click', cartItemClickListener);
-  }
+  const listItems = document.querySelectorAll('.cart__item');  
+  listItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
   priceTag.innerHTML = localStorage.getItem('prices');
 }
 
 async function addToCart(event) {
-  const productToAdd = event.target.previousSibling.previousSibling.previousSibling.innerText;
-  const apiLink = 'https://api.mercadolibre.com/items/';
+  const mainNode = event.target.parentNode;
+  const productToAdd = mainNode.firstChild.innerText;
+  
   try {
-    const response = await fetch(`${apiLink}${productToAdd}`);
+    const response = await fetch(`${API_LINK}${productToAdd}`);
     const result = await response.json();
     cartList.appendChild(createCartItemElement(result))
       .addEventListener('click', cartItemClickListener);
@@ -94,20 +93,13 @@ function emptyCart() {
   
   clearButton.addEventListener('click', () => {
     const nodeChilds = document.querySelectorAll('li');
-    console.log(nodeChilds);
-    for (let index = 0; index < nodeChilds.length; index += 1) {
-      nodeChilds[index].parentNode.removeChild(nodeChilds[index]);
-    }
+    nodeChilds.forEach((item) => item.parentNode.removeChild(item));
     totalPrices();
     localStorage.clear();
   });
 }
 
 emptyCart();
-
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
 
 const showProducts = (object) => {
   object.forEach((element) => {
