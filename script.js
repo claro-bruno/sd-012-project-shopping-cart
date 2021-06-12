@@ -159,10 +159,16 @@ function createTotalPriceElement() {
   return item.querySelector('span.item__sku').innerText;
 } */
 
+function loading() {
+  const textLoading = document.querySelector('.loading');
+  textLoading.remove();
+}
+
 async function fetchAPI() {
   try {
     const response = await fetch(API_URL);
     const { results } = await response.json();
+    loading();
     results.forEach((data) => createProductItemElement(data));
   } catch (error) { 
     alert('Ops, deu ruim no inicio');
