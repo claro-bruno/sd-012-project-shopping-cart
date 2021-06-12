@@ -111,11 +111,14 @@ const getToCarList = () => {
 };
 
 const fetchResults = () => {
-  const getParent = document.getElementsByClassName('items');
+  const getParent = document.getElementsByClassName('items')[0];
+  getParent.innerHTML = '<p class="loading">loadin...<p/>';
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
-  .then((array) => array.results.forEach((item) => getParent[0]
-  .appendChild(createProductItemElement(item)))).then(() => getToCarList());
+  .then((array) => {
+    getParent.innerHTML = '';
+    array.results.forEach((item) => getParent.appendChild(createProductItemElement(item)));
+  }).then(() => getToCarList());
 };
 
 window.onload = function onload() {
