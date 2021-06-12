@@ -109,15 +109,20 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function appendItems(jsonResults) {
-  const itemSection = document.querySelector('.items');
+  const itemSection = document.getElementsByClassName('items')[0];
   jsonResults.forEach((item) => {
     const { id: sku, title: name, thumbnail: image } = item;
     itemSection.appendChild(createProductItemElement({ sku, name, image }));
   });
-  itemSection.removeChild(document.getElementById('load-info'));
+  itemSection.removeChild(document.querySelector('.loading'));
 }
 
 const getItems = async (item) => {
+  const itemSection = document.getElementsByClassName('items')[0];
+  const loadDiv = document.createElement('div');
+  loadDiv.innerHTML = 'loading...';
+  loadDiv.className = 'loading';
+  itemSection.appendChild(loadDiv);
   try {
     const itemsFetch = await fetch(`${SEARCH_URL}${item}`);
     const itemsJson = await itemsFetch.json();
