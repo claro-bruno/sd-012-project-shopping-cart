@@ -12,6 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const cart = document.querySelector('.cart__items');
 const nameKey = 'cartItem';
 let array = [];
 
@@ -43,7 +44,6 @@ function getSkuFromProductItem(item) {
 
 const BtnRemove = () => {
   const btnRmv = document.querySelector('.empty-cart');
-  const cart = document.querySelector('.cart__items');
   btnRmv.addEventListener('click', () => {
     cart.innerHTML = '';
     localStorage.removeItem(nameKey);
@@ -72,7 +72,6 @@ const addCartItemElement = (text) => {
 
 // Função que encontra o Id na API
 const fetchId = (sku) => {
-  const cart = document.querySelector('.cart__items');
   fetch(`https://api.mercadolibre.com/items/${sku}`)
     .then((response) => response.json())
     .then((response) => {
@@ -109,7 +108,6 @@ const loadItems = () => {
   if (cartItemString !== null) {
     array = cartItemString;
     cartItemString.forEach((item) => {
-      const cart = document.querySelector('.cart__items');
       cart.appendChild(addCartItemElement(item));
     });
   }
