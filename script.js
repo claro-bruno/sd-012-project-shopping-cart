@@ -42,7 +42,6 @@ const somaItensStorage = (elemento) => {
 };
 
 function cartItemClickListener(elemento) {
-  addStorage();
   elemento.target.remove();
   addStorage();
   const li = document.getElementsByClassName('cart__item');
@@ -132,8 +131,23 @@ clearButton.addEventListener('click', () => {
 });
 };
 
+const loadingScreen = () => {
+  const criarH1 = document.createElement('h1');
+  criarH1.innerText = 'Loading...';
+  criarH1.className = 'loading';
+  const selectBody = document.querySelector('body');
+  selectBody.appendChild(criarH1);
+};
+
+const deleteLoading = () => {
+  const selectLoading = document.querySelector('.loading');
+  selectLoading.remove();
+};
+
 window.onload = async () => {
+  loadingScreen();
   await fetchMl();
+  deleteLoading();
   selectButton();
   listaStorage();
   cleanCartList();
