@@ -1,17 +1,18 @@
 let arrayCartList;
-const total = document.querySelector('.total-price');
+const ol = document.querySelector('.total-price');
+const cartList = document.querySelector('.cart__items');
 const esvaziar = document.querySelector('.empty-cart');
 
 // requisito 5
 function calc() {
-  let total2 = 0;
+  let total = 0;
   const itemsForCalc = document.querySelectorAll('.cart__item');
   itemsForCalc.forEach((item) => {
     const preco = Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1));
-    total2 += preco;
+    total += preco;
   });
-  total.innerText = total2;
-  console.log(total2);
+  ol.innerText = total;
+  // console.log(total);
   // total.innerText = parseFloat(total.innerText) + price;
 }
 
@@ -22,7 +23,7 @@ const getCartItems = () => {
     arrayCartList = [];
     localStorage.setItem('Cart', arrayCartList);
   } else {
-    const localStorageConvert = JSON.parse(localStorageCart);
+    const localStorageConvert = JSON.parse(localStorageCart); // Transforma de JSON para javascript
     arrayCartList = localStorageConvert;
   }
 };
@@ -54,18 +55,29 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   return section;
 }
 
-// function getSkuFromProductItem(item) { // ???
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText; // captura o id do span
+}
+
 function clear() {
-  esvaziar.innerHTML = '';
+  cartList.innerHTML = '';
+  arrayCartList = [];
+  localStorage.setItem('Cart', JSON.stringify(arrayCartList));
+  calc();
 }
 esvaziar.addEventListener('click', clear);
 
-function cartItemClickListener() { // o produto do carrinho é removido ao ser clicado. (remover class: projeto to-do-list)
+function removeItem(idObj) {
+  arrayCartList = arrayCartList.filter(({ id }) => id !== idObj);
+  localStorage.setItem('Cart', JSON.stringify(arrayCartList)); // setItem: acessa e altera o localstorage. JSON.stringify(arrayCartList): transforma em JSON.
+}
+
+function cartItemClickListener(event) { // o produto do carrinho é removido ao ser clicado. (remover class: projeto to-do-list)
   const acessFather = document.querySelector('#cart__items');
-  const accessChild = document.querySelector('.cart__item');
+  const accessChild = event.target;
+  const idObj = accessChild.innerText.split('|')[0].slice(5).trim();
   acessFather.removeChild(accessChild);
+  removeItem(idObj);
   calc();
 }
 
@@ -84,22 +96,19 @@ function addToArray(obj) {
   localStorage.setItem('Cart', JSON.stringify(arrayCartList)); // converte 
 }
 
-const fetchObject = async (id) => {
+const fetchObject = async (event) => {
+  const id = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const data = await response.json();
-  console.log(data.price);
-  calc();
     addToArray(data);
     createCartItemElement(data);
+    calc();
 };
 
 const getToCarList = () => {
   const eachButtun = document.querySelectorAll('.item__add');
-  eachButtun.forEach((button) => button.addEventListener('click', async ({ target }) => {
-    await fetchObject(target.parentNode.firstChild.innerText);
-    calc();
-    }));
-  };
+  eachButtun.forEach((button) => button.addEventListener('click', fetchObject));
+};
 
 const fetchResults = () => {
   const getParent = document.getElementsByClassName('items');
@@ -111,6 +120,7 @@ const fetchResults = () => {
 
 window.onload = function onload() {
   fetchResults();
+  ol.innerHTML = localStorage.getItem('item');
   arrayCartList.forEach((item) => createCartItemElement(item));
   calc();
 };
