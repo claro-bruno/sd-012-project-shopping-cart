@@ -1,3 +1,8 @@
+* {
+  font-family: 'Roboto', sans-serif;
+  background-color:rgb(245, 238, 238);
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -110,4 +115,14 @@
   background-color: #ef476f;
   box-shadow: 0 2px #666;
   transform: translateY(4px);
+}
+
+header {
+  display: flex;
+  justify-content: center;
+}
+
+.fa-opencart {
+  font-size: 55px;
+  margin-right: 25px;
 }
