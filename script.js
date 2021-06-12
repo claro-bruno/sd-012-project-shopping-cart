@@ -29,12 +29,12 @@ const e = document.createElement(element);
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
+}/*
 // Template
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+*/
 function cartItemClickListener(event) {
   // Remove o produto do
   const renderProd = document.querySelector(stringOrderedList);
