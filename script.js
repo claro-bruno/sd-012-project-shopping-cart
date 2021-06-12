@@ -35,6 +35,7 @@ function getButton(botao) {
   return botao.querySelector('button.item__add');
 }
 
+// Funcao requisito 6
 const removeButton = () => {
   const li = document.querySelectorAll('li.cart__item');
   const value = document.querySelector('p.total-price');
@@ -120,11 +121,13 @@ const catchId = () => {
 // Cumpre requisito 1, está sendo chamada dentro do window.onload
 const fetchURL = (url) => {
   const idItem = document.querySelector('.items');
+  const loading = document.querySelector('.loading');
   fetch(url)
   .then((response) => response.json())
   .then((indice) => indice.results)
   .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))))
-  .then(() => catchId());
+  .then(() => catchId())
+  .then(() => loading.remove());
 };
 // Cumpre requisito 3.
 document.addEventListener('click', (event) => {
