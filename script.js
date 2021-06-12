@@ -1,5 +1,6 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const API_PRODUCT = 'https://api.mercadolibre.com/items/';
+const cartItems = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -24,7 +25,6 @@ function createButton(element, className, id, innerText) {
 }
 
 function addCartItems(li) {
-  const cartItems = document.querySelector('.cart__items');
   cartItems.appendChild(li);
 }
 
@@ -45,11 +45,17 @@ function totalPrice() {
 function clearAllCart() {
   const buttonClear = document.querySelector('.empty-cart');
    buttonClear.addEventListener('click', () => {
-    const cartItems = document.querySelector('.cart__items');
     cartItems.innerHTML = '';
     localStorage.clear('products');
     totalPrice();
   });
+}
+
+function cleanItemFromCart(event) {
+  const deleteProduct = event.target;
+  cartItems.removeChild(deleteProduct);
+  totalPrice(); // calcula o preço
+  // removeProductsLocalStorage(deleteProduct); // falta remover produto do localStorage
 }
 
 function returnsSaveProductsLocalStorage() {
@@ -86,14 +92,6 @@ function returnsSaveProductsLocalStorage() {
   const remove = localStorage.removeItem(`${find}`);
   console.log(remove);
 } */
-
-function cleanItemFromCart(event) {
-  const deleteProduct = event.target;
-  const cartProduct = document.querySelector('.cart__items');
-  cartProduct.removeChild(deleteProduct);
-  totalPrice(); // calcula o preço
-  // removeProductsLocalStorage(deleteProduct); // falta remover produto do localStorage
-}
 
 function saveProductsLocalStorage(productReceived) {
   let selectedProduct = productReceived;
