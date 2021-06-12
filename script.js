@@ -1,3 +1,6 @@
+const ITEM_URL = 'https://api.mercadolibre.com/items/';
+const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -17,7 +20,7 @@ async function calculatePrice(price, subtract) {
 
 const fetchItem = async (itemID) => {
   try {
-    const itemFetch = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+    const itemFetch = await fetch(`${ITEM_URL}${itemID}`);
     const itemJson = await itemFetch.json();
     return itemJson;
   } catch (error) {
@@ -32,10 +35,14 @@ const removeSavedItem = async (itemID) => {
 };
 
 async function cartItemClickListener(event) {
-  const itemJson = await fetchItem(event.target.id);
-  calculatePrice(itemJson.price, true);
-  removeSavedItem(itemJson.id);
-  event.target.parentElement.removeChild(event.target);
+  try {
+    const itemJson = await fetchItem(event.target.id);
+    calculatePrice(itemJson.price, true);
+    removeSavedItem(itemJson.id);
+    event.target.parentElement.removeChild(event.target);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function createCustomElement(element, className, innerText) {
@@ -112,9 +119,7 @@ function appendItems(jsonResults) {
 
 const getItems = async (item) => {
   try {
-    const itemsFetch = await fetch(
-      `https://api.mercadolibre.com/sites/MLB/search?q=${item}`,
-    );
+    const itemsFetch = await fetch(`${SEARCH_URL}${item}`);
     const itemsJson = await itemsFetch.json();
     appendItems(itemsJson.results);
   } catch (error) {
