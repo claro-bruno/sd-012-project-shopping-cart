@@ -5,6 +5,7 @@ body {
   font-size: 20px;
   background-repeat: no-repeat;
   font-family: cafe, sans-serif;
+  min-height: 100vh;
 }
 
 #search {
@@ -93,7 +94,7 @@ body {
   margin: 10px;
 }
 
-.item .item__add {
+.item .item__add , .item__details {
   background-color: rgb(0, 100, 194);
   border: 0;
   color: white;
@@ -153,6 +154,11 @@ body {
   flex-direction: column;
   position: fixed;
   top: 30%;
+}
+
+.pictures-menu img {
+  height: 60px;
+  margin: 10px;
 }
 
 @font-face {

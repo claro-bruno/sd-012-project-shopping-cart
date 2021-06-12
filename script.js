@@ -19,6 +19,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__details', 'ver detalhes'));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho! '));
 
   return section;
@@ -104,10 +105,53 @@ function addItemInCart(event) {
     .catch(() => message('O item adicionado não está disponível'));
 }   
 
-function addBtnEvent() {
-  const btnArray = document.querySelectorAll('.item__add');
+function fillMenuPictures(urls, menuPictures) {
+  urls.forEach((url) => {
+    const img = document.createElement('img');
+    img.src = url;
+    menuPictures.appendChild(img);
+  });
+}
+
+function createPicturesContainer(pictures, textDetails) {
+  const picturesContainer = createCustomElement('div', 'pictures-container', '');
+  const menuPictures = createCustomElement('div', 'pictures-menu', '');
+  const urls = pictures.map(({ url }) => url);
+  fillMenuPictures(urls, menuPictures);
+  menuPictures.appendChild(createCustomElement('div', 'text-details', textDetails));
+  const pictureMain = createCustomElement('img', 'picture-main', '');
+  const [path] = urls;
+  pictureMain.src = path;
+  picturesContainer.appendChild(pictureMain);
+  picturesContainer.appendChild(menuPictures);
+  return picturesContainer;
+}
+
+function createDetailsContainer({ title, pictures, price, warranty }) {
+  const detailsContainer = createCustomElement('div', 'deatails-container', '');
+  detailsContainer.appendChild(createCustomElement('h2', 'details-title', title));
+  const textDetails = `Preço: ${price} \n Garantia: ${warranty}`;
+  detailsContainer.appendChild(createPicturesContainer(pictures, textDetails));
+  return detailsContainer;
+}
+
+function renderDetails(event) {
+  const container = document.querySelector('.container');
+  const items = document.querySelector('.items');
+  const idItem = event.target.parentNode.firstChild.innerText;
+  fetchApi(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((response) => {
+      const deatailsContainer = createDetailsContainer(response);
+      items.style.display = 'none';
+      container.insertAdjacentElement('afterbegin', deatailsContainer);
+    })
+    .catch(() => message('Os detalhes deste item não está disponível'));
+}
+
+function addBtnEvent(className, callback) {
+  const btnArray = document.querySelectorAll(className);
   btnArray.forEach((btn) => {
-    btn.addEventListener('click', (event) => addItemInCart(event));
+    btn.addEventListener('click', (event) => callback(event));
   });
 }
 
@@ -120,7 +164,8 @@ function addItems(results, items) {
       return ({ sku, name, image });
     });
   arrayResults.forEach((objResult) => items.appendChild(createProductItemElement(objResult)));
-  addBtnEvent();
+  addBtnEvent('.item__add', addItemInCart);
+  addBtnEvent('.item__details', renderDetails);
 }
 
 function createTotalPriceContainer() {
