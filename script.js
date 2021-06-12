@@ -91,8 +91,8 @@ const createItemList = async (item) => {
 };
 
 const createCartItem = async (item) => {
+  const itemID = getSkuFromProductItem(item);
   try {
-    const itemID = getSkuFromProductItem(item);
     const itemFromApi = await fetch(`${ITEM_URL}${itemID}`);
     const itemObj = await itemFromApi.json();
     const parentElement = document.querySelector(CART_ITEMS);
@@ -103,7 +103,7 @@ const createCartItem = async (item) => {
     }
 };
 
-const addButtonsEvent = async () => {
+const addButtonsEvent = () => {
   const itemList = document.querySelectorAll('.item');
   itemList.forEach((item) => {
     const button = item.querySelector('button');
@@ -133,12 +133,12 @@ const removeLoading = () => {
 
 window.onload = async () => {
   try {
-  await createItemList('computador');
+    await createItemList('computador');
+  } catch (error) {
+    console.log('Erro na window.onload');
+  }
   addButtonsEvent();
   getLocalStorage();
   eraseCart();
   removeLoading();
-  } catch (error) {
-    console.log('Erro na window.onload');
-  }
 };
