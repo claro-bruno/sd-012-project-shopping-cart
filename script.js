@@ -52,13 +52,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function saveToCart(itemObj) {
+function saveCartToStorage(itemObj) {
   // source: https://portfolio.adisazizan.xyz/tutor/push-array-value-in-localstorage
   let cartArray = [];
   if (localStorage.cart) {
     cartArray = JSON.parse(localStorage.cart);
   }
-  cartArray.push(itemObj);
+  cartArray.push(itemObj.id);
   localStorage.cart = JSON.stringify(cartArray);
 }
 
@@ -77,7 +77,7 @@ function appendCartItem(itemObj, fromClick) {
   const cartItem = createCartItemElement({ sku, name, salePrice });
   cartContainer.appendChild(cartItem);
   calculatePrice(salePrice);
-  if (fromClick) saveToCart(itemObj);
+  if (fromClick) saveCartToStorage(itemObj);
 }
 
 function getSkuFromProductItem(item) {
@@ -129,7 +129,14 @@ const getItems = async (item) => {
 
 function loadSavedCart() {
   const savedCart = JSON.parse(localStorage.cart);
-  savedCart.forEach((itemObj) => appendCartItem(itemObj));
+  savedCart.forEach(async (itemID) => {
+    try {
+      const itemJson = await fetchItem(itemID);
+      appendCartItem(itemJson);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 }
 
 function clearCart() {
