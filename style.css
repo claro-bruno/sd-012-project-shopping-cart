@@ -1,3 +1,7 @@
+* {
+  font-family: Helvetica, sans-serif;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -61,6 +65,7 @@
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: white;
 }
 
 .cart {
@@ -69,8 +74,27 @@
   flex-flow: column wrap;
 }
 
+.cart__title {
+  font-weight: 800;
+}
+
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.empty-cart {
+  background-color: green;
+  color: white;
+  padding: 1vh;
+  border-radius: 5%;
+}
+
+.empty-cart:active {
+  transform: translateY(2px);
+}
+
+.price-div {
+  font-weight: 600;
 }
