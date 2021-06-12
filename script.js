@@ -60,5 +60,5 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = function onload() { 
-  getItems();
+  getItems('computer', loadItems);
 };
