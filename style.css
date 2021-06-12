@@ -69,8 +69,18 @@
   flex-flow: column wrap;
 }
 
+.cart__item {
+  margin: 10px 0px;
+}
+
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.cart__items {
+  list-style-type: none;
+  padding: 5px 20px;
+  margin-top: 0px;
 }
