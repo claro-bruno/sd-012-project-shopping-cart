@@ -22,6 +22,7 @@ function saveCartList() {
   localStorage.setItem('shopList', cartList.innerHTML);
   localStorage.setItem('prices', priceTag.innerHTML);
 }
+
 // Function totalPrices feita com ajuda na sala de estudos
 function totalPrices() {
   const listItems = document.querySelectorAll('.cart__item');
@@ -39,7 +40,7 @@ function totalPrices() {
 }
 
 function cartItemClickListener(event) {
-  event.target.parentNode.removeChild(event.target);
+  event.target.remove();
   totalPrices();
   saveCartList();
 }
