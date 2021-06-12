@@ -13,19 +13,20 @@ function createCustomElement(element, className, innerText) {
 }
 
 const nameKey = 'cartItem';
-const array = [];
+let array = [];
 
 // Funcção para salvar itens no local storage
 const saveItem = (item) => {
-  console.log(item);
-  array.push(item);
-  console.log(array);
+  if (typeof (item) === 'string') array.push(item);
   localStorage.setItem(nameKey, JSON.stringify(array));
 };
 
 // Função para remover item do carrinho
 function cartItemClickListener(e) {
+  const liText = e.target.innerText;
   e.target.remove();
+  array = array.filter((item) => item !== liText);
+  saveItem();
 }
 
 /* Função não utilizada
@@ -90,10 +91,13 @@ function createProductItemElement({ sku, name, image }) {
 const loadItems = () => {
   const cartItem = localStorage.getItem(nameKey);
   const cartItemString = JSON.parse(cartItem);
-  cartItemString.forEach((item) => {
-    const cart = document.querySelector('.cart__items');
-    cart.appendChild(addCartItemElement(item));
-  });
+  if (cartItemString !== null) {
+    array = cartItemString;
+    cartItemString.forEach((item) => {
+      const cart = document.querySelector('.cart__items');
+      cart.appendChild(addCartItemElement(item));
+    });
+  }
 };
 
 // Função que encontra a API do ML
