@@ -34,27 +34,41 @@ function getButton(botao) {
   return botao.querySelector('button.item__add');
 }
 
-// function removeFromLocalStorage(event) {
-//   const index = cart.indexOf(event.innerText);
-//   if (index !== -1) {
-//     cart.splice(index, 2);
-//   }
-// }
+const getPrice = (price) => {
+  const totalPrice = document.querySelector('.total-price');
+  const convert = parseFloat(totalPrice.innerText);
+  totalPrice.innerText = convert + price;
+};
 
 const saveCart = () => {  
   // cart.push(product.innerText);
   // localStorage.setItem('cart', JSON.stringify(cart));
   const ol = document.querySelector('ol.cart__items');
+  const total = document.querySelector('.total-price');
   localStorage.setItem('cart', ol.innerHTML);
+  localStorage.setItem('price', total.innerText);
 };
+
+const removePrice = (event) => {
+  const price = event.innerText.split('$')[1];
+  const totalPrice = document.querySelector('p.total-price');
+  const convert = parseFloat(totalPrice.innerText);
+  totalPrice.innerText = convert - price;
+};
+
 const checkIfSave = () => {
   const saved = localStorage.getItem('cart');
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = saved;
+  const savedPrice = parseFloat(localStorage.getItem('price'));
+  if (savedPrice) {
+    getPrice(savedPrice);
+  }
 };
 
 function cartItemClickListener(event) {
   if (event.className === 'cart__item') {
+    removePrice(event);
     event.remove();
     saveCart();
    }
@@ -78,8 +92,11 @@ const catchId = () => {
     button.addEventListener('click', () => {
       fetch(`https://api.mercadolibre.com/items/${result}`)
       .then((response) => response.json())
-      .then((data) => createCartItemElement(data))
-      .then((li) => ol.appendChild(li))
+      .then((data) => {
+        const li = createCartItemElement(data);
+        getPrice(data.price);
+        ol.appendChild(li);
+      })
       .then(() => saveCart());
     });
 });
