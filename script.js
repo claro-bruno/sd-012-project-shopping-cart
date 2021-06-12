@@ -12,10 +12,16 @@ const BASE_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 //       console.log('Deu errado o FETCH 2');
 //     }
 // }
+
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.addEventListener('click', cartItemClickListener);
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   // li.addEventListener('click', cartItemClickListener); // Ativida 3
   ol.appendChild(li);
@@ -55,11 +61,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// // Ativida 3
-// function cartItemClickListener() {
-//   // document.querySelector('.item__title');
-//   // event.target.closest('[item__sku]');
-// }
+// Ativida 3
+
 // Ativida 3
 
 // Ativida 2

@@ -1,3 +1,6 @@
+body {
+  background-color: wheat;
+}
 .top-bar {
   align-items: center;
   display: flex;
