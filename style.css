@@ -56,11 +56,24 @@
 }
 
 .item .item__add {
-  background-color: green;
-  border: 0;
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #06d6a0;
+  border: none;
+  font-weight: 500;
+}
+
+.item .item__add:hover {background-color: #ef476f}
+
+.item .item__addt:active {
+  background-color: #ef476f;
 }
 
 .cart {
@@ -73,4 +86,28 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+/* Estilização do botão empty-cart vista no link https://www.w3schools.com/css/css3_buttons.asp */
+
+.empty-cart {
+  display: inline-block;
+  padding: 5px 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #ffd166;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 3px rgb(202, 198, 198);
+}
+
+.empty-cart:hover {background-color: #ef476f}
+
+.empty-cart:active {
+  background-color: #ef476f;
+  box-shadow: 0 2px #666;
+  transform: translateY(4px);
 }
