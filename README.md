@@ -442,7 +442,7 @@ Adicione o elemento retornado da função `createCartItemElement(product)` como 
 ### 3 - Remova o item do carrinho de compras ao clicar nele
 
 Ao clicar no **produto no carrinho de compra**, ele deve ser removido da lista.
-Para isso, uma função (já existente) chamada `cartItemClickListener(event)` deve ser implementada com a lógica necessária para realizar a remoção.
+Para isso, uma função (já existente) chamada `3)` deve ser implementada com a lógica necessária para realizar a remoção.
 
 ### 4 - Carregue o carrinho de compras através do **LocalStorage** ao iniciar a página
 

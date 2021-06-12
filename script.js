@@ -1,20 +1,12 @@
 const BASE_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-
-// async function takeIdItem(event) { 
-//   event.target.classList.add('selected');
-//    try {
-//     let results = ;
-//     results = await results.json();
-//     results = await results.results;
-//     let testandoId = await results.find((computador) => computador.id === ItemID);
-//     // console.log(testandoId);
-//   } catch (error) {
-//       console.log('Deu errado o FETCH 2');
-//     }
-// }
+const BASE_URL_ITEM = 'https://api.mercadolibre.com/items/';
 
 function cartItemClickListener(event) {
   event.target.remove();
+}
+// document.getElementById('myPc').innerHTML = localStorage.getItem('myPc');}
+function addLocalStorage(sku, name, salePrice) {
+  localStorage.setItem('myPc', sku, name, salePrice);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -25,6 +17,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   // li.addEventListener('click', cartItemClickListener); // Ativida 3
   ol.appendChild(li);
+}
+
+async function fetchIdJson(event) {
+  const idTarget = event.target.classList[1];
+  // console.log(idTarget);
+  try {
+  let fetchId = await fetch(`${BASE_URL_ITEM}${idTarget}`);
+  fetchId = await fetchId.json();
+  console.log(fetchId);
+  createCartItemElement(fetchId);
+} catch (error) {
+    console.log('Deu errado no fetch FetchIdJson');
+  }
 }
 
 function createProductImageElement(imageSource) {
@@ -41,10 +46,9 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// Ativida 1
+// Ativida 1 FEITO
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const classitems = document.querySelector('.items');
-  // console.log(classitems);
   const section = document.createElement('section');
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item__sku', sku));
@@ -52,10 +56,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   const itemAdd = section.querySelector('.item__add');
+  itemAdd.classList.add(sku);
   classitems.appendChild(section);
-  itemAdd.addEventListener('click', createCartItemElement);
+  itemAdd.addEventListener('click', fetchIdJson);
+  itemAdd.addEventListener('click', addLocalStorage);
 }
-// Ativida 1
+// Ativida 1 FEITO
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
@@ -80,6 +86,7 @@ async function fetchComputerAsync(search) {
     console.log('Deu errado o FETCH');
   }
 }
+
 function emptyList() {
   const emptyBttn = document.querySelector('.empty-cart');
   const ol = document.querySelector('.cart__items');
