@@ -121,4 +121,5 @@ window.onload = function onload() {
   const price = createCustomElement('span', 'total-price', 0);
   const section = document.querySelector('.cart');
   section.appendChild(price);
+  sumPrice();
 };
