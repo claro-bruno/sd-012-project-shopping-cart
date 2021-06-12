@@ -64,12 +64,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+//  Loader feito com auxílio dos colegas Marcos Siqueira e Nuwanda, pois não estava passando no Linter
 const addLoader = () => {
-  const carrinho = document.querySelector('.cart');
+  const itens = document.querySelector('.items');
   const div = document.createElement('div');
   div.classList.add('loading');
-  div.innerText = 'Loading...';
-  carrinho.appendChild(div);
+  itens.appendChild(div);
 };
 
 const removeLoader = () => {
