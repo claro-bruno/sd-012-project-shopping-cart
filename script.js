@@ -1,5 +1,6 @@
 const cart = document.querySelector('.cart__items');
-const nameKey = 'cartItem';
+const nameKey = 'cartItems';
+const totalKey = 'totalPrice';
 let array = [];
 
 function createProductImageElement(imageSource) {
@@ -16,10 +17,27 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const createLoading = () => {
+const loadingContainer = document.querySelector('.items');
+const loadingMsg = document.createElement('h1');
+loadingMsg.className = 'loading';
+loadingMsg.innerHTML = 'loading...';
+loadingContainer.appendChild(loadingMsg);
+};
+
+const removeLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 // Funcção para salvar itens no local storage
 const saveItem = (item) => {
   if (typeof (item) === 'string') array.push(item);
   localStorage.setItem(nameKey, JSON.stringify(array));
+};
+
+const saveTotal = (total) => {
+localStorage.setItem(totalKey, JSON.stringify(total));
 };
 
 // Função cria total price
@@ -31,13 +49,15 @@ const createTotalPrice = (newTotal) => {
 const totalprice = () => {
   const cartItems = document.querySelectorAll('.cart__item');
   const totalPriceArray = [];
+  // Ajuda das salas de estudo para achar o preço e separa-lo
   cartItems.forEach((item) => {
     const aux = item.innerText.split(' ');
     const value = aux[aux.length - 1];
     totalPriceArray.push(parseFloat(value.replace('$', '')));
   });
-  console.log(totalPriceArray);
-  createTotalPrice(totalPriceArray.reduce((acc, curr) => acc + curr, 0));
+  const total = totalPriceArray.reduce((acc, curr) => acc + curr, 0);
+  createTotalPrice(total);
+  saveTotal(total);
 }; 
 
 // Função para remover item do carrinho
@@ -46,7 +66,7 @@ function cartItemClickListener(e) {
   e.target.remove();
   // array = array.filter((item) => item !== liText); // alternativa sem correção do texto do produto com espaço extra.
   const indice = array.findIndex((item) => item === liText); // acha o index do primeiro elemento li.
-  array = array.filter((item, idx) => idx !== indice); // salva no array global todos os outros valores.
+  array = array.filter((item, idx) => idx !== indice); // salva no array global todos os outros valores para remover só o primeiro.
   totalprice();
   saveItem();
 }
@@ -63,6 +83,8 @@ const BtnRemove = () => {
   btnRmv.addEventListener('click', () => {
     cart.innerHTML = '';
     localStorage.removeItem(nameKey);
+    createTotalPrice(0);
+    localStorage.removeItem(totalKey);
   });
 };
 
@@ -130,6 +152,8 @@ const loadItems = () => {
       cart.appendChild(addCartItemElement(item));
     });
   }
+  const totalPrice = JSON.parse(localStorage.getItem(totalKey));
+  createTotalPrice(totalPrice);
 };
 
 // Função que encontra a API do ML
@@ -144,10 +168,12 @@ window.onload = function onload() {
   getMLProducts()
     .then((response) => response.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
       const list = document.querySelector('.items');
-       list.appendChild(createProductItemElement({ sku, name, image }));
+      list.appendChild(createProductItemElement({ sku, name, image }));
+      createLoading();
+      removeLoading();
     }))
     .catch((error) => error);
-
+  
   loadItems();
   BtnRemove();
 };
