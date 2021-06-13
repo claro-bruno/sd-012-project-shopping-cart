@@ -1,8 +1,6 @@
-
-function getObject(item) {
-  return console.log(item);
-}
-
+// function getObject(item) {
+//   return console.log(item);
+// }
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -18,7 +16,7 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   const pai = document.querySelector('#carrinhoVazio');
-  pai.removeChild(event.target);
+  pai.removeChild(event.target); 
 }
 function createCartItemElement(elemento) {
   const li = document.createElement('li');
