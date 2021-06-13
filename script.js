@@ -4,6 +4,9 @@ const olCartItems = document.querySelector('.cart__items');
 const buttonEmptyCart = document.querySelector('.empty-cart');
 let arrayShoppingCart;
 
+/**+
+ * Esta parte do código teve a colaboração de Igor Fernandes.
+ */
 function calc() {
   let total = 0;
   const itemsForCalc = document.querySelectorAll('.cart__item');
@@ -125,7 +128,7 @@ const addEventListenerToObjectId = () => {
 const fetchApiComputador = async () => {
   const sectionFather = document.getElementsByClassName('items')[0]; // primeira tag <section> do array de getElementsByClassName.
   /**
-   * Tag p loading: com a ajuda de David Gonzaga.
+   * Requisito 7: tag <p> loading com a colaboração de David Gonzaga.
    */
   sectionFather.innerHTML = '<p class="loading">loadin...<p/>'; // enquanto a promessa não se cumpre, a tag com o texto loading, está aparecendo.
   const responseComputador = await fetch(API_COMPUTADOR);
