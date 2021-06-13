@@ -23,13 +23,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
+  tornarItensClicaveis();
 }
 
 // Captura o id de cada um dos itens e os submete ao método innerText
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  return item.querySelector('span0.item__sku').innerText;
 }
 
 // Requisito 2
@@ -65,29 +64,42 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Acessa todos os itens a partir do retorno do objeto da API
 
 const criarItensDaList = () => {
-  const array = [...document.querySelectorAll('.item__add')];
-  /* console.log(array); */
-  array.forEach((item) => {
-    //let sku = item.id
     fetch(`https://api.mercadolibre.com/items/${sku}`)
       .then((response) => response.json)
-        .then((response) => response);
-  }); 
+        .then((response) => response); 
 };
 
-const criaElementos = () => {
+const criarItensDoCarrinho = (idProduto) => {
+  fetch(`https://api.mercadolibre.com/items/${idProduto}`)
+    .then((item) => item.json)
+      .then((item) => createCartItemElement(item));
+}; 
+
+const tornarItensClicaveis = () => {
+  const botaoItem = document.getElementsByClassName('item__add')[0];
+  /* console.log(botaoItem); */
+  botaoItem.addEventListener('click', criarItensDoCarrinho());
+  return ;
+};
+
+const criarListaDeProdutos = () => {
   const produtoAlvo = 'computador';
  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
- .then((response) => response.json())
- .then((response) => response.results.forEach((elemento) => {
-   /* console.log(elemento); */
-   const elementoPai = document.querySelector('.items');
-   elementoPai.appendChild(createProductItemElement(elemento));
- })).then(() => criarItensDaList()); 
+   .then((response) => response.json())
+     .then((response) => response.results
+       .map((elemento) => {
+          /* console.log(elemento); */
+          const elementoPai = document.querySelector('.items');
+          elementoPai.appendChild(createProductItemElement(elemento));
+          return elemento;
+          })).then((elementos) => elementos
+               .forEach((elemento) => {
+               criarItensDoCarrinho(elemento.id);
+               /* console.log(elemento.id); */
+               }));
 };
 
 window.onload = function onload() { 
   // Requisito 1
-  criaElementos(); 
-  /* criarItensDaList(); */
+  criarListaDeProdutos(); 
 };
