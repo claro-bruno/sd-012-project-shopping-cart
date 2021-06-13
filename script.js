@@ -132,9 +132,12 @@ function getandCreateItems() {
 }
 
 function removeAllCartItems() {
-  const cartItems = document.querySelector('.cart__items');
+  const cartItems = document.getElementsByClassName('cart__items')[0];
   const cartItem = document.querySelectorAll('.cart__item');
-  cartItem.forEach((item) => cartItems.removeChild(item));  
+  cartItem.forEach((item) => cartItems.removeChild(item));
+  arrayStorage = [];
+  sum();
+  localStorage.setItem('products', JSON.stringify(arrayStorage)); 
 }
 
 window.onload = async () => {  
