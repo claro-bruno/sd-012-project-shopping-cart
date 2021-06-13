@@ -1,3 +1,4 @@
+//tendo como referencia JOHANN-MUNZLINGER - turma 12
 const getSectionProducts = document.querySelector('.items');
 const getOlCartProducts = document.querySelector('.cart__items');
 
