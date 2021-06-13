@@ -52,27 +52,23 @@ function createProductItemElement(elemento) {
 
   return section;
 }
-function loading() {
-  const section = document.querySelectorAll('.item');
-  if (section.values === undefined) {
-    const p = document.createElement('p');
-    section.appendChild(p);
-    p.className = 'loading';
-    p.innerText('loading');
-  }
-}
 async function returnFetch(search) {
   try {
-  const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
-  const json = await response.json();
-  const entries = Object.values(json.results);
-  entries.forEach((elemento) => {
-    const section = document.querySelector('.items');
-    section.appendChild(createProductItemElement(elemento));
-  });
-} catch (error) {
-  console.log('error');
-}
+    const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
+    if (response.ok) { 
+     const loading = document.querySelector('.loading');
+     const container = document.querySelector('.container');
+     container.removeChild(loading);
+    }
+    const json = await response.json();
+    const entries = Object.values(json.results);
+    entries.forEach((elemento) => {
+      const section = document.querySelector('.items');
+      section.appendChild(createProductItemElement(elemento));
+    });
+  } catch (error) {
+    console.log('error');
+  }
 }
 function removeLI() {
   document.querySelectorAll('#liId').forEach((valor) => {
@@ -80,21 +76,22 @@ function removeLI() {
   });
 }
 function removeAllLi() {
-const button = document.querySelector('.empty-cart');
-button.addEventListener('click', () => {
-const pai = document.querySelector('ol');
-pai.innerHTML = '';
-localStorage.removeItem('compras');
-});
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const pai = document.querySelector('ol');
+    pai.innerHTML = '';
+    localStorage.removeItem('compras');
+  });
 }
-window.onload = function onload() {
-  returnFetch('computador');
-
+function addLocalstorage() {
   const ol = document.querySelector('.cart__items');
   if (localStorage.getItem('compras')) {
     ol.innerHTML = JSON.parse(localStorage.getItem('compras'));
   }
+}
+window.onload = function onload() {
+  returnFetch('computador');
+  addLocalstorage();
   removeLI();
   removeAllLi();
-  loading();
 };
