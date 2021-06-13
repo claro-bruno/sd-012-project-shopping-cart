@@ -1,4 +1,5 @@
 let arrayStorage = []; 
+let total = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,15 +26,35 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-// return item.querySelector('span.item__sku').innerText;
-// }
+function sum() {
+  const price = arrayStorage.map((valor) => valor.price);
+  total = price.reduce(function (Accumulator, num) {
+    return Accumulator + num;
+  }, 0);
+  total = Math.round(total * 100) / 100;
+  console.log(total);
+  const totalprice = document.getElementsByClassName('total-price');
+  totalprice[0].innerHTML = total;
+} 
+
+function sub() {
+  const price = arrayStorage.map((valor) => valor.price);
+  total = price.reduce(function (Accumulator, num) {
+    return Accumulator - num;
+  }, 0);
+  total = Math.round(total * 100) / 100;
+  total = Math.abs(total);
+  console.log(total);
+  const totalprice = document.getElementsByClassName('total-price');
+  totalprice[0].innerHTML = total;
+} 
 
 function removeStoreData(element) {
   const id = element.innerText.substr(5, 13);
   arrayStorage = arrayStorage.filter((item) => item.id !== id);
   const stringStorage = JSON.stringify(arrayStorage);
   localStorage.setItem('products', stringStorage); 
+  sub();
 }
 
 function cartItemClickListener(event) {
@@ -45,6 +66,7 @@ function storeData(obj) {
   arrayStorage.push(obj);
   const stringStorage = JSON.stringify(arrayStorage);
   localStorage.setItem('products', stringStorage); 
+  sum();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -56,6 +78,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function getStoreData() {
+  const cartItems = document.querySelector('.cart__items');
   if (localStorage.getItem('products') !== null) {
     arrayStorage = JSON.parse(localStorage.getItem('products'));
     arrayStorage.forEach((item) => {
@@ -64,7 +87,7 @@ function getStoreData() {
       product.sku = id;
       product.name = title;
       product.salePrice = price;
-      document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+      cartItems.appendChild(createCartItemElement(product));
    });
   }
 }
@@ -72,6 +95,7 @@ function getStoreData() {
 function clickItemAdd() {
   const product = {};
   const buttons = document.querySelectorAll('.item__add');
+  const cartItems = document.querySelector('.cart__items');
   buttons.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
       const idEvent = event.target.parentElement.firstChild.innerText;
@@ -83,7 +107,7 @@ function clickItemAdd() {
         product.name = title;
         product.salePrice = price;
         storeData(item);
-        document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+        cartItems.appendChild(createCartItemElement(product));
       });
     });
   });
@@ -91,19 +115,38 @@ function clickItemAdd() {
 
 function getandCreateItems() {
   const product = {};
+  const loading = document.querySelector('.loading');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
-    .then((items) => items.results.forEach((item) => {
-      const { id, title, thumbnail } = item;
-      product.sku = id;
-      product.name = title;
-      product.image = thumbnail;
-      document.querySelector('.items').appendChild(createProductItemElement(product));
-    }))
+    .then((items) => {
+      document.getElementsByClassName('items')[0].removeChild(loading);
+      items.results.forEach((item) => {
+        const { id, title, thumbnail } = item;
+        product.sku = id;
+        product.name = title;
+        product.image = thumbnail;
+        document.querySelector('.items').appendChild(createProductItemElement(product));
+      });
+    })  
     .then(() => clickItemAdd());  
 }
 
+function removeAllCartItems() {
+  const cartItems = document.querySelector('.cart__items');
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => cartItems.removeChild(item));  
+}
+
 window.onload = async () => {  
+  const loading = document.createElement('span');
+  loading.className = 'loading';
+  loading.innerText = 'loading';
+  // const items = 
+  document.querySelector('.items').appendChild(loading);
   await getandCreateItems(); 
   getStoreData();
+  sum();
+    
+  const removebtn = document.querySelector('.empty-cart');
+  removebtn.addEventListener('click', removeAllCartItems);
 };
