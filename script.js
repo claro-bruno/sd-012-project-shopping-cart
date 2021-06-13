@@ -1,4 +1,5 @@
-window.onload = function onload() { };
+const getSectionProducts = document.querySelector('.items');
+const getOlCartProducts = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -26,9 +27,30 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+const createLoading = () => {
+  getSectionItems.appendChild(createCustomElement('p', 'loading', 'loading...'));
+};
+
+const createTotalPrice = () => {
+  const getSectionCart = document.querySelector('.cart');
+  getSectionCart.appendChild(createCustomElement('footer', 'total-price', 'Preço Total:'));
+};
+
+const sumPrices = () => {
+  const turnCartItensIntoArray = Array(...document.querySelectorAll('.cart__item'));
+  const getTotalPrices = document.querySelector('.total-price');
+  const sumTotalPrices = turnCartItensIntoArray.reduce((acc, price) => 
+  acc + Number(price.innerText.split('$')[1]), 0);
+  getTotalPrices.innerText = sumTotalPrices;
+};
+
+const addClearEventToButtonCart = () => {
+  const getButtonCart = document.querySelector('.empty-cart');
+  getButtonCart.addEventListener('click', () => {
+  getOlCartItems.innerHTML = null;
+  sumPrices();
+  });
+}; //estamos aqui
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
