@@ -1,13 +1,3 @@
-const criarItensDaList = () => {
-  const array = [...document.querySelectorAll('.item__add')];
-  /* console.log(array); */
-  array.forEach((item) => {
-    //let sku = item.id
-    fetch(`https://api.mercadolibre.com/items/${sku}`)
-      .then((response) => response.json)
-        .then((response) => response);
-  }); 
-};
 // Cria as img's que abrigaram as imagens de cada um dos elementos html
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,18 +27,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// Requisito 1
-// Acessa todos os itens a partir do retorno do objeto da API
-const criaElementos = () => {
-  const produtoAlvo = 'computador';
- fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
- .then((response) => response.json())
- .then((response) => response.results.forEach((elemento) => {
-   const elementoPai = document.querySelector('.items');
-   elementoPai.appendChild(createProductItemElement(elemento));
- })).then(() => criarItensDaList()); 
-};
-
 // Captura o id de cada um dos itens e os submete ao método innerText
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -62,7 +40,7 @@ function cartItemClickListener(event) {
   const itemClicado = event.target.id;
 }
 
-// Cria o elemento da lista do carrinho de compras referente a cada item e submete tais elementos a um evento
+// Cria o elemento da lista do carrinho de compras referente a cada section e submete tais elementos a um evento
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -70,7 +48,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener());
   return li;
 }
-createCartItemElement();
+/* createCartItemElement(); */
 /* const criarItensDaList = () => {
   const array = [...document.querySelectorAll('.item__add')];
   console.log(array);
@@ -82,6 +60,31 @@ createCartItemElement();
         .then((response) => response);
   }); 
 }; */
+
+// Requisito 1
+// Acessa todos os itens a partir do retorno do objeto da API
+
+const criarItensDaList = () => {
+  const array = [...document.querySelectorAll('.item__add')];
+  /* console.log(array); */
+  array.forEach((item) => {
+    //let sku = item.id
+    fetch(`https://api.mercadolibre.com/items/${sku}`)
+      .then((response) => response.json)
+        .then((response) => response);
+  }); 
+};
+
+const criaElementos = () => {
+  const produtoAlvo = 'computador';
+ fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
+ .then((response) => response.json())
+ .then((response) => response.results.forEach((elemento) => {
+   /* console.log(elemento); */
+   const elementoPai = document.querySelector('.items');
+   elementoPai.appendChild(createProductItemElement(elemento));
+ })).then(() => criarItensDaList()); 
+};
 
 window.onload = function onload() { 
   // Requisito 1
