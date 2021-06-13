@@ -1,3 +1,7 @@
+const cart = document.querySelector('.cart__items');
+const nameKey = 'cartItem';
+let array = [];
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,15 +16,29 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-const cart = document.querySelector('.cart__items');
-const nameKey = 'cartItem';
-let array = [];
-
 // Funcção para salvar itens no local storage
 const saveItem = (item) => {
   if (typeof (item) === 'string') array.push(item);
   localStorage.setItem(nameKey, JSON.stringify(array));
 };
+
+// Função cria total price
+const createTotalPrice = (newTotal) => {
+  const printTotal = document.querySelector('.total-price');
+  printTotal.innerHTML = newTotal;
+};
+
+const totalprice = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  const totalPriceArray = [];
+  cartItems.forEach((item) => {
+    const aux = item.innerText.split(' ');
+    const value = aux[aux.length - 1];
+    totalPriceArray.push(parseFloat(value.replace('$', '')));
+  });
+  console.log(totalPriceArray);
+  createTotalPrice(totalPriceArray.reduce((acc, curr) => acc + curr, 0));
+}; 
 
 // Função para remover item do carrinho
 function cartItemClickListener(e) {
@@ -29,6 +47,7 @@ function cartItemClickListener(e) {
   // array = array.filter((item) => item !== liText); // alternativa sem correção do texto do produto com espaço extra.
   const indice = array.findIndex((item) => item === liText); // acha o index do primeiro elemento li.
   array = array.filter((item, idx) => idx !== indice); // salva no array global todos os outros valores.
+  totalprice();
   saveItem();
 }
 
@@ -38,10 +57,7 @@ function getSkuFromProductItem(item) {
  }
 */
 
-// const totalprice = () => {
-
-// };
-
+// Função botão esvaziar carrinho
 const BtnRemove = () => {
   const btnRmv = document.querySelector('.empty-cart');
   btnRmv.addEventListener('click', () => {
@@ -57,10 +73,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const liText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.innerText = liText;
   li.addEventListener('click', cartItemClickListener);
-
+  
   return li;
 }
 
+// Função para carregar elementos no carrinho
 const addCartItemElement = (text) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -76,6 +93,7 @@ const fetchId = (sku) => {
     .then((response) => response.json())
     .then((response) => {
       cart.appendChild(createCartItemElement(response));
+      totalprice();
       const allCartItems = document.querySelectorAll('.cart__items li');
       saveItem(allCartItems[allCartItems.length - 1].innerText);
     })
@@ -95,6 +113,7 @@ function createProductItemElement({ sku, name, image }) {
   // Para adicionar o evento na criação do botão tive ajuda do Emerson Filho!
   button.addEventListener('click', () => { 
     fetchId(sku);
+    // totalprice();
   });
   section.appendChild(button);
 
