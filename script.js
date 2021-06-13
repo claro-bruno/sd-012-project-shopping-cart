@@ -106,6 +106,16 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('empty-cart')) {
+    const lista = Array.from(document.querySelectorAll('.cart__item'));
+    lista.forEach((elem) => elem.remove());
+    const price = document.querySelector('#price');
+    price.innerHTML = 0;
+    salvarLocal();
+  }
+});
+
+document.addEventListener('click', (event) => {
   if (event.target.classList.contains('cart__item')) {
     // const valueSplit = event.target.innerHTML.split('$');
     // const value = parseFloat(valueSplit[valueSplit.length -1]);
