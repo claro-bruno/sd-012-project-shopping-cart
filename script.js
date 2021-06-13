@@ -54,7 +54,7 @@ function createProductItemElement(elemento) {
 }
 function loading() {
   const section = document.querySelectorAll('.item');
-  if (section === undefined) {
+  if (section.values === undefined) {
     const p = document.createElement('p');
     section.appendChild(p);
     p.className = 'loading';
