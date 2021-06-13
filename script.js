@@ -25,7 +25,6 @@ function cartItemClickListener(event) {
   if (localStorage.getItem('compras')) {
     localStorage.setItem('compras', JSON.stringify(pai.innerHTML));
   }
-    
 }
 function createCartItemElement(elemento) {
   const li = document.createElement('li');
