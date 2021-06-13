@@ -66,7 +66,7 @@ const cartItemClickListener = (event) => {
 
 const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   const li = document.createElement('li');
-  const cartLength = document.querySelector('.cart__items').childNodes.length;
+  const cartLength = document.querySelector(CART_ITEMS).childNodes.length;
   li.id = `c${cartLength}`;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
