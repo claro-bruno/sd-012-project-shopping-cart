@@ -29,7 +29,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const cartItem = document.querySelector('.cart__item');
+  cartItem.parentNode.removeChild(event.target);
+  console.log(cartItem);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
