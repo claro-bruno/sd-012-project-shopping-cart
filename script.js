@@ -35,6 +35,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // return item.querySelector('span.item__sku').innerText;
 // }
 
+// requisito 4
 // usei : https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/setItem
 // https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/getItem mas só soube que teria q usar o set e o get 
 //  no localStorage, depois que consultei repositório de colegas e tive ajuda do colega Igor Fernandes 
@@ -62,6 +63,14 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// requisito 7
+// para finalizar o requisito utilizando o .remove(), consultei o repositório da Camila Malves, 
+// que postou uma dúvida no slack
+function loadingAppear() {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+}
+
 // usado no requisito 1
 const API1_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
@@ -70,6 +79,7 @@ async function fetchApi1() {
     const response = await fetch(API1_URL);
     const { results } = await response.json();
     results.forEach((item) => createProductItemElement(item));
+    loadingAppear();
   } catch (error) { 
     alert('Algo deu errado!');
   }
@@ -101,7 +111,7 @@ document.addEventListener('click', async (event) => {
 const removeItems = () => {
   cartItems.innerHTML = '';
 };
-  
+ 
 window.onload = () => {
   fetchApi1();
   getLocalStorage();
