@@ -33,11 +33,19 @@ const storage = (value) => {
   getPrice();
 };
 
+const refreshIdList = () => {
+  const liItem = document.querySelectorAll('.cart__item');
+  liItem.forEach((element, index) => {
+    const liElement = element;
+    liElement.id = index;
+  });
+};
+
 const removeItemFromLS = (str) => {
-  const strId = str.innerText.substr(5, 13);
-  arrStorage = arrStorage.filter((item) => item.id !== strId);
+  arrStorage = arrStorage.filter((item, index) => index !== Number(str.id));
   const strStorage = JSON.stringify(arrStorage);
   localStorage.setItem('key', strStorage);
+  refreshIdList();
   getPrice();
 };
 
@@ -81,6 +89,8 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  const olLength = OlItem.childNodes.length;
+  li.id = olLength;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
