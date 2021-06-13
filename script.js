@@ -28,7 +28,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 const createLoading = () => {
-  getSectionItems.appendChild(createCustomElement('p', 'loading', 'loading...'));
+  getSectionProducts.appendChild(createCustomElement('p', 'loading', 'loading...'));
 };
 
 const createTotalPrice = () => {
@@ -47,19 +47,57 @@ const sumPrices = () => {
 const addClearEventToButtonCart = () => {
   const getButtonCart = document.querySelector('.empty-cart');
   getButtonCart.addEventListener('click', () => {
-  getOlCartItems.innerHTML = null;
+  getOlCartProducts.innerHTML = null;
   sumPrices();
   });
-}; //estamos aqui
+};
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.remove();
+  sumPrices();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event.target));
   return li;
 }
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+const addProductToCart = async (idProduct) => {
+  const apiURL = `https://api.mercadolibre.com/items/${idProduct}`;
+  const response = await fetch(apiURL);
+  const data = await response.json();
+  getOlCartProducts.appendChild(createCartItemElement(data));
+  sumPrices(); 
+};
+
+const addEventListenerToItemsButtons = () => {
+  const getItemsButtons = document.querySelectorAll('.item__add');
+  getItemsButtons.forEach((button) => 
+    button.addEventListener('click', (event) => 
+      addProductToCart(getSkuFromProductItem(event.target.parentNode))));
+};
+
+const addProductsToSectionItens = async () => {
+  const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const response = await fetch(apiURL);
+  const data = await response.json();
+  const arrayResults = data.results;
+  document.querySelector('.loading').remove(); 
+  await arrayResults.forEach((product) => 
+  getSectionProducts.appendChild(createProductItemElement(product)));
+  addEventListenerToItemsButtons(); 
+};
+
+window.onload = function onload() {
+  addProductsToSectionItens();
+  createTotalPrice();
+  addClearEventToButtonCart();
+  createLoading();
+};
