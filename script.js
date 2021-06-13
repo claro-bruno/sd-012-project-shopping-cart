@@ -18,7 +18,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 const createLoading = () => {
-const loadingContainer = document.querySelector('.items');
+const loadingContainer = document.querySelector('.container');
 const loadingMsg = document.createElement('h1');
 loadingMsg.className = 'loading';
 loadingMsg.innerHTML = 'loading...';
@@ -165,13 +165,15 @@ const getMLProducts = () => new Promise((resolve, reject) => {
 });
 
 window.onload = function onload() { 
+  createLoading();
   getMLProducts()
-    .then((response) => response.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
-      const list = document.querySelector('.items');
-      list.appendChild(createProductItemElement({ sku, name, image }));
-      createLoading();
+    .then((response) => {
       removeLoading();
-    }))
+      response.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
+        const list = document.querySelector('.items');
+        list.appendChild(createProductItemElement({ sku, name, image }));
+      });
+    })  
     .catch((error) => error);
   
   loadItems();
