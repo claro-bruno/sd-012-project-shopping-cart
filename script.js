@@ -1,4 +1,6 @@
 const olItems = document.querySelector('.cart__items');
+const buttonClear = document.querySelector('.empty-cart');
+const TotalPriceSpan = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -6,6 +8,13 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+
+const clearCart = () => {
+  olItems.innerHTML = '';
+  localStorage.item = '';
+  localStorage.totalPrice = 0;
+  TotalPriceSpan.innerText = 0;
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -34,6 +43,7 @@ const inLocalStorage = () => {
   const inOl = document.getElementsByClassName('cart__items');
   localStorage.setItem('item', inOl[0].innerHTML);
 };
+
 const subtractPrice = (value) => {
   const valueFloat = parseFloat(value);
   const inStorage = parseFloat(localStorage.totalPrice);
@@ -60,8 +70,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const sumPrices = (price) => {
   const totalPrice = parseFloat(localStorage.getItem('totalPrice'));
   localStorage.setItem('totalPrice', (totalPrice + price));
-  const span = document.querySelector('.total-price');
-  span.innerHTML = localStorage.getItem('totalPrice');
+  TotalPriceSpan.innerHTML = localStorage.getItem('totalPrice');
 };
 
 async function clickToAddItems(item, index) {
@@ -104,4 +113,5 @@ const checkCart = () => {
 window.onload = function onload() {
   catchMercadoLivreApi();
   checkCart();
+  buttonClear.addEventListener('click', clearCart);
 };
