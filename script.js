@@ -66,6 +66,14 @@ function removeLI() {
     valor.addEventListener('click', cartItemClickListener);
   });
 }
+function removeAllLi() {
+const button = document.querySelector('.empty-cart');
+button.addEventListener('click', () => {
+const pai = document.querySelector('ol');
+pai.innerHTML = '';
+localStorage.removeItem('compras');
+});
+}
 window.onload = function onload() {
   returnFetch('computador');
 
@@ -74,4 +82,5 @@ window.onload = function onload() {
     ol.innerHTML = JSON.parse(localStorage.getItem('compras'));
   }
   removeLI();
+  removeAllLi();
 };
