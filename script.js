@@ -1,30 +1,31 @@
-let arrayCartList;
-const ol = document.querySelector('.total-price');
-const cartList = document.querySelector('.cart__items');
-const esvaziar = document.querySelector('.empty-cart');
+const API_COMPUTADOR = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const olTotalPrice = document.querySelector('.total-price');
+const olCartItems = document.querySelector('.cart__items');
+const buttonEmptyCart = document.querySelector('.empty-cart');
+let arrayShoppingCart;
 
-// requisito 5
 function calc() {
   let total = 0;
   const itemsForCalc = document.querySelectorAll('.cart__item');
   itemsForCalc.forEach((item) => {
-    const preco = Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1));
-    total += preco;
+    const priceItem = Number(item.innerHTML.slice(item.innerHTML.indexOf('$') + 1));
+    total += priceItem;
   });
-  ol.innerText = total;
-  // console.log(total);
-  // total.innerText = parseFloat(total.innerText) + price;
+  olTotalPrice.innerText = total;
 }
 
+/**
+ * Esta parte foi baseada no código de Daniel Batista.
+ * https://github.com/tryber/sd-012-project-shopping-cart/pull/91
+ */
 const getCartItems = () => {
-  // const valueLi = document.querySelectorAll('.cart__items').value;
   const localStorageCart = localStorage.getItem('Cart');
   if (localStorageCart === null || localStorageCart === '') {
-    arrayCartList = [];
-    localStorage.setItem('Cart', arrayCartList);
+    arrayShoppingCart = [];
+    localStorage.setItem('Cart', arrayShoppingCart);
   } else {
     const localStorageConvert = JSON.parse(localStorageCart); // Transforma de JSON para javascript
-    arrayCartList = localStorageConvert;
+    arrayShoppingCart = localStorageConvert;
   }
 };
 getCartItems();
@@ -46,12 +47,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) { // define hierarquia etre elementos filhos de classe 'item' e elemento pai section de classe 'items'
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image.replace('I.jpg', 'O.jpg')));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -59,71 +58,89 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText; // captura o id do span
 }
 
+/**
+ * Requisito 6 resolvido com a colaboração de David Gonzaga.
+ */
+
 function clear() {
-  cartList.innerHTML = '';
-  arrayCartList = [];
-  localStorage.setItem('Cart', JSON.stringify(arrayCartList));
-  calc();
-}
-esvaziar.addEventListener('click', clear);
-
-function removeItem(idObj) {
-  arrayCartList = arrayCartList.filter(({ id }) => id !== idObj);
-  localStorage.setItem('Cart', JSON.stringify(arrayCartList)); // setItem: acessa e altera o localstorage. JSON.stringify(arrayCartList): transforma em JSON.
-}
-
-function cartItemClickListener(event) { // o produto do carrinho é removido ao ser clicado. (remover class: projeto to-do-list)
-  const acessFather = document.querySelector('#cart__items');
-  const accessChild = event.target;
-  const idObj = accessChild.innerText.split('|')[0].slice(5).trim();
-  acessFather.removeChild(accessChild);
-  removeItem(idObj);
+  olCartItems.innerHTML = '';
+  arrayShoppingCart = [];
+  localStorage.setItem('Cart', JSON.stringify(arrayShoppingCart));
   calc();
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) { // esses elementos devem estar na hierarquia de <ol class="cart__items"></ol>, no carrinho de compras.
-  const cart = document.getElementById('cart__items');
+buttonEmptyCart.addEventListener('click', clear);
+
+/**
+ * Parte do requisito 5 resolvido com a colaboração de: David Gonzaga.
+ */
+
+function removeItemFromArrayById(idObj) {
+  arrayShoppingCart = arrayShoppingCart.filter(({ id }) => id !== idObj); // retorna array com itens com 'id' diferente de 'idObj'. Retorna todos os idObj, exceto aquele que é !== de 
+  localStorage.setItem('Cart', JSON.stringify(arrayShoppingCart)); // setItem: acessa e altera o localstorage. JSON.stringify(arrayShoppingCart): transforma em JSON.
+}
+
+/**
+ * Parte do requisito 5 resolvido com a colaboração de: David Gonzaga, Caroline Benichio.
+ */
+
+function cartItemClickListener({ target }) { // o produto do carrinho é removido ao ser clicado. Usando event.target desestruturado: { target }.
+  const alvo = target; // 
+  const idObj = alvo.innerText.split('|')[0].slice(5).trim(); // o
+  olCartItems.removeChild(alvo);
+  removeItemFromArrayById(idObj);
+  calc();
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) { // Cria os elementos HTML. Esses elementos devem estar na hierarquia de <ol class="cart__items"></ol>, no carrinho de compras.
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  cart.appendChild(li);
-  li.addEventListener('click', cartItemClickListener); // ao clicar em um item com classe 'li', chama a função 'cartItemClickListener' que remove o 'li' do carrinho.
+  olCartItems.appendChild(li);
+  li.addEventListener('click', cartItemClickListener); // ao clicar em um item 'li' com classe 'cart__item', chama a função 'cartItemClickListener' que remove o nó filho 'li' do carrinho <ol class="cart__items"></ol>.
   return li;
 }
 
-function addToArray(obj) {
-  arrayCartList.push(obj); // adiciona cada objeto ao arrayCartList
-  localStorage.setItem('Cart', JSON.stringify(arrayCartList)); // converte 
+function pushToArrayShoppingCart(objByID) {
+  arrayShoppingCart.push(objByID); // adiciona cada objeto ao arrayShoppingCart
+  localStorage.setItem('Cart', JSON.stringify(arrayShoppingCart));
 }
 
-const fetchObject = async (event) => {
-  const id = getSkuFromProductItem(event.target.parentElement);
+const fetchObjectById = async ({ target }) => {
+  const id = getSkuFromProductItem(target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const data = await response.json();
-    addToArray(data);
-    createCartItemElement(data);
+  const objectById = await response.json();
+    pushToArrayShoppingCart(objectById);
+    createCartItemElement(objectById);
     calc();
 };
 
-const getToCarList = () => {
-  const eachButtun = document.querySelectorAll('.item__add');
-  eachButtun.forEach((button) => button.addEventListener('click', fetchObject));
+const addEventListenerToObjectId = () => {
+  const itemButtun = document.querySelectorAll('.item__add');
+  itemButtun.forEach((button) => {
+    button.addEventListener('click', fetchObjectById);
+  });
 };
 
-const fetchResults = () => {
-  const getParent = document.getElementsByClassName('items')[0];
-  getParent.innerHTML = '<p class="loading">loadin...<p/>';
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => response.json())
-  .then((array) => {
-    getParent.innerHTML = '';
-    array.results.forEach((item) => getParent.appendChild(createProductItemElement(item)));
-  }).then(() => getToCarList());
+const fetchApiComputador = async () => {
+  const sectionFather = document.getElementsByClassName('items')[0]; // primeira tag <section> do array de getElementsByClassName.
+  /**
+   * Tag p loading: com a ajuda de David Gonzaga.
+   */
+  sectionFather.innerHTML = '<p class="loading">loadin...<p/>'; // enquanto a promessa não se cumpre, a tag com o texto loading, está aparecendo.
+  const responseComputador = await fetch(API_COMPUTADOR);
+  const responseComputadorJSON = await responseComputador.json();
+  const listComputadores = responseComputadorJSON.results;
+    sectionFather.innerHTML = ''; // após a promessa se cumprir, o innerHTML se torna vazio.
+    listComputadores.forEach((item) => {
+      const product = createProductItemElement(item);
+      sectionFather.appendChild(product);
+      addEventListenerToObjectId();
+    });
 };
 
 window.onload = function onload() {
-  fetchResults();
-  ol.innerHTML = localStorage.getItem('item');
-  arrayCartList.forEach((item) => createCartItemElement(item));
+  fetchApiComputador();
+  arrayShoppingCart.forEach((item) => createCartItemElement(item));
   calc();
 };
