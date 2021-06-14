@@ -47,8 +47,7 @@ function getSkuFromProductItem(item) {
 // *é importante que essa função salve os itens que estão no carrinho e execute a função de calculo do valor total (em resumo, as duas funçoes iniciais devem ser executadas dentro dessa função);
 
 function cartItemClickListener(event) {
-  const parentElement = event.target.parentElement;
-  parentElement.removeChild(event.target);
+  event.target.remove();
 }
 
 // createCartItemElement - cria o carrinho de compras em formato de li;
