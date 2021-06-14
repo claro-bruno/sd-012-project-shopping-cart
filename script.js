@@ -3,6 +3,21 @@ window.onload = function onload() { };
 const sectionItens = document.getElementsByClassName('items')[0];
 let totalValue = 0;
 
+const createLoadingText = () => {
+  const { body } = document;
+  const loadingText = document.createElement('p');
+  loadingText.className = 'loading';
+  loadingText.innerHTML = 'loading...';
+  body.insertBefore(loadingText, body.children[0]);
+};
+
+const removeLoadingText = () => {
+  const loadingText = document.getElementsByClassName('loading')[0];
+  console.log(loadingText);
+  loadingText.remove(loadingText);
+  console.log(loadingText);
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -44,6 +59,7 @@ const getItemListFromStorage = () => {
 };
 
 const fetchItens = async () => {
+  createLoadingText();
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((list) => {
@@ -57,7 +73,8 @@ const fetchItens = async () => {
         };
         sectionItens.appendChild(createProductItemElement(item));
       });
-    });
+    })
+    .finally(() => removeLoadingText());
 };
 
 const setItemListToStorage = (itemList) => {
