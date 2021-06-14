@@ -12,15 +12,15 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+function cartItemClickListener(li) {
+  li.remove();
 }
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', () => { cartItemClickListener(li); });
   return li;
 }
 
@@ -36,15 +36,6 @@ async function getItem(id) {
     console.log(error);
   }
  }
-
-//  const addButtonListeners = (() => {
-//   const items = document.querySelectorAll('.item');
-//   items.forEach((item) => {
-//     const newItemId = item.querySelector('.id').textContent;
-//     const newItemButton = item.querySelector('.item__add');
-//     newItemButton.addEventListener('click', getItem(newItemId));
-//   });
-// });
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
@@ -70,9 +61,6 @@ const getProducts = ((searchTerm) => new Promise((resolve, reject) => {
         products.results.forEach((product) => {
           items.appendChild(createProductItemElement(product))
           .querySelector('.item__add').addEventListener('click', () => (getItem(product.id)));
-          // const newItemId = newItem.querySelector('.id').textContent;
-          // const newItemButton = newItem.querySelector('.item__add');
-          // newItemButton.addEventListener('click', getItem(newItemId));
         });
         resolve(products.results);
       });
@@ -84,10 +72,7 @@ const getProducts = ((searchTerm) => new Promise((resolve, reject) => {
 
 const fetchProducts = async () => {
   try {
-    await getProducts('computador'); // .forEach((product) => {
-    //   document.querySelector('.items').appendChild(createProductItemElement(product)
-    //   .querySelector('.item__add').addEventListener('click', getItem(product.id)));
-    // });
+    await getProducts('computador');
   } catch (error) {
     console.log(error);
   }
