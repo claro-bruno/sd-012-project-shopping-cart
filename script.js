@@ -14,18 +14,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// Cria um elemento HTML, com característica especificas, para cada um dos itens retornados pela API em criaElementos().
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-    
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  tornarItensClicaveis();
-}
-
 // Captura o id de cada um dos itens e os submete ao método innerText
 function getSkuFromProductItem(item) {
   return item.querySelector('span0.item__sku').innerText;
@@ -60,43 +48,48 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   }); 
 }; */
 
-// Requisito 1
-// Acessa todos os itens a partir do retorno do objeto da API
-
-const criarItensDaList = () => {
-    fetch(`https://api.mercadolibre.com/items/${sku}`)
-      .then((response) => response.json)
-        .then((response) => response); 
-};
-
-const criarItensDoCarrinho = (idProduto) => {
+// Fazer um appendChild do item retorando pela createCartItemElement
+const criarItensDoCarrinho = (dadosItens) => { 
+  console.log(dadosItens);
   fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((item) => item.json)
       .then((item) => createCartItemElement(item));
-}; 
-
-const tornarItensClicaveis = () => {
-  const botaoItem = document.getElementsByClassName('item__add')[0];
-  /* console.log(botaoItem); */
-  botaoItem.addEventListener('click', criarItensDoCarrinho());
-  return ;
 };
+
+const tornarItensClicaveis = (botao, dadosItens) => {
+  /* console.log(botao); */
+  botao.addEventListener('click', criarItensDoCarrinho(dadosItens));
+};
+
+// Cria um elemento HTML, com característica especificas, para cada um dos itens retornados pela API em criaElementos().
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+    
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+ /*  const botaoItem = document.getElementsByClassName('item__add')[0];
+  const dadosItens = document.getElementsByClassName('item');
+  tornarItensClicaveis(botaoItem, dadosItens); */
+
+  return section;
+}
+
+// Requisito 1
+// Acessa todos os itens a partir do retorno do objeto da API
 
 const criarListaDeProdutos = () => {
   const produtoAlvo = 'computador';
  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
    .then((response) => response.json())
      .then((response) => response.results
-       .map((elemento) => {
+       .forEach((elemento) => {
           /* console.log(elemento); */
           const elementoPai = document.querySelector('.items');
           elementoPai.appendChild(createProductItemElement(elemento));
-          return elemento;
-          })).then((elementos) => elementos
-               .forEach((elemento) => {
-               criarItensDoCarrinho(elemento.id);
-               /* console.log(elemento.id); */
-               }));
+          }));
 };
 
 window.onload = function onload() { 
