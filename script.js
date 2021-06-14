@@ -104,6 +104,7 @@ const cartItemsOnLocalStorage = () => {
 const clearcart = () => {
   olCartItems.innerHTML = '';
   totalPrice.innerHTML = 0;
+  localStorage.removeItem('item');
 };
 clean.addEventListener('click', clearcart);
 
