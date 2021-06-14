@@ -1,7 +1,5 @@
-const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const ol = document.querySelector('.cart__items');
-const loading = document.querySelector('.loading');
-const total = document.querySelector('.total-price');
+const OL = document.querySelector('.cart__items');
+
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,7 +23,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  
+
   return section;
 }
 
@@ -34,7 +32,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  ol.removeChild(event.target);
+  OL.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -45,71 +43,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-//exercicio 1
-const fetchM = async () => {  
-  showLoading()
-  const itens = document.querySelector('.items');
-  const response = await fetch(API_URL);
-  const obj = await response.json();
-  const result = obj.results;
+const getFetchML = async () => {
+  const items = document.querySelector('.item');
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  const ob = await response.json();
+  const result = ob.results
   result.forEach((computer) => {
-    itens.appendChild(createProductItemElement(computer));
+    items.appendChild(createProductItemElement(computer));
   })
-  hidingLoading()
-}
-
-//exercicio 2
-const fetchID = async (id) => {
-  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const idD = await response.json();
-   ol.appendChild(createCartItemElement(idD));
- 
-};
-
-const buttonCart = () => {
-  const addButtonCart = document.querySelectorAll('.item__add');
-  addButtonCart.forEach((button) => {
-    button.addEventListener('click', () => { 
-      const id = getSkuFromProductItem(button.parentNode);
-      fetchID(id)
-      .then((item) => ol
-      .appendChild(createCartItemElement(item)))
-      .then(() => saveStorage());
-   });
-  });
-};
-
-const saveStorage = () => {
-  localStorage.setItem('cart', ol.innerHTML)
-  document.addEventListener('click', () => saveStorage());
-}
-
-const loadStorage = () => {
-  localStorage.getItem('cart');
-}
-
-const removeItem = () => {
-
-}
-
-const clearShop = () => {
-  const clearButtonCart = document.querySelector('.empty-cart');
-  clearButtonCart.addEventListener('click', () => {
-    ol.innerHTML = ' ';
-  });
-};
-
-const showLoading = () => {
-  loading.classList.add("display");
-}
-
-const hidingLoading = () => {
-  loading.classList.remove("display");
 }
 
 window.onload = function onload() {
-  fetchM()
-  .then(() => buttonCart());
-  .then(() => clearShop());
-  .then(() => loadStorage());
-  };
+  getFetchML()
+ };
