@@ -35,14 +35,12 @@ function getSkuFromProductItem(item) {
 }
 
 const saveToLocalStorage = () => {
-  const cart = document.querySelector('.cart__items');
-  localStorage.setItem('cart-item', JSON.stringify(cart.innerHTML));
+  localStorage.setItem('cart-item', JSON.stringify(cartItems.innerHTML));
 };
 
 const getLocalStorage = () => {
-  let itensCart = localStorage.getItem('cart-item');
-  let cart = document.querySelector('.cart__items');
-  cart.innerHTML = JSON.parse(itensCart);
+  const itensCart = localStorage.getItem('cart-item');
+  cartItems.innerHTML = JSON.parse(itensCart);
 };
 
 // remove item clicado carrinho.
