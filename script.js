@@ -60,8 +60,22 @@ const fetchProducts = async () => {
     .then((response) => response.json())
     .then((products) => appendProducts(products.results));
     const loading = document.querySelector('.loading');
-  loading.remove();
+    loading.remove();
 };
+
+const clearCart = () => {
+  const ol = document.querySelector('ol');
+  const clearCartButton = document.querySelector('.empty-cart');
+  clearCartButton.addEventListener('click', () => {
+  // console.log('clicado'); // Botão está ok, testado!
+    // while (ol.hasChildNodes()) {
+    //   ol.removeChild(ol.firstChild);
+    // } ESTA FOI A FORMA USADA PARA FAZER NO PROJETO TODOLIST, TAMBÉM FUNCIONA! PORÉM VOU DEIXAR UMA FORMA DIFERENTE.
+  const allCartItems = document.querySelectorAll('.cart__item');
+  allCartItems.forEach((product) => ol.removeChild(product));
+  });
+};
+clearCart();
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
