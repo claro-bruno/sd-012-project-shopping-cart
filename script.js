@@ -1,8 +1,9 @@
 window.onload = function onload() { 
   getProduct();
+  
 };
 
-const API = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
+const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,7 +27,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  
   return section;
 }
 
@@ -38,7 +38,7 @@ function cartItemClickListener(event) {
   return event;
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -47,14 +47,28 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // Requesito 1
+// requesito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
+// E utilizando o Slack com a dúvida de Eder Santos
 const getProduct = async () => {
-  const response = await fetch(API);
+  const response = await fetch(urlComputador);
   const computer = await response.json();
   const sectionItems = document.querySelector('.items');
   computer.results.forEach((element) => {
     sectionItems.appendChild(createProductItemElement(element));
   });
+  addPurchases()
 };
 
-// requesito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
-// E utilizando o Slack com a dúvida de Eder Santos
+const addPurchases = () => {
+  const button = document.querySelectorAll('.item__add');
+  const ol = document.querySelector('.cart__items')
+  button.forEach((b) => {
+    b.addEventListener('click', () => {
+      const id = b.parentNode.firstChild.innerText;
+      fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => response.json().then((i) => {
+        ol.appendChild(createCartItemElement(i));
+      }))
+      //console.log(id);
+    })
+  })
+}
