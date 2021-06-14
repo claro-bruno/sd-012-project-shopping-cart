@@ -1,8 +1,10 @@
 /* Caso alguem consulte o repositório, apaguei todo o trabalho e estou começando do zero. Analisei todos os requisitos, e enumerei as funções que tenho que criar e os locais onde devem ser inseridas, dessa forma, evito ficar trocando de lugar conforme vou desenvolvendo o código e não gera confusão se precisar parar e retomar. */
 
+const cartItems = document.querySelector('.cart__items');
+
 // 1 - criar função para salvar itens
 function storageCart() {
-  const classCartItems = document.querySelector('.cart__items').innerHTML;
+  const classCartItems = cartItems.innerHTML;
   localStorage.setItem('cart', classCartItems);
 }
 
@@ -104,7 +106,7 @@ function selectItem() {
 
 function storageLoad() {
   const loadStorage = localStorage.getItem('cart');
-  const cartStorage = document.querySelector('.cart__items');
+  const cartStorage = cartItems;
   cartStorage.innerHTML = loadStorage;
   cartStorage.addEventListener('click', (event) => {
     if (event.target.classList.contains('cart__item')) {
