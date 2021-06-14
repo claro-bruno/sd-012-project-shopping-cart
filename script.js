@@ -19,8 +19,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span0.item__sku').innerText;
 }
 
-// Requisito 2
-
 // Especifica as ações após o evento da addEventListener da createCartItemElement
 function cartItemClickListener(event) {
   // coloque seu código aqui 
@@ -35,30 +33,26 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener());
   return li;
 }
-/* createCartItemElement(); */
-/* const criarItensDaList = () => {
-  const array = [...document.querySelectorAll('.item__add')];
-  console.log(array);
-  array.forEach((item) => {
-    console.log(item);
-    let sku = item.
-    fetch(`https://api.mercadolibre.com/items/${sku}`)
-      .then((response) => response.json)
-        .then((response) => response);
-  }); 
-}; */
 
 // Fazer um appendChild do item retorando pela createCartItemElement
-const criarItensDoCarrinho = (dadosItens) => { 
-  console.log(dadosItens);
+const criarItensDoCarrinho = () => { 
+  const idProduto = event.target;
+  console.log(idProduto); // Não foi consolado. 13.06
   fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((item) => item.json)
-      .then((item) => createCartItemElement(item));
+      .then((item) => document.getElementsByClassName('cart__items')
+        .appendChild(createCartItemElement(item)));
 };
 
-const tornarItensClicaveis = (botao, dadosItens) => {
-  /* console.log(botao); */
-  botao.addEventListener('click', criarItensDoCarrinho(dadosItens));
+const eventoDeClique = () => {
+  const botoes = document.getElementsByClassName('item__add');
+  const arrayDeBotoes = [...botoes];
+  /* console.log(arrayDeBotoes); */
+  let itemClicado = arrayDeBotoes;
+  arrayDeBotoes.forEach((botao) => {
+    itemClicado
+    botao.addEventListener('click', criarItensDoCarrinho());
+  });
 };
 
 // Cria um elemento HTML, com característica especificas, para cada um dos itens retornados pela API em criaElementos().
@@ -70,9 +64,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
- /*  const botaoItem = document.getElementsByClassName('item__add')[0];
-  const dadosItens = document.getElementsByClassName('item');
-  tornarItensClicaveis(botaoItem, dadosItens); */
 
   return section;
 }
@@ -89,7 +80,7 @@ const criarListaDeProdutos = () => {
           /* console.log(elemento); */
           const elementoPai = document.querySelector('.items');
           elementoPai.appendChild(createProductItemElement(elemento));
-          }));
+          })).then(() => eventoDeClique());
 };
 
 window.onload = function onload() { 
