@@ -1,6 +1,14 @@
-const classItem = document.querySelector('.items');
-const classCartItem = document.querySelector('.cart__items');
+/* Caso alguem consulte o repositório, apaguei todo o trabalho e estou começando do zero. Analisei todos os requisitos, e enumerei as funções que tenho que criar e os locais onde devem ser inseridas, dessa forma, evito ficar trocando de lugar conforme vou desenvolvendo o código e não gera confusão se precisar parar e retomar. */
 
+// 1 - criar função para salvar itens
+function storageCart() {
+  const cartStorage = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', cartStorage);
+}
+
+// 2 - criar função para somar os itens do carrinho
+
+// createProductImagemElement - cria o elemento, add a classe imagem e adiciona o endereço da imagem no atributo src da img;
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -8,47 +16,16 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event) {
-  const itemRemove = event.target;
-  itemRemove.parentNode.removeChild(itemRemove);
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-async function selectItem(id) {
-  const urlIdAPI = `https://api.mercadolibre.com/items/${id}`;
-  try {
-    const requiredId = await fetch(urlIdAPI);
-    const resultId = await requiredId.json();
-    const itemSelect = createCartItemElement(resultId);
-    document.getElementsByClassName('cart__items')[0].appendChild(itemSelect);
-  } catch (error) {
-    return error;
-  }
-}
-
-// A função abaixo foi implementada com auxílio do repositório do Ryan Laiber.
-
+// createCustomElement - cria elemento customizado
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  if (element === 'button') {
-    e.addEventListener('click', (event) => {
-      const id = event.target.parentElement.firstChild.innerText;
-      selectItem(id); 
-    });
-  }
   return e;
 }
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+// createProductItemElement - com base nas informações da API, irá criar um objeto com, atribuir uma classe e determinar a "hierarquia" através do DOM;
+function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -60,27 +37,51 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-const loadItems = (computerItem) => {
-  computerItem.forEach((element) => {
-    classItem.appendChild(createProductItemElement(element));
-  });
-};
+// getSkuFromProductItem - seleciona o elemento html que tem span.item__sku
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-async function getItems(itemName, showItem) {
-  const urlAPI = `https://api.mercadolibre.com/sites/MLB/search?q=${itemName}`;  
+// cartItemClickListiner - função a ser implementada para escutar o evento de click, que realizará tanto a adição quanto a remoção do elemento clicado. Para isso, o evento de click utilizará a hierarquia do DOM para remover ou acrescentar elementos com base no event target. *é importante que essa função salve os itens que estão no carrinho e execute a função de calculo do valor total (em resumo, as duas funçoes iniciais devem ser executadas dentro dessa função);
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
+
+// createCartItemElement - cria o carrinho de compras em formato de li;
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+// 3- Criar função para implementar a lista de itens, utilizando a fetch API;
+async function getItems() {
+  const urlAPI = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';  
   try {
     const requiredItems = await fetch(urlAPI);
     const { results } = await requiredItems.json();
-    showItem(results);
+    results.forEach((item) => {
+      const objItem = {
+        sku: item.id,
+        name: item.title,
+        image: item.thumbnail,
+      };
+      document.querySelector('.items').appendChild(createProductItemElement(objItem));
+    });
   } catch (error) {
     return error;
   }
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// 4 - Criar função para adicionar os produtos no carrinho através da função de click, também com as funções de salvar storage e realizar o calculo dos preços.;
+
+// 5 - Criar função de carregar os itens salvos no carrinho;
+
+// 6 - Criar função para esvaziar o carrinho, alterando preço e itens salvos no storage.
 
 window.onload = function onload() { 
-  getItems('computer', loadItems);
+  // chamar as funções de storage (acrescentar itens no carrinho, carregar os itens salvos e limpar o carrinho); função de calculo de preço total e implementação da lista de itens;
+  getItems();
 };
