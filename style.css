@@ -2,6 +2,18 @@ body {
   display: flex;
   align-items: center;
   flex-flow: column;
+  font-family: monospace, sans-serif;
+  background-color: rgb(245, 252, 240);
+}
+
+h1 {
+  font-size: 40px;
+  color: green;
+  border-style: inset;
+  border-color: green greenyellow;
+  border-radius: 20px;
+  padding: 15px 30px;
+  margin: 50px auto 70px;
 }
 
 .top-bar {
@@ -33,17 +45,18 @@ body {
   display: flex;
   flex-basis: 70%;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
+  margin: auto 30px;
 }
 
 .item {
-  border: 2px solid blue;
-  border-radius: 5px;
+  border: 5px solid mediumseagreen;
+  border-radius: 10px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: auto;
-  margin: 5px;
+  margin: 20px 10px;
   width: 200px;
 }
 
@@ -55,6 +68,7 @@ body {
   flex-grow: 1;
   padding: 10px;
   text-align: center;
+  font-weight: 600;
 }
 
 .item .item__image {
@@ -62,7 +76,7 @@ body {
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: greenyellow;
   border: 0;
   cursor: pointer;
   margin: 0;
@@ -71,12 +85,53 @@ body {
 
 .cart {
   display: flex;
-  flex-basis: 30%;
+  flex-basis: 25%;
   flex-flow: column wrap;
+  border-style: solid;
+  border-width: 5px;
+  border-color: green;
+  border-radius: 10px;
+  padding: 30px;
+  margin: 20px 0 auto;
 }
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-size: 25px;
   text-align: center;
+  color: darkgreen;
+  font-weight: 800;
+  border-bottom-style: solid;
+  border-color: greenyellow;
+  padding-bottom: 20px;
+}
+
+.cart__items {
+  background-color: rgb(0, 128, 0, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.empty-cart {
+  background-color: rgb(218, 235, 208);
+  margin: 20px auto;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border-style: inset;
+  border-color: green greenyellow;
+  font-weight: 600;
+  color: green;
+}
+
+.total-price {
+  text-align: end;
+  font-size: 25px;
+  font-weight: 400;
+}
+
+footer {
+  background-color: mediumseagreen;
+  text-align: center;
+  width: 100%;
+  padding: 30px;
 }
