@@ -1,5 +1,11 @@
 const urlML = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const produtosStorage = 'lista-produtos';
+const cartItemsString = 'ol.cart__items';
+
+function storageSave() {
+  const cartItems = document.querySelector(cartItemsString);
+  localStorage.setItem(`${produtosStorage}`, cartItems.innerHTML);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -35,6 +41,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  storageSave();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -50,19 +57,20 @@ async function requestAppendAPI() {
   const jsonAPI = await fetchedAPI.json();
   const jsonResults = await jsonAPI.results;
   const itemsList = document.querySelector('section.items');
-
+  itemsList.firstChild.remove();
   jsonResults.forEach((item) => {
     itemsList.appendChild(createProductItemElement(item));
   });
 }
 
 async function addToCart(evt) {
-  const cartItems = document.querySelector('ol.cart__items');
+  const cartItems = document.querySelector(cartItemsString);
 
   const id = getSkuFromProductItem(evt);
   const fetchProduct = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const productJson = await fetchProduct.json();
   cartItems.appendChild(createCartItemElement(productJson));
+  storageSave();
 }
 
 function buttonsEvent() {
@@ -75,7 +83,29 @@ function buttonsEvent() {
   });
 }
 
+function getStorage() {
+  const cartItems = document.querySelector(cartItemsString);
+  cartItems.innerHTML = localStorage.getItem(`${produtosStorage}`);
+  const listItems = document.querySelectorAll('li.cart__item');
+
+  listItems.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}
+
+function emptyCartButton() {
+  const emptyCart = document.querySelector('button.empty-cart');
+  const cartItems = document.querySelector(cartItemsString);
+
+  emptyCart.addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    localStorage.clear();
+  });
+}
+
 window.onload = async () => {
   await requestAppendAPI();
   buttonsEvent();
+  getStorage();
+  emptyCartButton();
 };
