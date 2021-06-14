@@ -35,12 +35,13 @@ function getSkuFromProductItem(item) {
 }
 
 const saveToLocalStorage = () => {
-  localStorage.setItem('cart-item', JSON.stringify(cartItems.innerHTML));
+  const cart = document.querySelector('.cart__items');
+  localStorage.setItem('cart-item', JSON.stringify(cart.innerHTML));
 };
 
 const getLocalStorage = () => {
-  const itensCart = localStorage.getItem('cart-item');
-  const cart = document.querySelector('.cart__items');
+  let itensCart = localStorage.getItem('cart-item');
+  let cart = document.querySelector('.cart__items');
   cart.innerHTML = JSON.parse(itensCart);
 };
 
@@ -49,7 +50,6 @@ function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
       event.target.remove();
   }
-  saveToLocalStorage();
 }
 
 // remove a string loading.
