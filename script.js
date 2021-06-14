@@ -1,8 +1,11 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const sectionItems = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const cartItem = document.getElementsByClassName('cart__item');
 const emptyCart = document.querySelector('.empty-cart');
 const loading = document.querySelector('.loading');
+const li = document.getElementsByTagName('li');
+let arrStorage = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,7 +29,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -34,13 +36,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveToLocalStorage = () => {
+  let cart = document.querySelector('.cart__items');
+  localStorage.setItem('cart-item', JSON.stringify(cart.innerHTML));
+}
+
+const getLocalStorage = () => {
+  let itensCart = localStorage.getItem('cart-item');
+  let cart = document.querySelector('.cart__items');
+  cart.innerHTML = JSON.parse(itensCart);
+}
+
 // remove item clicado carrinho.
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
       event.target.remove();
   }
+  saveToLocalStorage();
 }
 
+// remove a string loading.
 const loadingStr = () => {
   loading.remove();
 };
@@ -63,11 +78,12 @@ const getApi = async () => {
   });
 };
 
-// Traz o id pego pelo evento e o pesquisa no fetch.
+// Traz o id pego pelo evento e o pesquisa no fetch. já chama a função do save local storage
 const getApiId = async (id) => {
   const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const response = await promiseId.json();
   cartItems.appendChild(createCartItemElement(response));
+  saveToLocalStorage();
 };
 
 // evento de clique no qual é checado se o target tem certa classe, se sim o target é levado para funcao getSku e é chamado o getApiId.
@@ -80,9 +96,10 @@ const evtBtn = () => {
   });
 };
 
-// dá set = "" se o elemento pai tem filhos
+// dá set = "" se o elemento pai tem filhos.
 const clearCart = () => {
   emptyCart.addEventListener('click', () => {
+    localStorage.clear();
     if (cartItems.firstChild) {
       cartItems.innerHTML = '';
     }
@@ -92,5 +109,6 @@ const clearCart = () => {
 window.onload = function onload() {
   getApi();
   evtBtn();
+  getLocalStorage();
   clearCart();
  };
