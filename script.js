@@ -94,7 +94,7 @@ function loadingAlert() {
 }
 
 // 1
-const fetchAPI = async () => { 
+const fetchAPI = async () => {
   const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const api = await fetch(API_URL); // pega, pelo API, os produtos consultados
   const apiJSON = await api.json(); // transforma a promise em JSON
