@@ -2,8 +2,7 @@ window.onload = function onload() {
   getProduct();
 };
 
-const API = `https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR`
-
+const API = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,7 +35,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  return event;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -47,15 +46,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requesito 1
 const getProduct = async () => {
   const response = await fetch(API);
   const computer = await response.json();
   const sectionItems = document.querySelector('.items');
-  computer.results.forEach(element => {
-    sectionItems.appendChild(createProductItemElement(element))
+  computer.results.forEach((element) => {
+    sectionItems.appendChild(createProductItemElement(element));
   });
-  
-}
+};
 
 // requesito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
 // E utilizando o Slack com a dúvida de Eder Santos
