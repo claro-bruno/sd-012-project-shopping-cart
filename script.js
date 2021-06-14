@@ -77,6 +77,25 @@ async function getItems() {
 
 // 4 - Criar função para adicionar os produtos no carrinho através da função de click, também com as funções de salvar storage e realizar o calculo dos preços.;
 
+function selectItem() {
+  document.querySelector('.items').addEventListener('click', (event) => {
+    if (event.target.classList.contains('item__add')) {
+      const elementDOM = event.target.parentElement;
+      const sku = getSkuFromProductItem(elementDOM);
+      fetch(`https://api.mercadolibre.com/items/${sku}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const skuKey = {
+            sku,
+            name: data.title,
+            salePrice: data.price,
+          };
+          document.querySelector('.cart__items').appendChild(createCartItemElement(skuKey));
+        });
+    }
+  });
+}
+
 // 5 - Criar função de carregar os itens salvos no carrinho;
 
 // 6 - Criar função para esvaziar o carrinho, alterando preço e itens salvos no storage.
@@ -84,4 +103,5 @@ async function getItems() {
 window.onload = function onload() { 
   // chamar as funções de storage (acrescentar itens no carrinho, carregar os itens salvos e limpar o carrinho); função de calculo de preço total e implementação da lista de itens;
   getItems();
+  selectItem();
 };
