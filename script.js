@@ -7,12 +7,14 @@ function getItemPromise(item) {
     .catch((erro) => console.log(erro));     
   return result;
 }
-/*
+
 // template 06
 function cartItemClickListener(event) { // 3 - Remova o item do carrinho de compras ao clicar nele
-   
+  const item = event.target;
+  const parent = item.parentNode;
+  parent.removeChild(item); // Remove o item do Carrinho
   }
-*/
+
 // template 07
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const ol = document.querySelector('.cart__items');
@@ -20,7 +22,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
 
   ol.appendChild(li); 
 
