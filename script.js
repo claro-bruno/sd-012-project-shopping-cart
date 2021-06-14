@@ -1,6 +1,6 @@
 const items = document.querySelector('.items');
 // const loading = document.querySelector('.loading');
-const cartItems = document.querySelector('.cart__items');
+const cart = document.querySelector('.cart__items');
 // const addItem = document.querySelector('.item__add');
 // const totalPrice = document.querySelector('.total-price');
 const emptyCart = document.querySelector('.empty-cart');
@@ -41,13 +41,6 @@ function cartItemClickListener(event) {
   removeItem.parentNode.removeChild(event.target);
 }
 
-// requisito 6
-  function removeCartItems() {
-    emptyCart.addEventListener('click', () => {
-      cartItems.innerHTML = '';
-    });
-  }
-
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -62,6 +55,13 @@ async function fetchCartItems(ItemID) {
   const response = await fetch(`https://api.mercadolibre.com/items/${ItemID}`);
    const computer = await response.json();
    cartItems.appendChild(createCartItemElement(computer));
+}
+
+// requisito 6
+function removeCartItems() {
+  emptyCart.addEventListener('click', () => {
+    cart.innerHTML = '';
+  });
 }
 
 // requisito 2
