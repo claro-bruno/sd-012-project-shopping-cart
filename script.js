@@ -56,19 +56,19 @@ const getProduct = async () => {
   computer.results.forEach((element) => {
     sectionItems.appendChild(createProductItemElement(element));
   });
-  addPurchases()
+  addPurchases();
 };
 
 const addPurchases = () => {
   const button = document.querySelectorAll('.item__add');
-  const ol = document.querySelector('.cart__items')
+  const ol = document.querySelector('.cart__items');
   button.forEach((b) => {
     b.addEventListener('click', () => {
       const id = b.parentNode.firstChild.innerText;
-      fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => response.json().then((i) => {
+      const url = `https://api.mercadolibre.com/items/${id}`;
+      fetch(url).then((response) => response.json().then((i) => {
         ol.appendChild(createCartItemElement(i));
-      }))
-      //console.log(id);
-    })
-  })
-}
+      }));
+    });
+  });
+};
