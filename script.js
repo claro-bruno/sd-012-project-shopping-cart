@@ -1,4 +1,5 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const h1 = document.getElementsByClassName('loading');
 function getItemPromise(item) {     
   const result = fetch(`https://api.mercadolibre.com/items/${item}`) // Pega os itens de forma assíncrona
     
@@ -7,15 +8,29 @@ function getItemPromise(item) {
     .catch((erro) => console.log(erro));     
   return result;
 }
-
-// template 06
+/*
+let shoppingCart = [];
+async function precoTotal() {
+  const totalPrice = document.querySelector('.total-price');
+  const total = shoppingCart.reduce((accumulator, currentItem) =>
+  accumulator + Number(currentItem.split('$')[1]), 0);
+  totalPrice.innerText = total;
+}
+*/
+/*
+function localStorageUpdate() { //  4 - Carregue o carrinho de compras através do **LocalStorage** ao iniciar a página
+   localStorage.setItem('savedCart', JSON.stringify(shoppingCart));
+   precoTotal();
+ }
+ */
+// template 05
 function cartItemClickListener(event) { // 3 - Remova o item do carrinho de compras ao clicar nele
   const item = event.target;
   const parent = item.parentNode;
   parent.removeChild(item); // Remove o item do Carrinho
   }
 
-// template 07
+// template 06
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
@@ -33,8 +48,8 @@ async function starterShoppingCart(savedCart) {
   savedCart.forEach((item) => {
     const product = {
       id: item.split(' ')[1],
-      title: item.split(' | ')[1].split(': ')[1],
-      price: item.split(' | ')[2].split('$')[1],
+      title: item.split('|')[1].split(': ')[1], // split (Dividindo o Objeto em String)
+      price: item.split('|')[2].split('$')[1],
     };
 
     createCartItemElement(product);
@@ -57,12 +72,14 @@ function createCustomElement(element, className, innerText) {
 // Template function 4
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
+  
 }
 // LocalStorage
 async function getItemToCart(event) {
   const itemId = getSkuFromProductItem(event.target.parentNode);
   const results = await getItemPromise(itemId); // Aguarda de forma assincrona os itens do carrinho
   createCartItemElement(results); // Cria o Item do carrinho
+  // localStorageUpdate();
 }
 // Template function 3
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -80,7 +97,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 async function getListItem() {
+  
   const loaderItem = document.createElement('createDivtem'); // Carrega os itens na tela
+   document.querySelector('.items').appendChild(loaderItem);
+   loaderItem.className = 'loading';
+   loaderItem.innerHTML = 'loading...';
    document.querySelector('.items').appendChild(loaderItem);
 
   const results = await fetch(url)
@@ -92,7 +113,7 @@ async function getListItem() {
   results.results.map((result) => createProductItemElement(result));
 }
 
-function emptyCart() {
+function emptyCart() { // Esvaziar carrinho
 document.querySelector('.cart__items').innerText = ''; // Itens do Carrinho
 }
 
@@ -100,10 +121,10 @@ window.onload = function onload() {
   const emptyBtn = document.querySelector('.empty-cart');
   emptyBtn.addEventListener('click', emptyCart);
 
-  if (localStorage.getItem('savedCart') && localStorage.getItem('savedCart') !== '') {
+  if (localStorage.getItem('savedCart') && localStorage.getItem('savedCart') !== '') { // recebe os itens da função (starterShoppingCart) para o localStorage
     const parse = JSON.parse(localStorage.getItem('savedCart'));
     starterShoppingCart(parse);
   }
-
   getListItem();
+  // localStorageUpdate();  
 };
