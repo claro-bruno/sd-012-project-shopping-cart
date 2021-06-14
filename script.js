@@ -1,115 +1,107 @@
-// window.onload = function onload() { };
-
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const computerItems = document.getElementsByClassName('items'); // 1 - Pegando Items
-// Template 
+function getItemPromise(item) {     
+  const result = fetch(`https://api.mercadolibre.com/items/${item}`) // Pega os itens de forma assíncrona
+    
+  .then((response) => response.json())
+    .then((data) => data)
+    .catch((erro) => console.log(erro));     
+  return result;
+}
+/*
+// template 06
+function cartItemClickListener(event) { // 3 - Remova o item do carrinho de compras ao clicar nele
+   
+  }
+*/
+// template 07
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const ol = document.querySelector('.cart__items');
+  const li = document.createElement('li');
+
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+
+  ol.appendChild(li); 
+
+  return li;
+}
+
+async function starterShoppingCart(savedCart) {
+  savedCart.forEach((item) => {
+    const product = {
+      id: item.split(' ')[1],
+      title: item.split(' | ')[1].split(': ')[1],
+      price: item.split(' | ')[2].split('$')[1],
+    };
+
+    createCartItemElement(product);
+  });
+}
+// Template function 1
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
-// Template
+// Template function 2
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
-// Template 1.1 Renderiza os produtos na tela
-function createProductItemElement({
-  id: sku,
-  title: name,
-  thumbnail: image,
-}) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-/*
-// Template
+// Template function 4
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-*/
-/*
-// Template
-function cartItemClickListener(event) {
-  // Remove o produto do
-  const renderProd = document.querySelector(stringOrderedList);
-  event.target.remove();
-  localStorage.setItem(`${strinListaProdutos}`, renderProd.innerHTML);
+// LocalStorage
+async function getItemToCart(event) {
+  const itemId = getSkuFromProductItem(event.target.parentNode);
+  const results = await getItemPromise(itemId); // Aguarda de forma assincrona os itens do carrinho
+  createCartItemElement(results); // Cria o Item do carrinho
 }
-*/
-// Template
-/*
-function createCartItemElement({
-  sku,
-  name,
-  salePrice
-}) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+// Template function 3
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const sectionItems = document.querySelector('.items');
+  const section = document.createElement('section');
+  section.className = 'item';
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  button.addEventListener('click', getItemToCart);
+  section.appendChild(button);
+  sectionItems.appendChild(section);
+  return section;
 }
-*/
-// Questão 01 - Criando uma lista de produtos
-const apiComputer = async () => {
-  try {
-    const indiceApi = await fetch(url); // Retorna os índices da Api
-    const apijson = await indiceApi.json(); // Recupera o json
-    const arrayResult = apijson.results; // pega o resultado do json
-    await arrayResult.forEach((item) =>
-      computerItems[0].appendChild(createProductItemElement(item))); // await aguarda caso não retorne resultados, se não, entrega lista.
-  } catch (error) {
-    console.log(error);
-  }
-};
-window.onload = function onload() {
-  apiComputer();
-};
 
-/*
-// vídeo youTube Fernando Leonid & Revisão Bloco 09 com Jensen
-// Espera assíncrona  | fetch (Busca e retorna uma promisse) await (Aguarda)  then (Retorna) catch (Pega)
-// try (retorna um erro)
-// Função para pegar o json Ml
-function getCartml (){
-  return new Promise ((resolve) =>{
-    // console.log('Olá Mundo');
-    fetch(url)
+async function getListItem() {
+  const loaderItem = document.createElement('createDivtem'); // Carrega os itens na tela
+   document.querySelector('.items').appendChild(loaderItem);
+
+  const results = await fetch(url)
     .then((response) => response.json())
-    //.then((computador)=> console.log(computador))
-    .then((computador)=> resolve(computador))
-    .catch((error) => reject(error))
-});
-window.onload = async () => {
+    .then((data) => data)
+    .catch((error) => console.log(error));
 
-  try {
-    const computador = await getCartml();
-    computador.forEach(items => colocarNaTela (items));
+  document.querySelector('.items').removeChild(loaderItem);
+  results.results.map((result) => createProductItemElement(result));
+}
 
-  } catch{
-    console.log(error)
+function emptyCart() {
+document.querySelector('.cart__items').innerText = ''; // Itens do Carrinho
+}
+
+window.onload = function onload() {
+  const emptyBtn = document.querySelector('.empty-cart');
+  emptyBtn.addEventListener('click', emptyCart);
+
+  if (localStorage.getItem('savedCart') && localStorage.getItem('savedCart') !== '') {
+    const parse = JSON.parse(localStorage.getItem('savedCart'));
+    starterShoppingCart(parse);
   }
-}
-*/
-/*
-// Promise
-window.onload = () => {
-    const items = getCartml ()
-      .then((computador) => {
-        computador.forEach(items => colocarNaTela (items))
-    // console.log(computador);
-      })
-      .catch(error => console.log(error))
-}
-*/
+
+  getListItem();
+};
