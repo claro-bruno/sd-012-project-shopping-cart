@@ -42,9 +42,13 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// cartItemClickListiner - função a ser implementada para escutar o evento de click, que realizará tanto a adição quanto a remoção do elemento clicado. Para isso, o evento de click utilizará a hierarquia do DOM para remover ou acrescentar elementos com base no event target. *é importante que essa função salve os itens que estão no carrinho e execute a função de calculo do valor total (em resumo, as duas funçoes iniciais devem ser executadas dentro dessa função);
+// cartItemClickListiner - função a ser implementada para escutar o evento de click, que realizará  a remoção do elemento clicado. Para isso, o evento de click utilizará a hierarquia do DOM para remover elementos com base no event target. 
+// parentElement (https://www.w3schools.com/jsref/prop_node_parentelement.asp)
+// *é importante que essa função salve os itens que estão no carrinho e execute a função de calculo do valor total (em resumo, as duas funçoes iniciais devem ser executadas dentro dessa função);
+
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const parentElement = event.target.parentElement;
+  parentElement.removeChild(event.target);
 }
 
 // createCartItemElement - cria o carrinho de compras em formato de li;
