@@ -23,10 +23,12 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui 
   const itemClicado = event.target.id;
+  return itemClicado; // test para o req 2
 }
 
 // Cria o elemento da lista do carrinho de compras referente a cada section e submete tais elementos a um evento
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  /* console.log(sku);  */
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -36,21 +38,20 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 // Fazer um appendChild do item retorando pela createCartItemElement
 const criarItensDoCarrinho = () => { 
-  const idProduto = event.target;
+  const idProduto = Event.target;
   console.log(idProduto); // Não foi consolado. 13.06
-  fetch(`https://api.mercadolibre.com/items/${idProduto}`)
-    .then((item) => item.json)
-      .then((item) => document.getElementsByClassName('cart__items')
+  return fetch(`https://api.mercadolibre.com/items/${idProduto}`)
+    .then((item) => console.log(item.json))
+      .then((item) => document.querySelector('.cart__items')
         .appendChild(createCartItemElement(item)));
 };
 
 const eventoDeClique = () => {
   const botoes = document.getElementsByClassName('item__add');
   const arrayDeBotoes = [...botoes];
-  /* console.log(arrayDeBotoes); */
-  let itemClicado = arrayDeBotoes;
+  /* console.log(document.querySelector('.cart__items')); */
   arrayDeBotoes.forEach((botao) => {
-    itemClicado
+    console.log(botao);
     botao.addEventListener('click', criarItensDoCarrinho());
   });
 };
@@ -86,4 +87,5 @@ const criarListaDeProdutos = () => {
 window.onload = function onload() { 
   // Requisito 1
   criarListaDeProdutos(); 
+  /* eventoDeClique(); */
 };
