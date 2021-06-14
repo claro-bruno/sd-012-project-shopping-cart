@@ -116,6 +116,7 @@ function clickItemAdd() {
 function getandCreateItems() {
   const product = {};
   const loading = document.querySelector('.loading');
+  const classItem = document.querySelector('.items');
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((items) => {
@@ -125,31 +126,31 @@ function getandCreateItems() {
         product.sku = id;
         product.name = title;
         product.image = thumbnail;
-        document.querySelector('.items').appendChild(createProductItemElement(product));
+        classItem.appendChild(createProductItemElement(product));
       });
     })  
     .then(() => clickItemAdd());  
 }
 
 function removeAllCartItems() {
-  const cartItems = document.getElementsByClassName('cart__items')[0];
-  const cartItem = document.querySelectorAll('.cart__item');
-  cartItem.forEach((item) => cartItems.removeChild(item));
-  arrayStorage = [];
-  sum();
-  localStorage.setItem('products', JSON.stringify(arrayStorage)); 
+const cartItems = document.getElementsByClassName('cart__items')[0];
+const cartItem = document.querySelectorAll('.cart__item');
+cartItem.forEach((item) => cartItems.removeChild(item));
+arrayStorage = [];
+sum();
+localStorage.setItem('products', JSON.stringify(arrayStorage)); 
 }
 
 window.onload = async () => {  
-  const loading = document.createElement('span');
-  loading.className = 'loading';
-  loading.innerText = 'loading';
-  // const items = 
-  document.querySelector('.items').appendChild(loading);
-  await getandCreateItems(); 
-  getStoreData();
-  sum();
-    
-  const removebtn = document.querySelector('.empty-cart');
-  removebtn.addEventListener('click', removeAllCartItems);
+const loading = document.createElement('span');
+loading.className = 'loading';
+loading.innerText = 'loading';
+document.querySelector('.items').appendChild(loading);
+
+await getandCreateItems(); 
+getStoreData();
+sum();
+  
+const removebtn = document.querySelector('.empty-cart');
+removebtn.addEventListener('click', removeAllCartItems);
 };
