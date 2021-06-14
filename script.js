@@ -113,7 +113,6 @@ window.onload = async () => {
     await fetchMercadoLivre('computador');
     onClick();
     cartItemsOnLocalStorage();
-    clearcart();
   } catch (error) {
     console.log(error);
   }
