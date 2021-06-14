@@ -2,8 +2,8 @@
 
 // 1 - criar função para salvar itens
 function storageCart() {
-  const cartStorage = document.querySelector('.cart__items').innerHTML;
-  localStorage.setItem('cart', cartStorage);
+  const classCartItems = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', classCartItems);
 }
 
 // 2 - criar função para somar os itens do carrinho
@@ -42,12 +42,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// cartItemClickListiner - função a ser implementada para escutar o evento de click, que realizará  a remoção do elemento clicado. Para isso, o evento de click utilizará a hierarquia do DOM para remover elementos com base no event target. 
-// parentElement (https://www.w3schools.com/jsref/prop_node_parentelement.asp)
+// cartItemClickListiner - função a ser implementada para escutar o evento de click, que realizará  a remoção do elemento clicado.
 // *é importante que essa função salve os itens que estão no carrinho e execute a função de calculo do valor total (em resumo, as duas funçoes iniciais devem ser executadas dentro dessa função);
 
 function cartItemClickListener(event) {
   event.target.remove();
+  storageCart();
 }
 
 // createCartItemElement - cria o carrinho de compras em formato de li;
@@ -94,6 +94,7 @@ function selectItem() {
             salePrice: data.price,
           };
           document.querySelector('.cart__items').appendChild(createCartItemElement(skuKey));
+          storageCart();
         });
     }
   });
@@ -101,10 +102,22 @@ function selectItem() {
 
 // 5 - Criar função de carregar os itens salvos no carrinho;
 
+function storageLoad() {
+  const loadStorage = localStorage.getItem('cart');
+  const cartStorage = document.querySelector('.cart__items');
+  cartStorage.innerHTML = loadStorage;
+  cartStorage.addEventListener('click', (event) => {
+    if (event.target.classList.contains('cart__item')) {
+      cartItemClickListener(event);
+    }
+  });
+}
+
 // 6 - Criar função para esvaziar o carrinho, alterando preço e itens salvos no storage.
 
 window.onload = function onload() { 
   // chamar as funções de storage (acrescentar itens no carrinho, carregar os itens salvos e limpar o carrinho); função de calculo de preço total e implementação da lista de itens;
   getItems();
   selectItem();
+  storageLoad();
 };
