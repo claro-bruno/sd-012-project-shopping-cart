@@ -36,9 +36,11 @@ function cartItemClickListener(event) {
 const loadCart = () => {
   const savedCart = localStorage.getItem('Cart');
   cartItems.innerHTML = JSON.parse(savedCart);
-  Object.values(cartItems.children).forEach((child) => {
-    child.addEventListener('click', cartItemClickListener);
-  });
+  const items = document.querySelectorAll('.cart__item');
+  items.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  // Object.values(cartItems.children).forEach((child) => {
+  //   child.addEventListener('click', cartItemClickListener);
+  // });
   const loadedPrice = localStorage.getItem('Total');
   totalPrice.innerHTML = Number(JSON.parse(loadedPrice));
 };
@@ -153,7 +155,7 @@ emptyCartBtn.addEventListener('mouseout', () => {
 
 const addsHoverToItems = () => {
   const itemCollection = document.querySelectorAll('.item');
-  console.log(itemCollection);
+  // console.log(itemCollection);
   itemCollection.forEach((item) => {
     const currentItem = item;
     currentItem.addEventListener('mouseover', () => {
