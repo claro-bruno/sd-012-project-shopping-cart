@@ -1,5 +1,5 @@
 body {
-  background-color: wheat;
+  background-color: whitesmoke
 }
 .top-bar {
   align-items: center;
@@ -78,13 +78,25 @@ body {
   text-align: center;
 }
 
+.total-price {
+  background-color: cadetblue;
+  font-size: x-large;
+  color: white;
+  text-align: center;
+}
+
+.cart__item {
+  border-style: double;
+  border-color: #3498db;
+}
+
 .loader {
-  border: 16px solid #f3f3f3;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
   border-radius: 50%;
-  border-top: 16px solid #3498db;
   width: 120px;
   height: 120px;
-  animation: spin 3s linear infinite;
+  animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
