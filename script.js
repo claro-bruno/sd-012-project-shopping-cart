@@ -39,9 +39,15 @@ function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
+  // Melhora a qualidade da imagem
+  /* Linha de código indicada pelo colega Caio Morato (Nuwanda) da Turma 12
+  Link da postagem onde ele faz a indicação:
+  https://trybecourse.slack.com/archives/C01T2C18DSM/p1623614170092700 */
+  const img = image.replace(/-I.jpg/g, '-O.jpg');
+
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createProductImageElement(img));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
@@ -53,7 +59,7 @@ const getProductsAPI = async (url) => {
     const resultsApi = await fetch(url);
     const objResults = await resultsApi.json();
     document.querySelector('.items').removeChild(loading);
-    return objResults.results.forEach((item) => {
+    objResults.results.forEach((item) => {
       const itemInfos = {
         sku: item.id,
         name: item.title,
@@ -100,7 +106,7 @@ const createItemForCart = async (product) => {
     priceTotal += itemInfos.salePrice;
     totalPrice.innerText = priceTotal;
     ol.appendChild(createCartItemElement(itemInfos));
-    return saveCart();
+    saveCart();
   } catch (error) {
     console.log(error.message);
   }
