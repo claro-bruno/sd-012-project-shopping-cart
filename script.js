@@ -86,7 +86,7 @@ const addToCart = async (productURL) => {
   priceDisplay.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
 };
 
-const buttonEvents = async () => {
+const buttonEvents = () => {
   const allButtons = document.querySelectorAll('button.item__add');
 
   allButtons.forEach((item) => {
@@ -107,18 +107,20 @@ const productsAPIData = async (requested) => {
   });
 };
 
-const returnSavedList = () => {
+const returnSavedList = async () => {
   itemList.innerHTML = localStorage.getItem(`${strinListaProdutos}`);
   itemList.childNodes.forEach((item) => item.addEventListener('click', cartItemClickListener));
   itemList.childNodes.forEach((item) => item.addEventListener('click', gettingPrice));
 
-  if (!localStorage.getItem(`${valorProdutos}`)) {
+  const getPriceFromStorage = localStorage.getItem(`${valorProdutos}`);
+
+  if (!getPriceFromStorage) {
     priceDisplay.innerHTML = '0';
   } else {
-    pricesArray = localStorage.getItem(`${valorProdutos}`).split(',');
-    const dkqowe = pricesArray.map((xablinho) => Number(xablinho));
-    priceDisplay.innerHTML = dkqowe.reduce((acc, curr) => acc + Number(curr), 0);
-    pricesArray = dkqowe;
+    const tempArray = getPriceFromStorage.split(',');
+    pricesArray = tempArray.map((eachValue) => parseInt(eachValue, 10));
+    priceDisplay.innerHTML = pricesArray.reduce((acc, curr) => acc + curr);
+    console.log(pricesArray);
   }
 };
 
@@ -134,7 +136,7 @@ const clearButton = () => {
 window.onload = async () => {
   await productsAPIData(getAPIJson('https://api.mercadolibre.com/sites/MLB/search?q=computador'));
   loadingText.remove();
-  await buttonEvents();
-  returnSavedList();
+  buttonEvents();
+  await returnSavedList();
   clearButton();
 };
