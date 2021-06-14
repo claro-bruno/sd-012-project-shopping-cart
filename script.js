@@ -86,10 +86,25 @@ function computersList() {
     });
 }
 
+function clearCart() {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    while (cartList.firstChild) {
+      cartList.removeChild(cartList.firstChild);
+    }
+    localStorage.clear();
+  });
+}
+
 function recoverCartList() {
   cartList.innerHTML = localStorage.getItem('cartList');
-  cartList.addEventListener('click', (event) => event.target.remove(cartLi));
+  cartList.addEventListener('click', (event) => {
+    event.target.remove(cartLi);
+    saveList();
+  });
 }
+
+clearCart();
 
 window.onload = function onload() { 
   computersList();
