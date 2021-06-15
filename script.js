@@ -55,6 +55,11 @@ const getProduct = async () => {
   });
   addPurchases();
 };
+
+window.onload = function onload() { 
+  getProduct();
+  addPurchases();
+};
 // Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
 const addPurchases = () => {
   const button = document.querySelectorAll('.item__add');
@@ -68,9 +73,4 @@ const addPurchases = () => {
       }));
     });
   });
-  return;
-};
-window.onload = function onload() { 
-  getProduct();
-  addPurchases();
 };
