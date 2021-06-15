@@ -16,6 +16,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function loadingStart() {
+  const loading = document.querySelector('.container');
+  loading.appendChild(createCustomElement('p', 'loading', 'loading...'));
+}
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -52,7 +57,6 @@ function buscaItensId(btnId) {
    const li = createCartItemElement({ sku, name, salePrice });
   const buscaOl = document.querySelector('.cart__items');
   buscaOl.appendChild(li);
-  // esvaziarCarrinho();
 });
 }
 
@@ -65,14 +69,17 @@ function capButton() {
 }
 
 async function buscaItensAPI() {
+  loadingStart();
   await fetch(`${linkML}computador`)
   .then((response) => (response.json()))
   .then((Object) => Object.results.forEach((result) => { 
     const intensAPI = createProductItemElement(
       { sku: result.id, name: result.title, image: result.thumbnail },
-); 
-    document.querySelector('.items').appendChild(intensAPI);
-}));
+      ); 
+      document.querySelector('.items').appendChild(intensAPI);
+    }));
+    const onLoad = document.querySelector('.loading');
+      onLoad.remove();
 capButton();
 }
 
@@ -80,8 +87,8 @@ function esvaziarCarrinho() {
   const limpaCarrinho = document.querySelector('.empty-cart');
   // const todosItensCarrinho = document.getElementsByClassName('cart__item');
   // console.log(todosItensCarrinho);
-  limpaCarrinho.addEventListener('click', (event) => {
-    const capOL = document.querySelector('.cart__items');
+  const capOL = document.querySelector('.cart__items');
+  limpaCarrinho.addEventListener('click', () => {
     capOL.innerHTML = '';   
     console.log(capOL.innerHTML);
 //   [...todosItensCarrinho].forEach((li) => {
