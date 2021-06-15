@@ -1,6 +1,15 @@
-// requisito 3
+// apenas uma variável global pra eu não ter que redeclarar várias vezes.
+const ol = document.querySelector('.cart__items');
+
+// requisito 4, adiciona os itens do carrinho no localStorage.
+function stockItem(item) {
+  localStorage.setItem('list', item.innerHTML);
+}
+
+// requisito 3 e 4, remove o item clicado do carrinho e salva as alterações no localStorage.
 function cartItemClickListener(event) {
   event.target.remove();
+  stockItem(ol);
 }
 
 // requisito 2, vai criar um item de lista contendo as informações do objeto do produto selecionado.
@@ -12,10 +21,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// requisito 2, vai adicionar o item de lista a lista do carrinho de compras.
+// requisito 2 e 4, vai adicionar o item de lista a lista do carrinho de compras e vai salvá-lon no localStorage.
 function addItemCart(item) {
-  const ol = document.querySelector('.cart__items');
   ol.appendChild(item);
+  stockItem(ol);
 }
 
 // requisito 1 e 2, pega as informações da API e verifica se o resultado deu certo,
@@ -97,4 +106,11 @@ async function addProducts(url) {
 // vai ser executado depois que o html e css já estiver sido carregado.
 window.onload = () => {
   addProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+
+  // vai adicionar os items do carrinho salvos no localStorage.
+  if (localStorage.getItem('list')) {
+    ol.innerHTML = localStorage.getItem('list');
+  }
+  // isso aqui é gambiarra, vou arrumar depois rsrsrs, o importante é que funciona por enquanto kkk.
+  ol.addEventListener('click', cartItemClickListener);
 };
