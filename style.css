@@ -74,3 +74,12 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.cart__item {
+  padding: 0.7rem;
+}
+.cart__item:hover{
+  border: 1px solid black;
+  padding: 0.7rem;
+  cursor: pointer;
+}
