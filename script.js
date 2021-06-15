@@ -1,5 +1,6 @@
+// requisito 3
 function cartItemClickListener(event) {
-  // fazer depois
+  event.target.remove();
 }
 
 // requisito 2, vai criar um item de lista contendo as informações do objeto do produto selecionado.
