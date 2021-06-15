@@ -1,5 +1,6 @@
 const cartList = document.querySelector('.cart__items');
 const cartLi = document.getElementsByClassName('cart__item');
+const totalPrice = document.getElementById('totalPrice');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -15,13 +16,45 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function priceSearch(string) {
+  const stringArray = string.split('');
+  stringArray.reverse();
+  let result = [];
+  for (let index = 0; index < stringArray.length; index += 1) {
+    if (stringArray[index] === '$') {
+      break;
+    }
+    result.push(stringArray[index]);
+  }
+  result.reverse();
+  result = result.join('');
+  result = parseFloat(result, 10);
+  return result;
+}
+
+function totalPricesSum() {
+  const itemsList = document.querySelectorAll('.cart__item');
+  let itemsSum = 0;
+  itemsList.forEach((item) => {
+    const itemString = item.innerText;
+    const itemPrice = priceSearch(itemString);
+    itemsSum += itemPrice;
+  });
+  totalPrice.innerText = `${itemsSum}`;
+}
+
 function saveList() {
   localStorage.setItem('cartList', cartList.innerHTML);
+  localStorage.setItem('totalPrice', totalPrice.inneHTML);
 }
 
 function cartItemClickListener(event) {
   event.target.remove(cartLi);
+  totalPricesSum();
   saveList();
+  if (totalPrice.innerText === '0') {
+    totalPrice.innerText = '';
+  }
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -43,6 +76,7 @@ async function addItemInCart(event) {
     const response = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
     const result = await response.json();
     cartList.appendChild(createCartItemElement(result));
+    totalPricesSum();
     saveList();
   } catch (error) {
     console.log(error);
@@ -93,6 +127,7 @@ function clearCart() {
       cartList.removeChild(cartList.firstChild);
     }
     localStorage.clear();
+    totalPrice.innerText = '';
   });
 }
 
@@ -102,6 +137,7 @@ function recoverCartList() {
     event.target.remove(cartLi);
     saveList();
   });
+  totalPrice.inneHTML = localStorage.getItem('totalPrice');
 }
 
 clearCart();
