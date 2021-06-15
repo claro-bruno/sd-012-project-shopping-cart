@@ -1,8 +1,3 @@
-window.onload = function onload() { 
-  getProduct();
-  
-};
-
 const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
 function createProductImageElement(imageSource) {
@@ -73,4 +68,7 @@ const addPurchases = () => {
       }));
     });
   });
+};
+window.onload = function onload() { 
+  getProduct();
 };
