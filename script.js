@@ -43,6 +43,21 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
+const addPurchases = () => {
+  const button = document.querySelectorAll('.item__add');
+  const ol = document.querySelector('.cart__items');
+  button.forEach((b) => {
+    b.addEventListener('click', () => {
+      const id = b.parentNode.firstChild.innerText;
+      const url = `https://api.mercadolibre.com/items/${id}`;
+      fetch(url).then((response) => response.json().then((i) => {
+        ol.appendChild(createCartItemElement(i));
+      }));
+    });
+  });
+};
+
 // Requesito 1
 // Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
 // E utilizando o Slack com a dúvida de Eder Santos
@@ -58,19 +73,4 @@ const getProduct = async () => {
 
 window.onload = function onload() { 
   getProduct();
-  addPurchases();
-};
-// Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
-const addPurchases = () => {
-  const button = document.querySelectorAll('.item__add');
-  const ol = document.querySelector('.cart__items');
-  button.forEach((b) => {
-    b.addEventListener('click', () => {
-      const id = b.parentNode.firstChild.innerText;
-      const url = `https://api.mercadolibre.com/items/${id}`;
-      fetch(url).then((response) => response.json().then((i) => {
-        ol.appendChild(createCartItemElement(i));
-      }));
-    });
-  });
 };
