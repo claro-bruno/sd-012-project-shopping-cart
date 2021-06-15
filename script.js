@@ -1,5 +1,10 @@
 const itemsContainer = document.querySelector('.items');
 const cartItemsContainer = document.querySelector('.cart__items');
+const cartPriceContainer = document.querySelector('.total-price');
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -15,7 +20,15 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function subtractCartItems(event) {
+  const filteredPrice = parseFloat(event.target.innerText.split('$')[1], 10);
+  cartPriceContainer.innerText = Math.round((parseFloat(cartPriceContainer.innerText, 10)
+   - filteredPrice) * 100) / 100;
+  localStorage.setItem('actualPrice', cartPriceContainer.innerText);
+}
+
 function cartItemClickListener(event) {
+  subtractCartItems(event);
   event.target.remove();
   localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
 }
@@ -27,8 +40,10 @@ function createCartItemElement({ id, title, price }) {
   return li;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+function sumCartItems(price) {
+  cartPriceContainer.innerText = Math.round((parseFloat(cartPriceContainer.innerText, 10)
+   + price) * 100) / 100;
+  localStorage.setItem('actualPrice', cartPriceContainer.innerText);
 }
 
 function fetchCartItem(event) {
@@ -37,6 +52,8 @@ function fetchCartItem(event) {
   .then((jsonData) => {
     cartItemsContainer.appendChild(createCartItemElement(jsonData));
     localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
+    sumCartItems(jsonData.price);
+    localStorage.setItem('actualPrice', cartPriceContainer.innerText);
   });
 }
 
@@ -76,4 +93,9 @@ document.addEventListener('click', (event) => {
 
 window.onload = function onload() {
   cartItemsContainer.innerHTML = localStorage.getItem('actualCart');
+  if (localStorage.getItem('actualPrice')) {
+    cartPriceContainer.innerText = localStorage.getItem('actualPrice');
+  } else {
+    cartPriceContainer.innerText = 0;
+  }
 };
