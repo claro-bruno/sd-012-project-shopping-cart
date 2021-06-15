@@ -4,6 +4,12 @@ const ERROR_MESSAGE = 'Error';
 const cartItem = document.querySelector('.cart_items');
 const listOrdener = 'ol.cart__items';
 const productList = 'product-list';
+// ------------------------------------------------------------------------------------
+
+function saveListLocalStorage() {
+  localStorage.setItem('buyList', cartItem.innerHTML);
+  localStorage.setItem('prices', priceTotal.innerHTML);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,27 +38,22 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 function fetchListItems() {
-  const list = document.querySelector('.items');
+  const itemsElements = document.querySelector('.items');
   fetch(`${API_MERCADO_LIVRE}`)
     .then((response) => response.json())
     .then((response) => response.results)
     .then((items) => items.forEach((item) => 
-      list.appendChild(createProductItemElement(item))));
+      itemsElements.appendChild(createProductItemElement(item))));
 }
 
-/* function getSkuFromProductItem(item) {
+function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-} */
+}
 
 function cartItemClickListener(event) {
   // código aqui
   event.target.remove();
   saveListLocalStorage();
-}
-
-function saveListLocalStorage() {
-  localStorage.setItem('buyList', cartList.innerHTML);
-  localStorage.setItem('prices', priceTotal.innerHTML);
 }
 
 const addItemstoCart = async (event) => {
@@ -71,8 +72,13 @@ const addItemstoCart = async (event) => {
   }
 }
 
-function sumAllPrices() {
-  
+function emptyShoppingCart () {
+  const emptyCartButton = document.querySelector('.empty-cart');
+  const cartItems = document.querySelector(listOrdener);
+  emptyCartButton.addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    localStorage.clear();
+  });
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
