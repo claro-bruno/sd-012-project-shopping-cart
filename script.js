@@ -130,10 +130,19 @@ function storageLoad() {
 
 // 6 - Criar função para esvaziar o carrinho, alterando preço e itens salvos no storage.
 
+function empty() {
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    storageCart();
+    total();
+  });
+}
+
 window.onload = function onload() { 
   // chamar as funções de storage (acrescentar itens no carrinho, carregar os itens salvos e limpar o carrinho); função de calculo de preço total e implementação da lista de itens;
   getItems();
   selectItem();
   storageLoad();
   total();
+  empty();
 };
