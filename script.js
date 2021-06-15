@@ -3,12 +3,22 @@
 const cartItems = document.querySelector('.cart__items');
 
 // 1 - criar função para salvar itens
+
 function storageCart() {
   const classCartItems = cartItems.innerHTML;
   localStorage.setItem('cart', classCartItems);
 }
 
 // 2 - criar função para somar os itens do carrinho
+
+function total() {
+  const totalItems = document.querySelectorAll('.cart__item');
+  let totalPrice = 0;
+  totalItems.forEach((item) => {
+    totalPrice += parseFloat(item.innerHTML.split('$')[1]);
+  });
+  document.querySelector('.total-price').innerHTML = Math.round(totalPrice * 100) / 100;
+}
 
 // createProductImagemElement - cria o elemento, add a classe imagem e adiciona o endereço da imagem no atributo src da img;
 function createProductImageElement(imageSource) {
@@ -50,6 +60,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   event.target.remove();
   storageCart();
+  total();
 }
 
 // createCartItemElement - cria o carrinho de compras em formato de li;
@@ -97,6 +108,7 @@ function selectItem() {
           };
           document.querySelector('.cart__items').appendChild(createCartItemElement(skuKey));
           storageCart();
+          total();
         });
     }
   });
@@ -113,6 +125,7 @@ function storageLoad() {
       cartItemClickListener(event);
     }
   });
+  total();
 }
 
 // 6 - Criar função para esvaziar o carrinho, alterando preço e itens salvos no storage.
@@ -122,4 +135,5 @@ window.onload = function onload() {
   getItems();
   selectItem();
   storageLoad();
+  total();
 };
