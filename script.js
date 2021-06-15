@@ -48,6 +48,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  const item = event.target.innerHTML.split('$')[1];
+  somaCarrinho(`-${item}`);
   event.target.remove();
 }
 
