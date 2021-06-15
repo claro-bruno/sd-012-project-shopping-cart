@@ -1,4 +1,3 @@
-// Código feito com a ajuda dos companheiros Bruno Augusto, Janderson, Neto e Guilherme.
 const add = document.querySelector('.cart__items');
 
 // Requisito 05 - Some o valor total dos itens do carrinho de compras
