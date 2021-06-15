@@ -19,12 +19,10 @@ const classeSpan = '.total-price';
 const span = document.querySelector(classeSpan);
 function sub(valor) {
   if (localStorage.getItem('total')) {
-    // span.innerHTML = localStorage.getItem('total');
     let subPreco = Number(span.innerHTML);
     subPreco -= Number(valor);
     span.innerHTML = subPreco;
     localStorage.setItem('total', Number(subPreco));
-    // localStorage.setItem('total', subPreco);
   } else {
     let subPreco = 0;
     subPreco -= valor;
@@ -48,7 +46,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function soma(valor) {
-  // const span = document.querySelector('.total-price');
   if (localStorage.getItem('total')) {
     span.innerHTML = localStorage.getItem('total');
     let somaPreco = Number(span.innerHTML);
@@ -66,9 +63,7 @@ async function adicionarCarr(item) {
   let produto = await fetch(`https://api.mercadolibre.com/items/${id}`);
   produto = await produto.json();
   const { id: sku, title: name, price: salePrice } = produto;
-  // const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement({ sku, name, salePrice }));
-  // const span = document.querySelector('.total-price');
   localStorage.setItem('cartItens', JSON.stringify(ol.innerHTML));
   soma(salePrice);
   localStorage.setItem('total', Number(span.innerHTML));
@@ -102,13 +97,10 @@ function getPc() {
 }
 
 window.onload = function onload() { 
-  // const span = document.querySelector('.total-price');
     getPc();
     span.innerText = localStorage.getItem('total');
-    // const ol = document.querySelector('.cart__items');
     if (localStorage.getItem('cartItens')) {
       ol.innerHTML = JSON.parse(localStorage.getItem('cartItens'));
-      // span.innerHTML = localStorage.getItem('total');
     }
     const limpar = document.querySelector('.empty-cart');
     limpar.addEventListener('click', () => {
