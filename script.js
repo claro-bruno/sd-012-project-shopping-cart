@@ -39,6 +39,9 @@ function itemGet() {
   cartItems.innerHTML = itemStorage;
   }
 }
+function removeIten() {
+localStorage.removeItem('itemStorage');
+}
 
 function cartItemClickListener(event) {
   const cartItem = document.querySelector('.cart__item');
@@ -57,7 +60,7 @@ function clearCart() {
   const button = document.querySelector('.empty-cart');
     button.addEventListener('click', () => {
     cartItems.innerHTML = ' ';
-    localStorage.removeItem(cartItems);
+    removeIten();
   });
 }
 
