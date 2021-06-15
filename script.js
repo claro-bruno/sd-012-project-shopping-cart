@@ -78,6 +78,7 @@ async function getItems() {
   try {
     const requiredItems = await fetch(urlAPI);
     const { results } = await requiredItems.json();
+    document.querySelector('.loading').remove();
     results.forEach((item) => {
       const objItem = {
         sku: item.id,
