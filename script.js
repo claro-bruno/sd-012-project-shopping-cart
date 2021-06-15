@@ -1,24 +1,14 @@
 const BASE_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const BASE_URL_ITEM = 'https://api.mercadolibre.com/items/';
 const somaT = document.createElement('div');
+const ol = document.querySelector('.cart__items');
+const emptyBttn = document.querySelector('.empty-cart');
 
-function loadCirclet(pai) {
-  const circleDiv = document.createElement('div');
-  circleDiv.className = '.loader';
-  pai.appendChild(circleDiv);
-  circleDiv.style.display = 'flex';
-  // circleDiv.remove();
-}
 function removePrice(event) {
   const valorTo = document.querySelector('.total-price');
   const totalN = Number(valorTo.innerText);
   const valueRemove = event.target.innerText.split('$');
   valorTo.innerText = `${Math.round(((totalN) - (Number(valueRemove[1]))) * 100) / 100}`;
-}
-
-function cartItemClickListener(event) {
-  event.target.remove();
-  event.target.localStorage.removeItem();
 }
 
  function somatoria(price) {
@@ -32,11 +22,23 @@ function cartItemClickListener(event) {
     const lastSun = Number(totalPrice.innerText);
     totalPrice.innerText = `${Math.round(((price) + (lastSun)) * 100) / 100}`;
   }
-  loadCirclet(paiCart);
+  // loadCirclet(paiCart);
+}
+
+function addLocalStorage() {
+  // const x = document.querySelector('.total-price'); 
+  localStorage.setItem('loading', ol.innerHTML);
+  // localStorage.setItem('total', x.innerHTML);Refatorar esta linha para desbugar
+}
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  addLocalStorage();
+  // event.target.localStorage.removeItem();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const ol = document.querySelector('.cart__items');
+  // const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.addEventListener('click', removePrice);
@@ -53,6 +55,7 @@ async function fetchIdJson(event) {
   fetchId = await fetchId.json();
   createCartItemElement(fetchId);
   somatoria(fetchId.price);
+  addLocalStorage();
 } catch (error) {
     console.log('Deu errado no fetch FetchIdJson');
   }
@@ -72,11 +75,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function addLocalStorage(event) {
-  const localTarget = event.target.classList[1];
-  localStorage.setItem('loading', localTarget);
-}
-
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const classitems = document.querySelector('.items');
   const section = document.createElement('section');
@@ -89,10 +87,16 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   itemAdd.classList.add(sku);
   classitems.appendChild(section);
   itemAdd.addEventListener('click', fetchIdJson);
-  itemAdd.addEventListener('click', addLocalStorage);
+  // itemAdd.addEventListener('click', addLocalStorage);
 }
+// Cria 50 elementos
 
 async function fetchComputerAsync(search) {
+  const carregar = document.createElement('div');
+  carregar.innerText = 'ESPERA CARREGAR ESSA BAGAÇA';
+  carregar.className = 'loading';
+  const paCart = document.querySelector('.cart');
+  paCart.appendChild(carregar);
   try {
   let results = await fetch(`${BASE_URL}${search}`);
   results = await results.json();
@@ -101,39 +105,48 @@ async function fetchComputerAsync(search) {
 } catch (error) {
     console.log('Deu errado o FETCH');
   }
-  // loadCirclet();
+  carregar.remove();
 }
-async function fetchLocal(addSession) {
-  try {
-  let fetchId = await fetch(`${BASE_URL_ITEM}${addSession}`);
-  fetchId = await fetchId.json();
-  createCartItemElement(fetchId);
-  somatoria(fetchId.price);
-} catch (error) {
-    console.log('Deu errado no fetch FetchIdJson');
-  }
-  // loadCirclet();
-}
+// Cria 50 elementos
+
+// async function fetchLocal(addSession) {
+//   try {
+//   let fetchId = await fetch(`${BASE_URL_ITEM}${addSession}`);
+//   fetchId = await fetchId.json();
+//   // createCartItemElement(fetchId);
+//   somatoria(fetchId.price);
+// } catch (error) {
+//     console.log('Deu errado no fetch FetchIdJson');
+//   }
+//   // loadCirclet();
+// }
+
 function getLocalStorage() {
-  const addSession = localStorage.getItem('loading');
-  fetchLocal(addSession);
+  // const y = document.querySelector('.total-price');
+  ol.innerHTML = localStorage.getItem('loading') ? localStorage.getItem('loading') : '';
+  // y.innerHTML = localStorage.getItem('total') ? localStorage.getItem('total') : '0';Refatorar esta linha para desbugar
 }
 
-function emptyList() {
-  const emptyBttn = document.querySelector('.empty-cart');
-  const ol = document.querySelector('.cart__items');
-  // emptyBttn.addEventListener('click', () => localStorage.delete('loading'));
-  emptyBttn.addEventListener('click', () => {
-  ol.replaceChildren('');
-  somaT.innerText = 0;
-  });
-  localStorage.clear();
-}
+// function emptyList() {  
+//   // const ol = document.querySelector('.cart__items');
+//   // emptyBttn.addEventListener('click', () => localStorage.delete('loading'));
+ 
+// }
 
 window.onload = function onload() { 
   fetchComputerAsync('computador');
-  emptyList();
+  // emptyList();c
   getLocalStorage();
   somatoria();
+  console.log(ol.children);
+  [...ol.children].forEach((el) => {
+    el.addEventListener('click', removePrice);
+    el.addEventListener('click', cartItemClickListener);
+  });
   // loadCirclet();
+    emptyBttn.addEventListener('click', () => {
+    ol.replaceChildren('');
+    somaT.innerText = 0;
+    localStorage.clear();
+  });
 };
