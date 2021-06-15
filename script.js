@@ -81,7 +81,9 @@ function getItensApi() {
         const parameters = { sku: product.id, name: product.title, image: product.thumbnail };
         return itensList.appendChild(createProductItemElement(parameters));
       });
-    }).then(() => addProductCart())      
+    })
+    .then(() => document.querySelector('.loading').remove())      
+    .then(() => addProductCart())
     .catch((err) => console.log(`Algo deu Errado: ${err}`));  
 }
 
@@ -98,6 +100,7 @@ function getItensApi() {
 const clearCart = () => {
   document.querySelector('.empty-cart').addEventListener('click', () => {
     document.querySelector(cartItemsClass).innerHTML = '';
+    saveCart();
   });
 };
 
