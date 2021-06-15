@@ -1,14 +1,14 @@
 window.onload = function onload() {
   const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  const idItem = document.querySelector('.items')
-// Pega os resultados da API, para poder passar para a tela.
+  const idItem = document.querySelector('.items');
   const fetchURL = (url) => {
     fetch(url)
     .then((response) => response.json())
     .then((indice) => indice.results)
-    .then((products) => products.forEach((product) => idItem.appendChild(createProductItemElement(product))))
-}
-fetchURL(urlProducts)
+    .then((products) => products.forEach((product) =>
+    idItem.appendChild(createProductItemElement(product))));
+};
+fetchURL(urlProducts);
 };
 
 function createProductImageElement(imageSource) {
