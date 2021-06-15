@@ -30,7 +30,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 function storage() {
- localStorage.setItem(cartItems, cartItems.innerHTML);
+ localStorage.setItem('itemStorage', cartItems.innerHTML);
+}
+
+function itemGet() {
+  const itemStorage = localStorage.getItem('itemStorage');
+  if (itemStorage) {
+  cartItems.innerHTML = itemStorage;
+  }
 }
 
 function cartItemClickListener(event) {
@@ -43,7 +50,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  storage();
   return li;
 }
 
@@ -51,6 +57,7 @@ function clearCart() {
   const button = document.querySelector('.empty-cart');
     button.addEventListener('click', () => {
     cartItems.innerHTML = ' ';
+    localStorage.removeItem(cartItems);
   });
 }
 
@@ -70,13 +77,13 @@ function fetchButton() {
     .then((objeto) => {
       const ol = document.querySelector('.cart__items');
       ol.appendChild(createCartItemElement(objeto));
+      storage();
     });
   }));
 }
 
 function fetchProduct() {
   const loading = document.querySelector('.loading');
-
   fetch(url)
   .then((response) => response.json())
   .then((objeto) => objeto.results.forEach((element) => {
@@ -89,5 +96,6 @@ function fetchProduct() {
 
 window.onload = function onload() { 
   fetchProduct();
+  itemGet();
   clearCart();
 };
