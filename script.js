@@ -1,6 +1,6 @@
-const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const API_PRODUCT = 'https://api.mercadolibre.com/items/';
-const cartItems = document.querySelector('.cart__items');
+function getCartItem() {
+  return document.querySelector('.cart__items');
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,7 +25,7 @@ function createButton(element, className, id, innerText) {
 }
 
 function addCartItems(li) {
-  cartItems.appendChild(li);
+  getCartItem().appendChild(li);
 }
 
 function totalPrice() {
@@ -45,17 +45,23 @@ function totalPrice() {
 function clearAllCart() {
   const buttonClear = document.querySelector('.empty-cart');
    buttonClear.addEventListener('click', () => {
-    cartItems.innerHTML = '';
+    getCartItem().innerHTML = '';
     localStorage.clear('products');
     totalPrice();
   });
 }
 
+/* function removeProductsLocalStorage() {
+  const cart = getCartItem().textContent;  
+  console.log(cart);
+  localStorage.setItem('products', cart);
+} */
+
 function cleanItemFromCart(event) {
   const deleteProduct = event.target;
-  cartItems.removeChild(deleteProduct);
+  getCartItem().removeChild(deleteProduct);
   totalPrice(); // calcula o preço
-  // removeProductsLocalStorage(deleteProduct); // falta remover produto do localStorage
+  // removeProductsLocalStorage(); // remove produto do localStorage NÀO FUNCIONA
 }
 
 function returnsSaveProductsLocalStorage() {
@@ -72,26 +78,6 @@ function returnsSaveProductsLocalStorage() {
   }
   totalPrice();
 }
-
-/* function removeProductsLocalStorage(productReceived) {
-  const selectedProduct = productReceived.textContent;
-  console.log(`funcao recebe como parametro ${selectedProduct}`);
-
-  const getStorage = localStorage.getItem('products');
-  console.log(`conteudo do storage ${getStorage}`);
-
-  const split = getStorage.split('//');
-  console.log(`storage como array ${split}`);
-
-  const filter = split.filter((item) => item !== selectedProduct);
-  console.log(filter);
-
-  const setStorage = localStorage.setItem('products', filter);
-  console.log(setStorage);
-
-  const remove = localStorage.removeItem(`${find}`);
-  console.log(remove);
-} */
 
 function saveProductsLocalStorage(productReceived) {
   let selectedProduct = productReceived;
@@ -115,6 +101,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 async function fetchAPIProduct({ id: skuReceived = this.id }) {
+  const API_PRODUCT = 'https://api.mercadolibre.com/items/';
   try {
     const response = await fetch(`${API_PRODUCT}${skuReceived}`);
     const data = await response.json();
@@ -163,6 +150,7 @@ function loading() {
 }
 
 async function fetchAPI() {
+  const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   try {
     const response = await fetch(API_URL);
     const { results } = await response.json();
