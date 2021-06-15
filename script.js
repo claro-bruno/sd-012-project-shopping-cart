@@ -79,9 +79,12 @@ const appendItem = (products) => {
 
 const fetchAPI = () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const h1 = document.querySelector('.loading');
+  h1.innerText = 'Loading';
   fetch(url)
   .then((response) => response.json())
-  .then(({ results }) => appendItem(results));
+  .then(({ results }) => appendItem(results))
+  .then(() => h1.remove());
 };
 
 // function getSkuFromProductItem(item) {
