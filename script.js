@@ -33,7 +33,8 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 function cartItemClickListener() {
-//  exercicio 4
+const removerItem = document.querySelector('.cart__item');
+removerItem.remove('');
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
