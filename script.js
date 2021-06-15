@@ -26,7 +26,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  // item.querySelector('span.item__sku').innerText;
 }
 // Requisito 3
 // Auxilio da Gisele no slack do Sérgio A. Barbosa
@@ -71,4 +71,6 @@ const addPurchases = () => {
 };
 window.onload = function onload() { 
   getProduct();
+  addPurchases();
+  getSkuFromProductItem();
 };
