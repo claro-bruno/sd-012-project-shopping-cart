@@ -13,35 +13,32 @@ function createCustomElement(element, className, innerText) {
 }
 
 const ol = document.querySelector('.cart__items');
+const p = document.querySelector('.total-price');
+
+const sum = () => {
+  const li = document.querySelectorAll('.cart__item');
+  let totalPrice = 0;
+  li.forEach((item) => {
+    const string = item.innerText;
+    const price = Number(string.split('$')[1]);
+    totalPrice += price;
+  });
+  p.innerText = totalPrice;
+};
 
 const attLocalStorage = () => {
-  // locarStorage.setItem('chave', 'valor') para criar chave valor
-  // localStorage.getItem('chave') para acessar chave valor
-  // localStorage.removeItem('chave') para remover chave valor
-  // localStorage.clear() para limpar o localStorage
   localStorage.setItem('storage', ol.innerHTML);
 };
 
-function cartItemClickListener() {
-  const li = document.querySelector('.cart__item');
-  ol.removeChild(li);
+function cartItemClickListener(event) {
+  ol.removeChild(event.target);
+  sum();
   attLocalStorage();
 }
 
 const cartList = () => {
   ol.innerHTML = localStorage.getItem('storage');
-  const productsList = document.querySelectorAll('.cart__item');
-  console.log(productsList);
-  productsList.forEach((product) => product.addEventListener('click', cartItemClickListener));
-};
-
-const sum = (price) => {
-  // const cart = document.querySelector('.cart');
-  // const p = document.createElement('p');
-  // cart.appendChild(p);
-  // p.className = 'total-price';
-  // p.innerText = price;
-  console.log(price);
+  sum();
 };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,7 +48,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   ol.appendChild(li);
   li.addEventListener('click', cartItemClickListener);
   attLocalStorage();
-  sum(salePrice);
+  sum();
   return li;
 }
 
@@ -96,11 +93,10 @@ const clearCart = () => {
   btn.addEventListener('click', () => {
     localStorage.clear();
     ol.innerText = '';
+    sum();
   });
 };
-
-window.onload = function onload() { 
+ 
   fetchAPI();
   cartList();
   clearCart();
-};
