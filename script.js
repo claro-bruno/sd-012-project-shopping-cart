@@ -47,6 +47,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const somaCarrinho = (price) => {
+  const capturaSoma = document.querySelector('.total-price');
+
+  capturaSoma.innerHTML = parseFloat(capturaSoma.innerHTML) + parseFloat(price);
+};
+
 function cartItemClickListener(event) {
   const item = event.target.innerHTML.split('$')[1];
   somaCarrinho(`-${item}`);
@@ -60,12 +66,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-const somaCarrinho = (price) => {
-  const capturaSoma = document.querySelector('.total-price');
-
-  capturaSoma.innerHTML = parseFloat(capturaSoma.innerHTML) + parseFloat(price);
-};
 
 const buttonEvents = () => {
   const products = document.querySelectorAll('.item');
