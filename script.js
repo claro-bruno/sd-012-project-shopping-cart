@@ -1,26 +1,28 @@
-// Requisito 03 - Remove item do carrinho ao clicar
+// Código feito com a ajuda dos companheiros Bruno Augusto, Janderson, Neto e Guilherme.
+const add = document.querySelector('.cart__items');
 
-let precoTotal = 0;
-function cartItemClickListener(event) {  
-  // const remover = document.querySelector('.cart__items');
-  // remover.removeChild(event.target);
-  event.target.remove();
-  const removeElement = event.target.innerHTML.split('SKU: ')[1].split(' ')[0];
-  localStorage.removeItem(removeElement);
-  // console.log(event.target.innerHTML.split('SKU: ')[1].split(' ')[0]);
-}
 // Requisito 05 - Some o valor total dos itens do carrinho de compras
 // const preco = [];
 function somaPreco(salePrice) {
   // preco.push(salePrice);
   console.log(salePrice);
-const totalCart = document.querySelector('.total-price p');
-console.log(totalCart.innerText);
-// const somaTotalPreco = preco.reduce((accumulator, current) => accumulator + current, 0);
-// precoTotal.innerText = `${somaTotalPreco}`;
-totalCart.innerText = Number(salePrice) + Number(totalCart.innerText);
+  const totalCart = document.querySelector('.total-price p');
+  console.log(totalCart.innerText);
+  // const somaTotalPreco = preco.reduce((accumulator, current) => accumulator + current, 0);
+  // precoTotal.innerText = `${somaTotalPreco}`;
+  totalCart.innerText = Math.round((Number(salePrice) + Number(totalCart.innerText)) * 100) / 100;
 }
-
+// Requisito 03 - Remove item do carrinho ao clicar
+// let precoTotal = 0;
+function cartItemClickListener(event) {  
+  // const remover = document.querySelector('.cart__items');
+  // remover.removeChild(event.target);
+  const removeElement = event.target.innerHTML.split('$')[1];
+  localStorage.removeItem(removeElement);
+  somaPreco(`-${removeElement}`);
+  event.target.remove();
+  // console.log(event.target.innerHTML.split('SKU: ')[1].split(' ')[0]);
+}
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -47,9 +49,9 @@ function createCustomElement(element, className, innerText) {
 const addProductCart = async (item) => {
   const idProduto = getSkuFromProductItem(item);
   // Requisito 01 - Faz uma listagem dos produtos
-  const add = document.querySelector('.cart__items');
   const dadosProduto = await fetch(`https://api.mercadolibre.com/items/${idProduto}`);
   const result = await dadosProduto.json();
+  console.log(result);
   const { id: sku, title: name, price: salePrice } = await result;
   const productStorage = await createCartItemElement({ sku, name, salePrice });
   await add.appendChild(productStorage);
@@ -57,6 +59,7 @@ const addProductCart = async (item) => {
   await somaPreco(salePrice);
   // alert('Produto adicionado ao carrinho!');
 };
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -79,17 +82,12 @@ const computers = () => {
 fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador', obj) 
   .then((r) => r.json())
   .then((data) => data.results.forEach(({ id: sku, title: name, thumbnail: image }) =>
-    section.appendChild(createProductItemElement({ sku, name, image })))); 
+    section.appendChild(createProductItemElement({ sku, name, image }))))
+    .then(() => document.querySelector('.loading').remove());
 };
 
 window.onload = function onload() {
-// const container = document.querySelector('.container');
-// const loading = document.querySelector('.loading');
-// container.removeChild(loading);
 computers();
-// console.log(localStorage.length);
-// console.log(Object.keys(localStorage));
-// Carregue o carrinho de compras através do **LocalStorage** ao iniciar a página
   for (let index = 0; index < localStorage.length; index += 1) {
   const text = Object.values(localStorage)[index];
   const li = document.createElement('li');
@@ -97,5 +95,11 @@ computers();
   li.innerText = text;
   li.addEventListener('click', cartItemClickListener);
   document.querySelector('.cart__items').appendChild(li);
-  }
+}
+const apagarItem = document.querySelector('.empty-cart');
+apagarItem.addEventListener('click', () => {
+  add.innerHTML = '';
+  document.querySelector('.total-price p').innerText = 0;
+  localStorage.clear();
+});
 };
