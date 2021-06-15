@@ -15,27 +15,28 @@ function createCustomElement(element, className, innerText) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
-const span = document.querySelector('.total-price');
+const classeSpan = '.total-price';
+const span = document.querySelector(classeSpan);
 function sub(valor) {
   if (localStorage.getItem('total')) {
-    span.innerHTML = localStorage.getItem('total');
+    // span.innerHTML = localStorage.getItem('total');
     let subPreco = Number(span.innerHTML);
     subPreco -= Number(valor);
     span.innerHTML = subPreco;
-    localStorage.setItem('total', subPreco);
+    localStorage.setItem('total', Number(subPreco));
+    // localStorage.setItem('total', subPreco);
   } else {
     let subPreco = 0;
     subPreco -= valor;
     span.innerHTML = subPreco;
   }
 }  
-
-const ol = document.querySelector('.cart__items');
+const classeOl = '.cart__items';
+const ol = document.querySelector(classeOl);
 function cartItemClickListener(event) {
+  sub((event.target).innerText.split('$')[1]);
   ol.removeChild(event.target);
   localStorage.setItem('cartItens', JSON.stringify(ol.innerHTML));
-  sub((event.target).salePrice);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -47,6 +48,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function soma(valor) {
+  // const span = document.querySelector('.total-price');
   if (localStorage.getItem('total')) {
     span.innerHTML = localStorage.getItem('total');
     let somaPreco = Number(span.innerHTML);
@@ -64,10 +66,12 @@ async function adicionarCarr(item) {
   let produto = await fetch(`https://api.mercadolibre.com/items/${id}`);
   produto = await produto.json();
   const { id: sku, title: name, price: salePrice } = produto;
+  // const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement({ sku, name, salePrice }));
+  // const span = document.querySelector('.total-price');
   localStorage.setItem('cartItens', JSON.stringify(ol.innerHTML));
-  localStorage.setItem('total', Number(span.innerHTML));
   soma(salePrice);
+  localStorage.setItem('total', Number(span.innerHTML));
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -98,7 +102,10 @@ function getPc() {
 }
 
 window.onload = function onload() { 
+  // const span = document.querySelector('.total-price');
     getPc();
+    span.innerText = localStorage.getItem('total');
+    // const ol = document.querySelector('.cart__items');
     if (localStorage.getItem('cartItens')) {
       ol.innerHTML = JSON.parse(localStorage.getItem('cartItens'));
       // span.innerHTML = localStorage.getItem('total');
