@@ -1,3 +1,5 @@
+const cartItemsClass = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,8 +30,13 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveCart = () => {
+  const cartList = document.querySelector(cartItemsClass).innerHTML;
+  localStorage.setItem('cartListItems', cartList);
+};
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCart();  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,12 +46,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
 //  pega botão para auxiliar na função addProductCart
 const getButton = (button) => button.querySelector('button.item__add');
 
 const addProductCart = () => {
   const items = document.querySelectorAll('.item');
-  const itemsCart = document.querySelector('.cart__items');
+  const itemsCart = document.querySelector(cartItemsClass);
   items.forEach((cartItem) => {
     const itemId = getSkuFromProductItem(cartItem);
     const btn = getButton(cartItem);
@@ -55,7 +63,10 @@ const addProductCart = () => {
         const { id: sku, title: name, price: salePrice } = product;
         return createCartItemElement({ sku, name, salePrice });
       })
-      .then((li) => itemsCart.appendChild(li));     
+      .then((li) => {
+        itemsCart.appendChild(li);
+        saveCart();  
+      });         
     });
   });
 };
@@ -73,11 +84,16 @@ function getItensApi() {
     .catch((err) => console.log(`Algo deu Errado: ${err}`));  
 }
 
-const cartRemoveItems = document.querySelector('.cart__items');
+const cartRemoveItems = document.querySelector(cartItemsClass);
 cartRemoveItems.addEventListener('click', (event) => {
   cartItemClickListener(event);
 });
 
-window.onload = function onload() {   
+window.onload = function onload() {  
+  if (localStorage.cartListItems) {
+    const cartList = document.querySelector(cartItemsClass);
+    const loadCartList = localStorage.getItem('cartListItems');
+    cartList.innerHTML = loadCartList;
+  } 
   getItensApi();
   };
