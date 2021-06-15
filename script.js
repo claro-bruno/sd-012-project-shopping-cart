@@ -25,9 +25,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+// function getSkuFromProductItem(item) {
   // item.querySelector('span.item__sku').innerText;
-}
+// }
 // Requisito 3
 // Auxilio da Gisele no slack do Sérgio A. Barbosa
 function cartItemClickListener(event) {
@@ -68,9 +68,9 @@ const addPurchases = () => {
       }));
     });
   });
+  return;
 };
 window.onload = function onload() { 
   getProduct();
   addPurchases();
-  getSkuFromProductItem();
 };
