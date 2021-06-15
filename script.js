@@ -2,14 +2,21 @@
 const ol = document.querySelector('.cart__items');
 
 // requisito 4, adiciona os itens do carrinho no localStorage.
-function stockItem(item) {
-  localStorage.setItem('list', item.innerHTML);
+function stockItem(key, keyValue) {
+  localStorage.setItem(key, keyValue);
+}
+
+function amountToPay(price) {
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) + Number(price)) * 100) / 100;
+  stockItem('totalPrice', totalPrice.innerText);
 }
 
 // requisito 3 e 4, remove o item clicado do carrinho e salva as alterações no localStorage.
 function cartItemClickListener(event) {
+  amountToPay(`-${event.target.innerHTML.split('$')[1]}`);
   event.target.remove();
-  stockItem(ol);
+  stockItem('list', ol.innerHTML);
 }
 
 // requisito 2, vai criar um item de lista contendo as informações do objeto do produto selecionado.
@@ -17,14 +24,15 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // removido devido a um bug no localStorage, ele não executa o evento após importar os dados.
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
 // requisito 2 e 4, vai adicionar o item de lista a lista do carrinho de compras e vai salvá-lon no localStorage.
 function addItemCart(item) {
   ol.appendChild(item);
-  stockItem(ol);
+  stockItem('list', ol.innerHTML);
 }
 
 // requisito 1 e 2, pega as informações da API e verifica se o resultado deu certo,
@@ -53,9 +61,10 @@ function getSkuFromProductItem(item) {
 // a classe "item_add", ele vai colocar o produto alvo e vai colocar no carrinho de compras.
 async function getProductId(event) {
   if (event.target.className === 'item__add') {
-    const id = getSkuFromProductItem(event.target.parentElement);
-    const item = await loadProductsAPI(`https://api.mercadolibre.com/items/${id}`);
-    addItemCart(createCartItemElement(item));
+    const id2 = getSkuFromProductItem(event.target.parentElement);
+    const { id, title, price } = await loadProductsAPI(`https://api.mercadolibre.com/items/${id2}`);
+    addItemCart(createCartItemElement({ id, title, price }));
+    amountToPay(price);
   }
 }
 
@@ -110,6 +119,7 @@ window.onload = () => {
   // vai adicionar os items do carrinho salvos no localStorage.
   if (localStorage.getItem('list')) {
     ol.innerHTML = localStorage.getItem('list');
+    amountToPay(localStorage.getItem('totalPrice'));
   }
   // isso aqui é gambiarra, vou arrumar depois rsrsrs, o importante é que funciona por enquanto kkk.
   ol.addEventListener('click', cartItemClickListener);
