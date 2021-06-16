@@ -13,6 +13,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 // LocalStorage - setItem:
+// A abstração deste requisito foi feita com a ajuda do monitor Márcio Daniel!
 function localStorageSetItems() {
   // - Capturar a ol;
   const ol = document.querySelector('ol');
@@ -27,6 +28,7 @@ function cartItemClickListener(event) {
 }
 // LocalStorage - getItem:
 // - Criar a função de getItem para pegar o que foi salvo; (será executado na função que constrói a li);
+// A abstração deste requisito foi feita com a ajuda do monitor Márcio Daniel!
 const localStorageGetItems = () => {
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = localStorage.getItem('ol');
