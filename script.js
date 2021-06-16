@@ -11,13 +11,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 const searchComputers = () => (new Promise((resolve) => {
-    fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
       .then((response) => response.json())
       .then((data) => resolve(data.results));
   })
 );
 const addComputers = (id) => (new Promise((resolve) => {
-    fetch(`https://api.mercadolibre.com/items/${id}`)
+  fetch(`https://api.mercadolibre.com/items/${id}`)
       .then((response) => response.json())
       .then((data) => resolve(data));
   })
@@ -32,14 +32,21 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 // function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
+//    return item.querySelector('span.item__sku').innerText;
 // }
-
 function cartItemClickListener(event) {
   const itemsCart = document.getElementsByClassName('cart__items');
   itemsCart[0].removeChild(event.target);
+  const variavel = JSON.parse(localStorage.getItem('listCar'));
+  const itemSelected = (event.target).innerText;
+  const atualCar = variavel.filter((elementRemove) => {
+    if (!itemSelected.includes(elementRemove.sku)) {
+     return true;
+    }
+    return false;
+  });
+  localStorage.setItem('listCar', JSON.stringify(atualCar));
 }
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -52,15 +59,34 @@ const addComputerCartClick = (event) => {
   const itemsCart = document.getElementsByClassName('cart__items');
   addComputers(computerSelected.childNodes[0].innerText)
     .then((computers) => {
-        const item = createCartItemElement({
-          sku: computers.id, 
-          name: computers.title, 
-          salePrice: computers.price,
-        });
-        itemsCart[0].appendChild(item);
-      });
+      const newItem = { sku: computers.id, name: computers.title, salePrice: computers.price,
+      };
+      const item = createCartItemElement(newItem);
+      itemsCart[0].appendChild(item);
+      const variavel = JSON.parse(localStorage.getItem('listCar'));
+      if (variavel !== null) {
+        variavel.push(newItem);
+        localStorage.setItem('listCar', JSON.stringify(variavel));
+      } else {
+        localStorage.setItem('listCar', JSON.stringify([newItem]));
+      }      
+    });
 };
-window.onload = function onload() { 
+function refreshCar() {
+  const itemCar = JSON.parse(localStorage.getItem('listCar'));
+  const sectionCart = document.getElementsByClassName('cart__items');
+  if (itemCar != null) {
+    itemCar.forEach((computer) => {
+      const item = createCartItemElement({
+        sku: computer.sku, 
+        name: computer.name, 
+        salePrice: computer.salePrice,
+      });
+    sectionCart[0].appendChild(item);
+    });
+  }
+}
+function includeComputerCar() {
   const sectionItems = document.getElementsByClassName('items');
     (searchComputers()
       .then((computers) => {
@@ -79,4 +105,17 @@ window.onload = function onload() {
         }
       })
     );
+}
+function clearCar() {
+  const listCar = document.querySelector('.cart__items');
+  while (listCar.firstChild) {
+    listCar.removeChild(listCar.lastChild);
+  }
+  localStorage.clear();
+}
+window.onload = function onload() { 
+  refreshCar();
+  includeComputerCar();
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', clearCar);
 };
