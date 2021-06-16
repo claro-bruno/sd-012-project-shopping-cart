@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loading');
+  
+function loadingRemove() {
+  loading.remove(); 
+}
 const carr = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
@@ -30,12 +35,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  carr.removeChild(event.target);
+function total() {
+  const totalItems = document.querySelectorAll('.cart__item');
+  let totalPrice = 0;
+  totalItems.forEach((item) => {
+    const price = parseFloat(item.innerHTML.split('$')[1]);
+    totalPrice += price;
+  });
+  document.querySelector('.total-price').innerHTML = Math.round(totalPrice * 100) / 100;
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+function cartItemClickListener({ target }) {
+  // coloque seu código aqui
+  target.remove();
+  total();
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -48,14 +64,22 @@ const searchComputer = async () => {
   const fetchJson = await apiFetch.json();
   const apiResults = fetchJson.results;
   const selectItem = document.querySelector('.items');
+  loading.innerHTML = 'Loading...';
   apiResults.forEach((products) => 
   selectItem.appendChild(createProductItemElement(products)));
+  loadingRemove();
 };
 
 const searchId = async (id) => {
   const apiFetch = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const computer = await apiFetch.json();
-  carr.appendChild(createCartItemElement(computer));
+  const { id: sku, title: name, price: salePrice } = await computer;
+  const productStorage = await createCartItemElement({ sku, name, salePrice });
+  await carr.appendChild(productStorage);
+  localStorage.setItem(`${localStorage.length + 1}`, 
+  productStorage.innerText);
+  total();
+  loadingRemove();
 };
 
 document.addEventListener('click', async (event) => {
@@ -67,6 +91,7 @@ document.addEventListener('click', async (event) => {
 
 function carCleaner() {
   carr.innerHTML = '';
+  localStorage.clear();
 }
 
 const bttCarCleaner = (() => {
@@ -77,4 +102,5 @@ const bttCarCleaner = (() => {
 window.onload = function onload() { 
   searchComputer();
   bttCarCleaner();
+  total();
 };
