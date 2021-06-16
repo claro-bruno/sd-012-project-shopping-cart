@@ -197,6 +197,8 @@ const cartContainer = document.querySelector('.cart');
 const cartIcon = document.querySelector('.fa-shopping-cart');
 let activeCart = false;
 
+const boxshadow = '0 1px 2px 1px black';
+
 cartIcon.addEventListener('click', () => {
   if (!activeCart) {
     cartContainer.classList.remove('hidden');
@@ -206,7 +208,7 @@ cartIcon.addEventListener('click', () => {
   } else {
     cartContainer.classList.add('hidden');
     cartIcon.style.backgroundColor = 'initial';
-    cartIcon.style.boxShadow = '0 1px 2px 1px black';
+    cartIcon.style.boxShadow = boxshadow;
     activeCart = false;
   }
 });
@@ -214,6 +216,8 @@ cartIcon.addEventListener('click', () => {
 const closeCart = document.querySelector('.fa-times');
 closeCart.addEventListener('click', () => {
   cartContainer.classList.add('hidden');
+  cartIcon.style.backgroundColor = 'initial';
+  cartIcon.style.boxShadow = boxshadow;
   activeCart = false;
 });
 
