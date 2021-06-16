@@ -4,23 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Cris Store</title>
+    <title>CriShopping</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./favicon.png" />
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
   </head>
 
   <body>
+    <header>
+      <img src="./header.png" alt="logo" width="100%">
+    </header>
+    <div id="input-search">
+      <label  class="label-search" for=".search"> Buscar produto: </label>
+      <input class="search" type="text">
+    </div>
     <section class="container">
       <section class="items">
       </section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart" onclick="clearCart()">Esvaziar carrinho</button>
         <ol class="cart__items"></ol>
         <p class="loading">Loading...</p>
-        <p class="total-price">0</p>
+        <div class="total">
+          <label for="#total" id="label">Total: R$</label>
+          <p class="total-price" id="total">0</p>
+        </div>
+        <button class="purchase">Fechar compra</button>
+        <button class="empty-cart" onclick="clearCart()">Esvaziar carrinho</>
       </section>
     </section>
   </body>

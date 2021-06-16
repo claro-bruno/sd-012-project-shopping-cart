@@ -1,3 +1,4 @@
+// const search = document.querySelector('.search').value;
 const QUERY_API = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ITEM_API = 'https://api.mercadolibre.com/items/';
 const ALERT_MSG = 'Não foi possivel concluir sua solicitação, tente novamente!';
