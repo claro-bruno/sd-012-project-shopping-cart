@@ -6,7 +6,7 @@ const buttonCartRemover = document.querySelector('.empty-cart');
 function removeCartItems() {
   // Aqui eu resolvi usar o método Array.from, para converter o HTMLCollection advindo do método getElementsByClassName em um Array e poder iterá-lo com o forEach.
   // Agradecimento aos usuários 'EscapeNetscape' e 'harpo' do Stackoverflow pela solução!
-  
+
   const arrayOfCartItems = Array.from(document.getElementsByClassName('cart__item'));
   arrayOfCartItems.forEach((cartItem) => cartItem.remove());
   localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
@@ -71,6 +71,14 @@ function fetchCartItem(event) {
   });
 }
 
+function addLoading() {
+  itemsContainer.appendChild(createCustomElement('span', 'loading', 'loading...'));
+}
+
+function removeLoading() {
+  itemsContainer.querySelector('.loading').remove();
+}
+
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -86,11 +94,13 @@ function createProductItemElement({ id, title, thumbnail }) {
 }
 
 function fetchSearch(searchTerm) {
+  addLoading();
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchTerm}`)
   .then((response) => response.json())
   .then((jsonData) => {
     jsonData.results.forEach((product) => 
     itemsContainer.appendChild(createProductItemElement(product)));
+    removeLoading();
   });
 }
 
