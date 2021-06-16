@@ -24,14 +24,24 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 const saveLocal = () => {
   const xablau = document.querySelector('.buy');
   const storage = window.localStorage;
   storage.setItem('listaSalva', xablau.innerHTML);
+  const value = document.querySelector('.total-price');
+  storage.setItem('prices', value.innerText);
+};
+
+const corrigiValor = (ent) => {
+  let valor = ent;
+  valor *= 100;
+  valor = parseInt(valor, 10);
+  valor /= 100;
+  return valor;
 };
 
 function cartItemClickListener(event) {
@@ -39,6 +49,7 @@ function cartItemClickListener(event) {
   const value = document.getElementById('dept');
   let valor = value.innerText;
   valor -= quebra[1];
+  corrigiValor(valor);
   value.innerText = valor;
   event.target.remove();
   saveLocal();
@@ -54,7 +65,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const addToCart = (event) => {
   const father = event.target.parentNode;
-  const serial = father.children[0].innerText;
+  const serial = getSkuFromProductItem(father);
   fetch(`https://api.mercadolibre.com/items/${serial}`)
   .then((idPromese) => idPromese.json())
   .then((id) => {
@@ -63,6 +74,7 @@ const addToCart = (event) => {
     ol.appendChild(createCartItemElement({ sku, name, salePrice }));
     let valor = parseFloat(document.getElementById('dept').innerText);
     valor += salePrice;
+    corrigiValor(valor);
     document.getElementById('dept').innerText = valor;
     saveLocal();
   });
@@ -74,29 +86,27 @@ const fetchApiML = () => {
       result.json().then((list) => {
         const items = document.querySelector('.items');
         const { results } = list;
-        for (let index = 0; index < results.length; index += 1) {
-          const { id: sku, title: name, thumbnail: image } = results[index];
+        results.forEach((ent, index) => {
+          const { id: sku, title: name, thumbnail: image } = ent;
           items.appendChild(createProductItemElement({ sku, name, image }));
           const item = document.querySelectorAll('.item__add');
           item[index].addEventListener('click', addToCart);
-        }
+        });
         document.querySelector('.loading').remove();
       });
     });
 };
 
 const testAndOpenSaved = () => {
-  if (localStorage.getItem('listaSalva') !== 'undefined') {
-    let valor = 0;
+  if (localStorage.getItem('listaSalva') !== null) {
     const listaSalva = document.querySelector('.cart__items');
     const storage = window.localStorage;
     listaSalva.innerHTML = storage.getItem('listaSalva');
-    const ol = document.getElementsByClassName('cart__item');
-    for (let index = 0; index < ol.length; index += 1) {
-      ol[index].addEventListener('click', (event) => cartItemClickListener(event));
-      const quebra = (ol[index].innerText).split('$');
-      valor += parseFloat(quebra[1]);
-    }
+    const valor = storage.getItem('prices');
+    let ol = document.getElementsByClassName('cart__item');
+    ol = Array.prototype.slice.call(ol);
+    ol.forEach((iten) =>
+      iten.addEventListener('click', (event) => cartItemClickListener(event)));
     const value = document.getElementById('dept');
     value.innerText = valor;
   }
