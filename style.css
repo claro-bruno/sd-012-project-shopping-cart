@@ -64,13 +64,31 @@
 }
 
 .cart {
+  border: 2px solid blue;
+  padding: 20px;
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  align-self: flex-start;
 }
 
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+p {
+  margin: 0;
+}
+
+.empty-cart {
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.loading {
+  color: purple;
+  font-size: xx-large;
+  display: none;
 }
