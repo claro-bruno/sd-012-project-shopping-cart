@@ -72,7 +72,10 @@ function fetchCartItem(event) {
 }
 
 function addLoading() {
-  itemsContainer.appendChild(createCustomElement('span', 'loading', 'loading...'));
+  const loadingGif = createProductImageElement('./loading-gif.gif');
+  loadingGif.className = 'loading';
+  loadingGif.width = '50%';
+  itemsContainer.appendChild(loadingGif);
 }
 
 function removeLoading() {
@@ -81,11 +84,12 @@ function removeLoading() {
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
+  const img = thumbnail.replace(/-I.jpg/g, '-O.jpg');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
-  section.appendChild(createProductImageElement(thumbnail));
+  section.appendChild(createProductImageElement(img));
   const buttonAddToCart = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
   buttonAddToCart.addEventListener('click', fetchCartItem);
   section.appendChild(buttonAddToCart);

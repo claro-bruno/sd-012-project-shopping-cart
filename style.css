@@ -1,3 +1,40 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  padding: 2vh;
+  padding-left: 3vh;
+  padding-right: 3vh;
+  background-color: rgb(44, 172, 204);
+}
+
+.menu {
+  display: flex;
+}
+
+.menu ul li {
+  list-style: none;
+  display: inline-block;
+  margin: 3vh;
+}
+
+a:link {
+  text-decoration: none;
+  font-size: inherit;
+  transition: font-size 1s;
+}
+
+a:hover {
+  font-size: large;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -18,6 +55,7 @@
 }
 
 .container {
+  margin-top: 2vh;
   display: flex;
   justify-content: space-around;
   width: 100%;
@@ -53,6 +91,7 @@
 
 .item .item__image {
   width: 100%;
+  justify-content: center;
 }
 
 .item .item__add {
@@ -73,4 +112,8 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.cart__items {
+  line-height: 1.5rem;
 }
