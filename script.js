@@ -32,7 +32,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function cartItemClickListener(event) { 
   cartItems.removeChild(event.target);
-  
 }
 
 function loadingMsg() {
@@ -83,7 +82,7 @@ const removeAllCart = () => {
   clearButton.addEventListener('click', () => {
   cartItems.innerHTML = '';
   });
-}
+};
 
 window.onload = function onload() {
   apiFetch();
