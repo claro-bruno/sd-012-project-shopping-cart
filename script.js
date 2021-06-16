@@ -9,7 +9,6 @@ const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
   
 const saveCart = () => {
-  // console.log(cart.innerHTML);
   localStorage.setItem('Cart', JSON.stringify(cartItems.innerHTML));
   localStorage.setItem('Total', JSON.stringify(totalPrice.innerHTML));
 };
@@ -25,7 +24,6 @@ const updateTotal = (value) => {
 };
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   const string = event.target.innerHTML;
   const value = Number(string.split('$')[1]);
   updateTotal(-value);
@@ -38,9 +36,6 @@ const loadCart = () => {
   cartItems.innerHTML = JSON.parse(savedCart);
   const items = document.querySelectorAll('.cart__item');
   items.forEach((item) => item.addEventListener('click', cartItemClickListener));
-  // Object.values(cartItems.children).forEach((child) => {
-  //   child.addEventListener('click', cartItemClickListener);
-  // });
   const loadedPrice = localStorage.getItem('Total');
   totalPrice.innerHTML = Number(JSON.parse(loadedPrice));
 };
@@ -75,9 +70,6 @@ const addToCart = (e) => {
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
-  // if (element === 'button') {
-  //   e.addEventListener('click', addToCart);
-  // }
   e.className = className;
   e.innerText = innerText;
   return e;
@@ -155,7 +147,6 @@ emptyCartBtn.addEventListener('mouseout', () => {
 
 const addsHoverToItems = () => {
   const itemCollection = document.querySelectorAll('.item');
-  // console.log(itemCollection);
   itemCollection.forEach((item) => {
     const currentItem = item;
     currentItem.addEventListener('mouseover', () => {
