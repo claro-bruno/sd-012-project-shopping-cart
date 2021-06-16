@@ -1,3 +1,4 @@
+const container = document.querySelector('.container');
 const sectionItems = document.querySelector('.items');
 const cart = document.querySelector('.cart__items');
 const button = document.querySelector('.empty-cart');
@@ -43,7 +44,7 @@ function sumTotal() {
   if (cart.childNodes !== null) {
     cart.childNodes.forEach((element) => {
       total += parseFloat(element.innerText.split('$')[1]);
-      price.innerText = total.toFixed(2);
+      price.innerText = total;
     });
   }
   if (cart.childNodes.length === 0) {
@@ -93,8 +94,10 @@ function fetchComputers() {
       const createdItem = createProductItemElement(product);
       sectionItems.appendChild(createdItem);
       createdItem.lastChild.addEventListener('click', addToCart);
-      loading.style.display = 'none';
-    }));
+    }))
+    .then(() => {
+      container.removeChild(loading);
+    });
 }
 
 function getCart() {
