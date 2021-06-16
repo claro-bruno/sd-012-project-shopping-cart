@@ -2,16 +2,23 @@ const QUERY_API = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ITEM_API = 'https://api.mercadolibre.com/items/';
 const ALERT_MSG = 'Não foi possivel concluir sua solicitação, tente novamente!';
 
-// function getStorage() {
-//   const cartStorage = localStorage.getItem('cart');
-//   goStorage.innerHTML = cartStorage;
-// }
+function sumCart() {
+  const values = document.querySelectorAll('.value');
+  const totalCart = document.getElementsByClassName('total-price');
+  let total = 0.00;
+  values.forEach((value) => { total += Number(value.innerText); });
+  totalCart[0].innerText = total;
+}
 
 const cartItemClickListener = ({ target }) => {
   target.remove();
+  sumCart();
 };
 
-const clearCart = () => { document.querySelector('.cart__items').innerText = ''; };
+const clearCart = () => { 
+  document.querySelector('.cart__items').innerText = '';
+  sumCart();
+ };
 
 function loadingRemove() {
   const removeLoading = document.querySelector('.loading');
@@ -84,7 +91,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   try {
     const li = document.createElement('li');
     li.className = 'cart__item';
-    li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span class='value'>${salePrice}</span>`;
     li.addEventListener('click', cartItemClickListener);
     return li;
   } catch (error) {
@@ -99,6 +106,7 @@ async function getElementToCart(itemID) {
     document.getElementsByClassName('cart__items')[0]
       .appendChild(createCartItemElement(elementsChoice));
       storage();
+      sumCart();
   } catch (error) {
     alert(ALERT_MSG);
   }
@@ -111,6 +119,10 @@ function addCart() {
         const elementAdd = target.parentElement.firstChild.innerText;
         getElementToCart(elementAdd);
       }
+      // if (target.classList.contains('empty-cart')) {
+      //   document.getElementsByClassName('cart__items')[0].innerHTML = '';
+      //   sumCart();
+      // }
     });
   } catch (error) {
     alert(ALERT_MSG);
@@ -122,4 +134,5 @@ window.onload = function onload() {
   addCart();
   clearCart();
   getStorage();
+  sumCart();
 };
