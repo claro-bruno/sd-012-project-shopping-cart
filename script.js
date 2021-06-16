@@ -14,14 +14,14 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-// RESOLVER PROBLEMA DE ASSINCRONICIDADE
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-    // coloque seu código aqui
-  return event;
+  const item = event.target;
+  listCart.removeChild(item);
   }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
