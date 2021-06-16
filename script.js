@@ -1,6 +1,6 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
-async function getItemPromise(item) {
+async function gePromise(item) {
   const result = fetch(`https://api.mercadolibre.com/items/${item}`) // Pega os itens de forma assíncrona
     .then((response) => response.json())
     .then((data) => data)
@@ -20,6 +20,15 @@ function localStorageUpdate() {
   localStorage.setItem('savedCart', JSON.stringify(shoppingCart));
   getTotalPrice();
 }
+// ClickColor Event
+let a = 0;
+function clickCart() {
+  // a.innerText = 'Clicou';
+   a.style.background = 'purple';
+ }
+
+a = document.querySelector('.empty-cart');
+a.addEventListener('click', clickCart);
 
 // template 05
 function cartItemClickListener(event) { // Eventos do Clicke do Carrinho
@@ -83,7 +92,7 @@ function getSkuFromProductItem(item) {
 async function getItemToCart(event) {
   const itemId = getSkuFromProductItem(event.target.parentNode);
 
-  const results = await getItemPromise(itemId);
+  const results = await gePromise(itemId);
 
   createCartItemElement(results);
   localStorageUpdate();

@@ -7,18 +7,29 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Document</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,500;0,700;0,900;1,100;1,900&display=swap"
+    rel="stylesheet">
   <script src="script.js" defer></script>
 </head>
+<header>
+  <section class="displayHeader">
+    <div class="header"><strong>Trybe Shopp</strong></div>
+</header>
+</section>
 
 <body>
   <section class="container">
     <section class="items"></section>
     <section class="cart">
-      <span class="cart__title">Carrinho de compras</span>
+      <span class="cart__title, clickCart"><strong>Carrinho de compras</strong></span>
       <button class="empty-cart">Esvaziar carrinho</button>
       <ol class="cart__items"></ol>
 
-      <strong>Preço Total</strong>
+      <div class="precoTotal"><strong>
+          <h2>Preço Total</h2>
+        </strong></div>
       <section class="total-price"> </section>
     </section>
 
