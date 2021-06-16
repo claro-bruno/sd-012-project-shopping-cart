@@ -91,12 +91,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-  
+
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  
+
   return section;
 }
 
@@ -112,9 +112,21 @@ async function addProducts(url) {
   sectionItems.addEventListener('click', getProductId);
 }
 
+// requisito 6, vai limpar o carrinho de compras.
+function emptyCart() {
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = 0;
+  console.log('clicked');
+  localStorage.clear();
+  ol.innerHTML = '';
+}
+
 // vai ser executado depois que o html e css já estiver sido carregado.
 window.onload = () => {
   addProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', emptyCart);
 
   // vai adicionar os items do carrinho salvos no localStorage.
   if (localStorage.getItem('list')) {
