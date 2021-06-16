@@ -1,3 +1,6 @@
+const cartItensClass = '.cart__items';
+const localStorageValues = Object.values(localStorage);
+
 function getItensList() {
   return new Promise((resolve) => {
     fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
@@ -40,19 +43,30 @@ function getItemInfo(itemID) {
   });
 }
 
-function removeCartItem(target) {
-  return document.querySelector('.cart__items').removeChild(target);
+function removeSavedItem(item) {
+  const savedItem = item.target.innerText;
+  const key = savedItem.split(' ')[1];
+  return localStorage.removeItem(key);
 }
 
-function cartItemClickListener(target) {
-  return target.addEventListener('click', () => removeCartItem(target));
+function cartItemClickListener(event) {
+  removeSavedItem(event);
+  return event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener(li));
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function renewCartItemElement(string) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = string;
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -60,7 +74,9 @@ function insertCartItem(event) {
   const eventId = event.firstElementChild.innerText;
   getItemInfo(eventId).then((itemInfo) => {
     const newCartItemElement = createCartItemElement(itemInfo);
-    return document.querySelector('.cart__items').appendChild(newCartItemElement);
+    const stgItem = `SKU: ${itemInfo.id} | NAME: ${itemInfo.title} | PRICE: $${itemInfo.price}`;
+    localStorage.setItem(itemInfo.id, stgItem);
+    return document.querySelector(cartItensClass).appendChild(newCartItemElement);
   });
 }
 
@@ -80,6 +96,10 @@ window.onload = function onload() {
     addCartItemClickListener(newItemElement);
     return insertItens(newItemElement);
   }));
+  localStorageValues.map((value) => {
+    const cartItemElement = renewCartItemElement(value);
+    return document.querySelector(cartItensClass).appendChild(cartItemElement);
+  });
 };
 
 // function getSkuFromProductItem(item) {
