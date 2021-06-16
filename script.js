@@ -36,20 +36,11 @@ const saveLocal = () => {
   storage.setItem('prices', value.innerText);
 };
 
-const corrigiValor = (ent) => {
-  let valor = ent;
-  valor *= 100;
-  valor = parseInt(valor, 10);
-  valor /= 100;
-  return valor;
-};
-
 function cartItemClickListener(event) {
   const quebra = (event.target.innerText).split('$');
   const value = document.getElementById('dept');
   let valor = value.innerText;
   valor -= quebra[1];
-  corrigiValor(valor);
   value.innerText = valor;
   event.target.remove();
   saveLocal();
@@ -74,8 +65,7 @@ const addToCart = (event) => {
     ol.appendChild(createCartItemElement({ sku, name, salePrice }));
     let valor = parseFloat(document.getElementById('dept').innerText);
     valor += salePrice;
-    corrigiValor(valor);
-    document.getElementById('dept').innerText = valor;
+    document.getElementById('dept').innerText = parseFloat(Math.round((100 * valor)) / 100);
     saveLocal();
   });
 };
