@@ -1,6 +1,6 @@
 const items = document.getElementsByClassName('items')[0];
 const cartList = document.getElementsByClassName('cart__items')[0];
-
+// Requsito 4 feito baseado no Codigo de Adriana Biberg
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,8 +31,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveLocal = () => {
+  const saveCart = [];
+  if (cartList !== null) {
+    cartList.childNodes.forEach((element) => {
+      saveCart.push(element.innerText);
+    });
+    localStorage.setItem('saveCart', JSON.stringify(saveCart));
+  }
+};
+
 function cartItemClickListener(event) {
-  return event.target.remove();
+  event.target.remove();
+  return saveLocal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,6 +62,7 @@ const fetchID = (event) => {
   .then((product) => {
     const createCart = createCartItemElement(product);
     cartList.appendChild(createCart);
+    saveLocal();
   });
 };
 
@@ -68,4 +80,19 @@ const fetchAPI = () => {
 
 fetchAPI();
 
-// window.onload = function onload() { };
+function getCart() {
+  const storageCart = JSON.parse(localStorage.getItem('saveCart'));
+  if (storageCart !== null) {
+    storageCart.forEach((item) => {
+      const li = document.createElement('li');
+      li.className = 'cart__item';
+      li.innerText = item;
+      cartList.appendChild(li);
+      li.addEventListener('click', cartItemClickListener);
+    });
+  }
+}
+
+window.onload = function onload() {
+  getCart();
+};
