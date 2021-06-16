@@ -1,6 +1,8 @@
 const cartItensClass = '.cart__items';
 const localStorageValues = Object.values(localStorage);
 const priceContainerClass = '.price-container';
+const priceSpanClass = '.total-price';
+const spanClassName = 'total-price';
 
 function getItensList() {
   return new Promise((resolve) => {
@@ -11,7 +13,7 @@ function getItensList() {
 }
 
 function calcPrice(valor) {
-  let registeredPrice = document.querySelector('.total-price').innerText;
+  let registeredPrice = document.querySelector(priceSpanClass).innerText;
   const numberPrice = parseFloat(registeredPrice);
   const numberValor = parseFloat(valor);
   const actualPrice = numberValor + numberPrice;
@@ -27,9 +29,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 function changePrice(registeredPrice) {
-  const labelPrice = document.querySelector('.total-price');
+  const labelPrice = document.querySelector(priceSpanClass);
   document.querySelector(priceContainerClass).removeChild(labelPrice);
-  const totalPrice = createCustomElement('span', 'total-price', `${registeredPrice}`);
+  const totalPrice = createCustomElement('span', spanClassName, `${registeredPrice}`);
   return document.querySelector(priceContainerClass).appendChild(totalPrice);
 }
 
@@ -114,9 +116,29 @@ function insertItens(itemElement) {
 
 function createPriceCounter() {
   const priceContainer = createCustomElement('div', 'price-container', 'TOTAL PRICE: R$ ');
-  const totalPrice = createCustomElement('span', 'total-price', '0');
+  const totalPrice = createCustomElement('span', spanClassName, '0');
   document.querySelector('.cart').appendChild(priceContainer);
   return document.querySelector(priceContainerClass).appendChild(totalPrice);
+}
+
+function clearCart() {
+  const allCartItens = document.querySelectorAll('.cart__item');
+  const cart = document.querySelector('.cart__items');
+  allCartItens.forEach((cartItem) => cart.removeChild(cartItem));
+  localStorage.clear();
+  const labelPrice = document.querySelector(priceSpanClass);
+  document.querySelector(priceContainerClass).removeChild(labelPrice);
+  const totalPrice = createCustomElement('span', spanClassName, '0');
+  return document.querySelector(priceContainerClass).appendChild(totalPrice);
+}
+
+function addClearButtonClickListener(target) {
+  return target.addEventListener('click', () => clearCart());
+}
+
+function createClearCartButton() {
+  const clearButton = document.querySelector('.empty-cart');
+  return addClearButtonClickListener(clearButton);
 }
 
 window.onload = function onload() {
@@ -133,6 +155,7 @@ window.onload = function onload() {
     const cartItemElement = renewCartItemElement(value);
     return document.querySelector(cartItensClass).appendChild(cartItemElement);
   });
+  createClearCartButton();
 };
 
 // function getSkuFromProductItem(item) {
