@@ -1,6 +1,7 @@
 const items = document.getElementsByClassName('items')[0];
 const cartList = document.getElementsByClassName('cart__items')[0];
-// Requsito 4 feito baseado no Codigo de Adriana Biberg
+const priceText = document.getElementsByClassName('total-price')[0];
+// Requsito 4 e 5 feito baseado no Codigo de Adriana Biberg
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,6 +32,21 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const totalPrice = 0;
+
+const sum = () => {
+  let num = 0;
+  if (cartList.childNodes !== null) {
+    cartList.childNodes.forEach((element) => {
+      num += parseFloat(element.innerText.split('$')[1]);
+      priceText.innerText = totalPrice + num;
+    });
+    if (cartList.childNodes.length === 0) {
+      priceText.innerText = 0;
+    }
+  }
+};
+
 const saveLocal = () => {
   const saveCart = [];
   if (cartList !== null) {
@@ -43,7 +59,8 @@ const saveLocal = () => {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  return saveLocal();
+  saveLocal();
+  sum();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -63,6 +80,7 @@ const fetchID = (event) => {
     const createCart = createCartItemElement(product);
     cartList.appendChild(createCart);
     saveLocal();
+    sum();
   });
 };
 
@@ -95,4 +113,5 @@ function getCart() {
 
 window.onload = function onload() {
   getCart();
+  sum();
 };
