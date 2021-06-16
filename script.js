@@ -11,13 +11,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 const searchComputers = () => (new Promise((resolve) => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
       .then((response) => response.json())
       .then((data) => resolve(data.results));
   })
 );
 const addComputers = (id) => (new Promise((resolve) => {
-  fetch(`https://api.mercadolibre.com/items/${id}`)
+    fetch(`https://api.mercadolibre.com/items/${id}`)
       .then((response) => response.json())
       .then((data) => resolve(data));
   })
@@ -32,8 +32,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 // function getSkuFromProductItem(item) {
-//    return item.querySelector('span.item__sku').innerText;
+//   return item.querySelector('span.item__sku').innerText;
 // }
+
 function cartItemClickListener(event) {
   const itemsCart = document.getElementsByClassName('cart__items');
   itemsCart[0].removeChild(event.target);
@@ -47,6 +48,7 @@ function cartItemClickListener(event) {
   });
   localStorage.setItem('listCar', JSON.stringify(atualCar));
 }
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -75,6 +77,7 @@ const addComputerCartClick = (event) => {
 function refreshCar() {
   const itemCar = JSON.parse(localStorage.getItem('listCar'));
   const sectionCart = document.getElementsByClassName('cart__items');
+
   if (itemCar != null) {
     itemCar.forEach((computer) => {
       const item = createCartItemElement({
@@ -89,7 +92,7 @@ function refreshCar() {
 function includeComputerCar() {
   const sectionItems = document.getElementsByClassName('items');
     (searchComputers()
-      .then((computers) => {
+          .then((computers) => {
         computers.forEach((computer) => {
           const item = createProductItemElement({
             sku: computer.id, 
@@ -105,17 +108,9 @@ function includeComputerCar() {
         }
       })
     );
-}
-function clearCar() {
-  const listCar = document.querySelector('.cart__items');
-  while (listCar.firstChild) {
-    listCar.removeChild(listCar.lastChild);
   }
-  localStorage.clear();
-}
-window.onload = function onload() { 
-  refreshCar();
-  includeComputerCar();
-  const btn = document.querySelector('.empty-cart');
-  btn.addEventListener('click', clearCar);
-};
+
+  window.onload = function onload() { 
+    refreshCar();
+    includeComputerCar();
+  };
