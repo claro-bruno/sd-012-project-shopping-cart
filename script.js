@@ -71,7 +71,16 @@ function addProducts() {
       }))
       .then(() => addProducts());
     }
+  function removeButton() {
+    const removeB = document.getElementsByClassName('empty-cart')[0];
+    const ordenedB = document.getElementsByClassName('cart__items')[0];
+    // console.log(ordenedB);
+    removeB.addEventListener('click', () => {
+      ordenedB.innerHTML = '';
+    });
+  }
 
 window.onload = function onload() { 
   fetchMode();
+  removeButton();
 };
