@@ -1,5 +1,5 @@
 const URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const listCart = document.querySelector('cart_items');
+const listCart = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -24,7 +24,7 @@ function cartItemClickListener(event) {
   return event;
   }
 
-function createCartItemElement({ id: sku, title: name, sale: salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const li = document.createElement('li');
 li.className = 'cart__item';
 li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -32,15 +32,19 @@ li.addEventListener('click', cartItemClickListener);
 return li;
 }
 
-const getProductId = async (event) => {
-  const getEvent = event.target.parentElement;
-  const itemID = getSkuFromProductItem(getEvent);
+// função que adiciona o produto pego na função getProductId() ao carrinho utilizando a função createCartItemElement();
+function addProductToCar(element) {
+  listCart.appendChild(createCartItemElement(element));
+}
 
-    await fetch(`https://api.mercadolibre.com/items/${itemID}`)
+function getProductId(event) {
+  const origin = event.target.parentElement;
+  const id = getSkuFromProductItem(origin);
+
+    fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((response) => response.json())
-    .then((productId) => listCart.appendChild(createCartItemElement(productId)))
-    .catch(() => console.log('error'));
-}; 
+    .then((product) => addProductToCar(product));
+  } 
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) { // reatrubuí os valores
   const section = document.createElement('section');
@@ -55,14 +59,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 }
 // // função que adiciona os produtos pego na fetchItem() aos elementos criados na createProductItemElement().
 // const getProductAddElement = (produtos) => {
-//   const itemContent = document.querySelector('.items')[0];
+//   const itemContent = document.querySelector('.items');
 //   produtos.forEach((item) => {
 //     itemContent.appendChild(createProductItemElement(item));
 //   });
 // };
 
 // função que adiciona os produtos as <sections> criadas na createProductItemElement().
-const fetchItem = async () => { // extrai o array de elementos do arquivo jason e manda pra a função getProductAddElement().
+const fetchItems = () => { // extrai o array de elementos do arquivo jason e manda pra a função getProductAddElement().
   const itemContent = document.querySelector('.items');
   fetch(URL)
   .then((response) => response.json())
@@ -74,5 +78,5 @@ const fetchItem = async () => { // extrai o array de elementos do arquivo jason 
 // ------------------------------------------------------------------- part 2
 
 window.onload = function onload() {
-  fetchItem();
+  fetchItems();
 };
