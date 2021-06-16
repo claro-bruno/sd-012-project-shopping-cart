@@ -2,6 +2,7 @@ const URL_ML = 'https://api.mercadolibre.com/sites/MLB/search';
 const sectionItems = document.querySelector('.items');
 const cartItem = document.querySelector('.cart__items');
 const price = document.querySelector('.total-price');
+const button = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -104,6 +105,12 @@ function getCart() {
     });
   }
 }
+
+button.addEventListener('click', () => {
+  price.innerText = '';
+  cartItem.innerHTML = '';
+  localStorage.removeItem('array');
+});
 
 window.onload = function onload() { 
   fetchEcommerceAsync();
