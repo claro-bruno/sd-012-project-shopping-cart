@@ -1,6 +1,20 @@
 const itemsContainer = document.querySelector('.items');
 const cartItemsContainer = document.querySelector('.cart__items');
 const cartPriceContainer = document.querySelector('.total-price');
+const buttonCartRemover = document.querySelector('.empty-cart');
+
+function removeCartItems() {
+  // Aqui eu resolvi usar o método Array.from, para converter o HTMLCollection advindo do método getElementsByClassName em um Array e poder iterá-lo com o forEach.
+  // Agradecimento aos usuários 'EscapeNetscape' e 'harpo' do Stackoverflow pela solução!
+  
+  const arrayOfCartItems = Array.from(document.getElementsByClassName('cart__item'));
+  arrayOfCartItems.forEach((cartItem) => cartItem.remove());
+  localStorage.setItem('actualCart', cartItemsContainer.innerHTML);
+  cartPriceContainer.innerText = 0;
+  localStorage.setItem('actualPrice', 0);
+}
+
+buttonCartRemover.addEventListener('click', removeCartItems);
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
