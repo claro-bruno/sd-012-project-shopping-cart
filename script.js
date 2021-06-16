@@ -1,5 +1,6 @@
 const cartItensClass = '.cart__items';
 const localStorageValues = Object.values(localStorage);
+const priceContainerClass = '.price-container';
 
 function getItensList() {
   return new Promise((resolve) => {
@@ -9,11 +10,27 @@ function getItensList() {
   });
 }
 
+function calcPrice(valor) {
+  let registeredPrice = document.querySelector('.total-price').innerText;
+  const numberPrice = parseFloat(registeredPrice);
+  const numberValor = parseFloat(valor);
+  const actualPrice = numberValor + numberPrice;
+  registeredPrice = actualPrice;
+  return registeredPrice;
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
+}
+
+function changePrice(registeredPrice) {
+  const labelPrice = document.querySelector('.total-price');
+  document.querySelector(priceContainerClass).removeChild(labelPrice);
+  const totalPrice = createCustomElement('span', 'total-price', `${registeredPrice}`);
+  return document.querySelector(priceContainerClass).appendChild(totalPrice);
 }
 
 function createProductImageElement(imageSource) {
@@ -51,6 +68,10 @@ function removeSavedItem(item) {
 
 function cartItemClickListener(event) {
   removeSavedItem(event);
+  const removedItem = event.target.innerText;
+  const getPrice = parseFloat(`-${removedItem.split('$')[1]}`);
+  const actualPrice = calcPrice(getPrice);
+  changePrice(actualPrice);
   return event.target.remove();
 }
 
@@ -76,6 +97,8 @@ function insertCartItem(event) {
     const newCartItemElement = createCartItemElement(itemInfo);
     const stgItem = `SKU: ${itemInfo.id} | NAME: ${itemInfo.title} | PRICE: $${itemInfo.price}`;
     localStorage.setItem(itemInfo.id, stgItem);
+    const actualPrice = calcPrice(parseFloat(itemInfo.price));
+    changePrice(actualPrice);
     return document.querySelector(cartItensClass).appendChild(newCartItemElement);
   });
 }
@@ -89,6 +112,13 @@ function insertItens(itemElement) {
   return itensSection.appendChild(itemElement);
 }
 
+function createPriceCounter() {
+  const priceContainer = createCustomElement('div', 'price-container', 'TOTAL PRICE: R$ ');
+  const totalPrice = createCustomElement('span', 'total-price', '0');
+  document.querySelector('.cart').appendChild(priceContainer);
+  return document.querySelector(priceContainerClass).appendChild(totalPrice);
+}
+
 window.onload = function onload() {
  getItensList()
   .then((itensInfo) => itensInfo.forEach((itemInfo) => {
@@ -96,7 +126,10 @@ window.onload = function onload() {
     addCartItemClickListener(newItemElement);
     return insertItens(newItemElement);
   }));
+  createPriceCounter();
   localStorageValues.map((value) => {
+    const actualPrice = calcPrice(value.split('$')[1]);
+    changePrice(actualPrice);
     const cartItemElement = renewCartItemElement(value);
     return document.querySelector(cartItensClass).appendChild(cartItemElement);
   });
