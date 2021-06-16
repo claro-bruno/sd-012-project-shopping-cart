@@ -1,6 +1,7 @@
 const items = document.getElementsByClassName('items')[0];
 const cartList = document.getElementsByClassName('cart__items')[0];
 const priceText = document.getElementsByClassName('total-price')[0];
+const clearCartBotton = document.getElementsByClassName('empty-cart')[0];
 // Requsito 4 e 5 feito baseado no Codigo de Adriana Biberg
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -56,6 +57,14 @@ const saveLocal = () => {
     localStorage.setItem('saveCart', JSON.stringify(saveCart));
   }
 };
+
+const clearCart = () => {
+  priceText.innerText = '0';
+  cartList.innerText = '';
+  localStorage.removeItem('saveCart');
+};
+
+clearCartBotton.addEventListener('click', clearCart);
 
 function cartItemClickListener(event) {
   event.target.remove();
