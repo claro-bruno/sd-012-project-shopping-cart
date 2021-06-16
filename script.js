@@ -34,8 +34,9 @@ function getButton(teste) {
   return teste.querySelector('button.item__add');
 }
 
-function cartItemClickListener(_event) {
-  // coloque seu código aqui
+function cartItemClickListener(event) {
+  const cartLi = document.getElementsByClassName('cart__item');
+  event.target.remove(cartLi);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
