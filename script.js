@@ -5,18 +5,15 @@ loading.className = 'loading';
 loading.innerText = 'loading...';
 document.querySelector('.container').appendChild(loading);
 
-function recordStorage(keyStorage, valuestorage) {
-  localStorage.setItem(keyStorage, valuestorage);
-}
-
-function rescueStorage(keyStorage) {
-  return localStorage.getItem(keyStorage);
-}
-
-/* function removeStorage(keyStorage) {
-//  //JASON stringfy
-localStorage.removeItem(keyStorage);
-} */
+const rescueStorage = () => {
+  const dataStorage = Object.keys(localStorage);
+  dataStorage.forEach((itemRec) => {
+    const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.innerText = itemRec;
+    cart.appendChild(li);
+  });
+};
 
 function clearItemsCar() {
   cart.innerHTML = '';
@@ -53,8 +50,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 } */
 
 function cartItemClickListener(event) {
+  localStorage.removeItem(event.target.innerHTML);
   event.target.remove();
-  /* removeStorage(cart.innerText); */
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -67,7 +64,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 function addCart() {
   const button = document.querySelectorAll('.item__add');
-  button.forEach((btn) => {
+  button.forEach((btn, indice) => {
     btn.addEventListener('click', (event) => {
     const iditem = event.target.parentElement.firstChild.innerText;
     fetch(`https://api.mercadolibre.com/items/${iditem}`)
@@ -76,7 +73,7 @@ function addCart() {
       const itemCart = createCartItemElement({ id, title, price });
       /* const cart = document.querySelector('.cart__items'); */
       cart.appendChild(itemCart);
-      recordStorage('sku', id);
+      localStorage.setItem(itemCart.innerHTML, indice);
     });
   });
 });
@@ -91,7 +88,7 @@ function getApiMl() {
       const incItem = createProductItemElement(itemsProduts);
       sectionItems.appendChild(incItem);
     }))
-    .then(() => rescueStorage())
+ /*    .then(() => rescueStorage()) */
     .then(() => addCart());
 }
 
@@ -99,7 +96,7 @@ function getApiMl() {
   /* .then(() => addCart());  */
 
   window.onload = function onload() { };
-  
   getApiMl();
   const btClearCart = document.querySelector('.empty-cart');
   btClearCart.addEventListener('click', clearItemsCar);
+  rescueStorage();
