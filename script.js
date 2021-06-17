@@ -66,12 +66,17 @@ const getItem = (itemId) => new Promise((resolve) => {
   .then((response) => response.json().then((computer) => resolve(computer)));
 });
 
+const addStorage = (cart) => {
+  localStorage.setItem('cart', cart.innerHTML);
+};
+
 const addProduct = (promise) => {
 const cart = document.querySelector('.cart__items');
 promise.then((item) => {
   const { id: sku, title: name, price: salePrice } = item;
   const liItem = createCartItemElement({ sku, name, salePrice });
   cart.appendChild(liItem);
+  addStorage(cart);
 });
 };
 
@@ -84,6 +89,18 @@ arrayItem.forEach((item) => {
 });
 };
 
+const getStorage = () => {
+  const storage = localStorage.getItem('cart');
+  if (storage) {
+    const cart = document.querySelector('.cart__items');
+    cart.innerHTML = storage;
+    Array.from(cart.children).forEach((li) => {
+      li.addEventListener('click', cartItemClickListener);
+    });
+  }
+};
+
 window.onload = function onload() {
   addProductsToPage(getPromiseProducts()).then(() => addCart());
+  getStorage();
  };
