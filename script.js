@@ -108,12 +108,20 @@ const localStorageload = () => {
       cartItemClickListener(event);
     }
   });
-  subTotal();
 };
 
+const emptyCart = () => {
+  const emptyItemsFromCart = document.querySelector('.empty-cart');
+  emptyItemsFromCart.addEventListener('click', () => {
+    cartsSection.innerHTML = '';
+    localStorageCart();
+    subTotal();
+  });
+};
 window.onload = function onload() {
   getItemFromAPI();
   selectItemToCart();
   localStorageload();
   subTotal();
+  emptyCart();
 };  
