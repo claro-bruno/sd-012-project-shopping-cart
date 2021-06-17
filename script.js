@@ -75,10 +75,14 @@ const localStorageList = document.querySelector('ol');
 
 const saveLocalStorage = () => {
   const salvaLista = document.querySelector('.cart__items');
-  localStorage.setItem('listaSalva', salvaLista.innerText);
+  localStorage.setItem('listaSalva', salvaLista.innerHTML);
 };
 
-localStorageList.innerText = localStorage.getItem('listaSalva');
+// Essa função eu verifiquei no slack através da dúvida da Marcela, e depois pelo seu gitHub que foi deixado na thread https://trybecourse.slack.com/archives/C01T2C18DSM/p1623351073321900
+const getLocalStorage = () => {
+  const pegaItemLS = localStorage.getItem('listaSalva');
+  localStorageList.innerHTML = pegaItemLS;
+};
 
 function addItem() {
   const botao = document.querySelectorAll('.item__add');
@@ -100,5 +104,5 @@ window.onload = async () => {
    const item = await pegarItem();
    item.results.forEach((itemML) => createProductItemElement(itemML));
    addItem();
-   saveLocalStorage();
+   getLocalStorage();
 };
