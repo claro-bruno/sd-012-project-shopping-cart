@@ -1,5 +1,3 @@
-const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -15,6 +13,7 @@ function createCustomElement(element, className, innerText) {
 }
 
 function createProductItemElement() {
+  const urlProducts = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const section = document.createElement('section');  
   section.className = 'item';
   const idItem = document.querySelector('.items');
