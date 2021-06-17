@@ -101,4 +101,3 @@ window.onload = function onload() {
   removeAllCart();
   getItems();
 };
-  
