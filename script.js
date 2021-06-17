@@ -1,4 +1,6 @@
-window.onload = function onload() {};
+window.onload = function onload() {
+  getSerchResults()
+};
 
 const urlApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
