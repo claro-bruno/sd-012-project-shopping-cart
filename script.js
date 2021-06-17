@@ -107,7 +107,7 @@ function cartItem() {
       const id = event.target.parentElement.firstChild.innerHTML;
       const itemSelected = await fecthAddItem(id);
       const ol = document.querySelector('.cart__items');
-      ol.appendChild((createCartItemElement(itemSelected)));
+      ol.appendChild(createCartItemElement(itemSelected));
       saveLocalStorage();
     });
   });
