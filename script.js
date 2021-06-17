@@ -42,13 +42,36 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function sum() {
+  const takeAllLisByClass = document.querySelectorAll('.cart__item');
+  let acumulador = 0;
+  takeAllLisByClass.forEach((li) => {
+    const takePrice = li.innerText.split('$')[1];
+    acumulador += parseFloat(takePrice);
+  });
+  return acumulador;
+}
+
+function showTotalPrice() {
+  const takeSpanPrice = document.querySelector('#price');
+  takeSpanPrice.innerText = sum();
+  localStorage.setItem('price', takeSpanPrice.innerText);
+  
+  const takePriceFromLocalStorage = localStorage.getItem('price');
+  
+  if (takePriceFromLocalStorage) {
+    takeSpanPrice.innerText = takePriceFromLocalStorage;
+  }
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   addToLocalStorage();
+  showTotalPrice();
 }
 
-// Renderiza na tela o carrinho com os produtos do Local Storage (Mentoria - Gisele Santin)
+// Renderiza na tela o carrinho com os produtos do Local Storage e devolve evento de clique às Lis (Mentoria - Gisele Santin)
 function verifyLocalStorage() {
   const takeFromLocalStorage = localStorage.getItem('product');
   if (takeFromLocalStorage) {
@@ -97,6 +120,7 @@ function takeProductButtons() {
           takeOlCartItem.appendChild(createCartItemElement(secondResponse));
 
           addToLocalStorage();
+          showTotalPrice();
         });
     });
   });
@@ -107,4 +131,5 @@ window.onload = function onload() {
     .then(() => takeProductButtons());
 
   verifyLocalStorage();
+  showTotalPrice();
 };
