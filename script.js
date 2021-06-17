@@ -3,6 +3,11 @@ const PRODUCT_URL = 'https://api.mercadolibre.com/items/';
 const itemsSection = document.querySelector('.items');
 const cartsSection = document.querySelector('.cart__items');
 
+const localStorageCart = () => {
+  const cartS = cartsSection.innerHTML;
+  localStorage.setItem('cart', cartS);
+};
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -59,6 +64,8 @@ const getItemFromAPI = async () => {
   }
 };
 
+// O trecho a seguir é uma solução do colega Rafael Primon
+
 const selectItemToCart = () => {
   itemsSection.addEventListener('click', (event) => {
     if (event.target.classList.contains('item__add')) {
@@ -73,16 +80,25 @@ const selectItemToCart = () => {
             salePrice: data.price,
           };
           cartsSection.appendChild((createCartItemElement(itemKey)));
+          localStorageCart();
         });
     }
   });
 };
 
-const productList = (object) => {
-  object.forEach((element) => itemsSection.appendChild(createProductItemElement(element)));
-}; 
+const localStorageload = () => {
+  const storage = localStorage.getItem('cart');
+  const cartStorage = cartsSection;
+  cartStorage.innerHTML = storage;
+  cartStorage.addEventListener('click', (event) => {
+    if (event.target.classList.contains('cart__item')) {
+      cartItemClickListener(event);
+    }
+  });
+};
 
 window.onload = function onload() {
   getItemFromAPI();
   selectItemToCart();
+  localStorageload();
 };  
