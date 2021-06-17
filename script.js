@@ -22,8 +22,9 @@ function createCustomElement(element, className, innerText) {
 // Especifica as ações após o evento da addEventListener da createCartItemElement
 function cartItemClickListener(event) {
   // coloque seu código aqui 
-  const itemClicado = event.target.id;
-  return itemClicado; // test para o req 2
+  const itemClicado = event.target;
+  console.log(itemClicado.parentNode);
+  itemClicado.parentNode.removeChild(itemClicado);
 }
 
 // Cria o elemento da lista do carrinho de compras referente a cada section e submete tais elementos a um evento
@@ -39,7 +40,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Fazer um appendChild do item retorando pela createCartItemElement
 const criarItensDoCarrinho = (event) => { 
   const idProduto = event.target.parentNode.firstChild.innerHTML;
-  console.log(idProduto);  
+  /* console.log(idProduto);   */
   fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((item) => item.json())
       .then((item) => document.querySelector('.cart__items')
