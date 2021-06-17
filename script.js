@@ -137,3 +137,15 @@ window.onload = function onload() {
   const btn = document.querySelector('.empty-cart');
   btn.addEventListener('click', clearCar);
 };
+
+// //Repositórios que consultei pra terminar esse projeto:
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/11
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/109
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/104
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/97
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/81
+// https://github.com/tryber/sd-010-a-project-shopping-cart/pull/58
+// https://github.com/tryber/sd-012-project-shopping-cart/pull/20
+// https://github.com/tryber/sd-012-project-shopping-cart/pull/11
+// https://github.com/tryber/sd-012-project-shopping-cart/pull/90
+// Agradeço imençamente aos amigos que ajudaram, especialmente ao Guilherme Dornelles que me deu valiosas dicas pra pesquisar no slack como desenvolver esse projeto.
