@@ -72,9 +72,11 @@ const getItens = (results) => {
 };
 
 function getApi() {
+  const loading = document.querySelector('.loading');
   fetch(`${BASE_ML}computador`)
     .then((response) => response.json())
-    .then((result) => getItens(result.results));
+    .then((result) => getItens(result.results))
+    .then(() => loading.remove());
 }
 
 const clearCart = () => {
