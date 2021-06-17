@@ -115,7 +115,7 @@ function cartItem() {
 
 const clearAll = () => {
   const btnRemoveAll = document.querySelector('.empty-cart');
-  btnRemoveAll.addEventListener('click', (event) => {
+  btnRemoveAll.addEventListener('click', () => {
     const list = document.querySelectorAll('.cart__item');
     for (let index = 0; index < list.length; index += 1) {
     list[index].remove();
