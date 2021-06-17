@@ -24,13 +24,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// requisito 2.
+// Funcao Auxiliar, requisito 2.
 function getSkuFromProductItem(item) {
-   return item.querySelector('span.item__sku').innerText;  
+  return item.querySelector('span.item__sku').innerText;  
 }
-// requisito 2.
+// Funcao Auxiliar, requisito 2.
 function getButton(botao) {
-  return botao.querySelector('button.item__add');
+ return botao.querySelector('button.item__add');
 }
 
 // requisito 5
@@ -38,14 +38,6 @@ const getPrice = (price) => {
   const totalPrice = document.querySelector('.total-price');
   const convert = parseFloat(totalPrice.innerText);
   totalPrice.innerText = convert + price;
-};
-
-// requisito 4
-const saveCart = () => {  
-  const ol = document.querySelector('ol.cart__items');
-  const total = document.querySelector('.total-price');
-  localStorage.setItem('cart', ol.innerHTML);
-  localStorage.setItem('price', total.innerText);
 };
 
 // requisito 5
@@ -56,15 +48,11 @@ const removePrice = (event) => {
   totalPrice.innerText = convert - price;
 };
 
-// requisito 4
-const checkIfSave = () => {
-  const saved = localStorage.getItem('cart');
-  const ol = document.querySelector('.cart__items');
-  ol.innerHTML = saved;
-  const savedPrice = parseFloat(localStorage.getItem('price'));
-  if (savedPrice) {
-    getPrice(savedPrice);
-  }
+const saveCart = () => {  
+  const ol = document.querySelector('ol.cart__items');
+  const total = document.querySelector('.total-price');
+  localStorage.setItem('cart', ol.innerHTML);
+  localStorage.setItem('price', total.innerText);
 };
 
 // requisito 3.
@@ -80,12 +68,13 @@ function cartItemClickListener(event) {
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU:${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 // requisito 2
 const catchId = () => {
+  // const buttons = document.querySelectorAll('.item__add');
   const allItem = document.querySelectorAll('.item');
   const ol = document.querySelector('.cart__items');
   allItem.forEach((item) => {
@@ -114,7 +103,7 @@ const fetchURL = (url) => {
   .then(() => catchId())
   .then(() => loading.remove());
 };
-// requisito 3.
+// requisito 3
 document.addEventListener('click', (event) => {
   cartItemClickListener(event.target);
 });
@@ -134,6 +123,5 @@ const removeItensAll = () => {
 
 window.onload = function onload() {
   fetchURL(BASE_ML);
-  checkIfSave();
   removeItensAll();
 };
