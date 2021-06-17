@@ -2,7 +2,7 @@ const API_MERCADO_LIVRE = 'https://api.mercadolibre.com/sites/MLB/search?q=compu
 const listOrdener = 'ol.cart__items';
 const loading = document.getElementsByClassName('loading');
 const shopCart = document.getElementsByClassName('cart__items');
-const section = document.getElementsByClassName('items');
+const sectionToFetch = document.getElementsByClassName('items');
 // ------------------------------------------------------------------------------------
 
 function saveListLocalStorage() {
@@ -52,7 +52,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const fetchListItems = async () => {
   let fetchAPI = await fetch(API_MERCADO_LIVRE);
   fetchAPI = await fetchAPI.json();
-  fetchAPI.results.forEach((API) => section[0].appendChild(createProductItemElement(API)));
+  fetchAPI.results.forEach((API) => sectionToFetch[0].appendChild(createProductItemElement(API)));
   loading[0].remove();
 };
 
