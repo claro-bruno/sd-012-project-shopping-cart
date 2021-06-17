@@ -19,11 +19,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// função que pega o elemento do evento do click e o remove.
 function cartItemClickListener(event) {
   const item = event.target;
   listCart.removeChild(item);
   }
 
+// remove os elementos filhos ao clicar no botão.
+const esvaziarCarrinho = document.querySelector('.empty-cart');
+esvaziarCarrinho.addEventListener('click', () => {
+    listCart.innerHTML = '';
+  });
+
+// função que cria as li do carrinho de compras.
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const li = document.createElement('li');
 li.className = 'cart__item';
@@ -65,7 +73,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 //   });
 // };
 
-// função que adiciona os produtos as <sections> criadas na createProductItemElement().
+// função que coleta as informações sobre os produtos e adiciona as <sections> criadas na createProductItemElement().
 const fetchItems = () => { // extrai o array de elementos do arquivo jason e manda pra a função getProductAddElement().
   const itemContent = document.querySelector('.items');
   fetch(URL)
@@ -74,8 +82,6 @@ const fetchItems = () => { // extrai o array de elementos do arquivo jason e man
     itemContent.appendChild(createProductItemElement(item));
   }));
 };
-
-// ------------------------------------------------------------------- part 2
 
 window.onload = function onload() {
   fetchItems();
