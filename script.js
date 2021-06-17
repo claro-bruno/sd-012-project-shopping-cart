@@ -34,17 +34,31 @@ const saveCart = () => {
   const cartList = document.querySelector(cartItemsClass).innerHTML;
   localStorage.setItem('cartListItems', cartList);
 };
+
+const totalPrice = () => {
+  let sum = 0;
+  const cartItems = document.querySelectorAll('.cart__item');
+  const totalPrices = document.querySelector('.total-price');
+  if (cartItems.length === 0) totalPrices.innerText = 0;
+  cartItems.forEach((current) => {
+    sum += parseFloat(current.innerText.split('$')[1]);
+    totalPrices.innerText = sum;  
+  });
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
   saveCart();
-  // totalPrice();   
+  totalPrice();   
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    cartItemClickListener(event);
+  });
   return li;
 }
 
@@ -59,14 +73,14 @@ const addProductCart = () => {
     const btn = getButton(cartItem);
     btn.addEventListener('click', () => {      
       fetch(`https://api.mercadolibre.com/items/${itemId}`)
-      .then((response) => response.json())
-      .then((product) => {
+      .then((response) => response.json()).then((product) => {
         const { id: sku, title: name, price: salePrice } = product;
         return createCartItemElement({ sku, name, salePrice });
       })
       .then((li) => {
         itemsCart.appendChild(li);
-        saveCart();
+        saveCart(); 
+        totalPrice();       
       });         
     });
   });
@@ -87,20 +101,11 @@ function getItensApi() {
     .catch((err) => console.log(`Algo deu Errado: ${err}`));  
 }
 
-// const totalPrice = () => {
-//   const sum = 0;
-//   const cartItems = document.querySelectorAll(cartItemsClass);
-//   cartItems.forEach((item) => {
-//     sum += parseFloat(item.innerHTML.split('$')[1]);
-//   });
-//   document.querySelector('.total-price').innerHTML = Math.round(sum *100) / 100;
-
-// }
-
 const clearCart = () => {
   document.querySelector('.empty-cart').addEventListener('click', () => {
     document.querySelector(cartItemsClass).innerHTML = '';
     saveCart();
+    totalPrice();
   });
 };
 
@@ -117,4 +122,5 @@ window.onload = function onload() {
   } 
   getItensApi();
   clearCart();
+  totalPrice();
   };
