@@ -1,14 +1,6 @@
-window.onload = function onload() {}
+window.onload = function onload() {};
 
-const urlApi = "https://api.mercadolibre.com/sites/MLB/search?q=computador";
-
-const getSerchResults = () => {
-  const idItem = document.querySelector('.items');
-  fetch(urlApi)
-  .then((response) => response.json())
-  .then((indice) => indice.results)
-  .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))));
-};
+const urlApi = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -24,7 +16,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -37,6 +28,14 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+
+const getSerchResults = () => {
+  const idItem = document.querySelector('.items');
+  fetch(urlApi)
+  .then((response) => response.json())
+  .then((indice) => indice.results)
+  .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))));
+};
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
