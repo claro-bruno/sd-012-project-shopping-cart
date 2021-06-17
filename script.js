@@ -113,11 +113,21 @@ function cartItem() {
   });
 }
 
+const clearAll = () => {
+  const btnRemoveAll = document.querySelector('.empty-cart');
+  btnRemoveAll.addEventListener('click', (event) => {
+    const list = document.querySelectorAll('.cart__item');
+    for (let index = 0; index < list.length; index += 1)
+    list[index].remove();
+  });
+};
+
 window.onload = async () => {
   const addItem = await getItem();
   addItem.results.forEach((itemML) => createProductItemElement(itemML));
   cartItem();
   getLocalStorage();
+  clearAll();
 };
 
 // OK!
