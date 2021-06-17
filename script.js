@@ -38,18 +38,18 @@ function createProductItemElement({ sku, name, image }) {
 
 const updateCartPrice = (price = 0) => {
   const priceParagraph = document.querySelector('.total-price');
-  const actualPrice = parseFloat(priceParagraph.innerHTML);
-  const totalPrice = actualPrice + price;
-  priceParagraph.innerHTML = parseFloat(totalPrice);
+  const actualPrice = parseFloat(priceParagraph.innerHTML).toFixed(2);
+  const totalPrice = parseFloat(actualPrice) + price;
+  priceParagraph.innerHTML = parseFloat(Math.round(totalPrice * 100) / 100);
   addPriceStorage(totalPrice);
 };
 
 function cartItemClickListener(event) {
   const li = event.target;
-  const uList = li.parentNode;
+  const oList = li.parentNode;
   const priceItem = parseFloat(li.innerText.split('$')[1]);
-  uList.removeChild(event.target);
-  addStorage(uList);
+  oList.removeChild(event.target);
+  addStorage(oList);
   updateCartPrice(priceItem * -1);
 }
 
@@ -69,12 +69,15 @@ const getPromiseProducts = () => new Promise((resolve) => {
   });
 
 const addProductsToPage = (promise) => {
-  const itens = document.querySelector('.items');
+  const items = document.querySelector('.items');
+  const loading = createCustomElement('h1', 'loading', 'LOADING...');
+  items.appendChild(loading);
   return promise.then((computer) => {
+    items.removeChild(loading);
     computer.results.forEach((item) => {
       const { id: sku, title: name, thumbnail: image } = item;
       const theItem = createProductItemElement({ sku, name, image });
-      itens.appendChild(theItem);
+      items.appendChild(theItem);
     });
   });
 };
@@ -122,8 +125,21 @@ const getStorage = () => {
   }
 };
 
+const cleanCart = () => {
+  const cart = document.querySelector('ol');
+  const button = document.querySelector('.empty-cart');
+  const priceParagraph = document.querySelector('.total-price');
+  button.addEventListener('click', () => {
+    while (cart.firstChild) cart.removeChild(cart.firstChild);
+    if (priceParagraph) priceParagraph.innerText = 0;
+    addStorage(cart);
+    addPriceStorage(0);
+  });
+};
+
 window.onload = function onload() {
   addProductsToPage(getPromiseProducts()).then(() => addCart());
   getStorage();
   getPrice();
+  cleanCart();
  };
