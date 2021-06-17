@@ -43,7 +43,7 @@ const criarItensDoCarrinho = (event) => {
    fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((item) => item.json()
       .then((item) => document.querySelector('.cart__items')
-        .appendChild(createCartItemElement(item)));
+        .appendChild(createCartItemElement(item))));
 };
 
 const eventoDeClique = () => {
