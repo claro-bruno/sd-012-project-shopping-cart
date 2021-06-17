@@ -95,6 +95,16 @@ function addItem() {
       saveLocalStorage();
     });
   });
+};
+
+const removeAll = () => {
+  const buttonRemoveAll = document.querySelector('.empty-cart');
+  buttonRemoveAll.addEventListener('click', (event) => {
+    const li = document.querySelectorAll('.cart__item');
+    for (let index = 0; index < li.length; index += 1) {
+      li[index].remove();
+    }
+  })
 }
 
 window.onload = async () => {
@@ -105,4 +115,5 @@ window.onload = async () => {
    item.results.forEach((itemML) => createProductItemElement(itemML));
    addItem();
    getLocalStorage();
+   removeAll();
 };
