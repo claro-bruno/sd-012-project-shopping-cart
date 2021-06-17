@@ -67,8 +67,8 @@ async function getItem() {
 //   return itemData.results.forEach((itemML) => createProductItemElement(itemML));
 // } 
 
-function cartItemClickListener() {
-  
+function cartItemClickListener(event) {
+  event.target.remove();
 }
 
 async function fecthAddItem(id) {
