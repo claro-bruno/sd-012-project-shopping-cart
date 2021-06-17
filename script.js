@@ -1,9 +1,9 @@
 const API_MERCADO_LIVRE = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const API_PRODUCT_SELECTED = 'https://api.mercadolibre.com/items/';
-const ERROR_MESSAGE = 'Error';
-const cartItem = document.querySelector('.cart_items');
+// const cartItem = document.querySelector('.cart_items');
 const listOrdener = 'ol.cart__items';
 const productList = 'product-list';
+const ol = document.getElementsByClassName('cart__items');
 // ------------------------------------------------------------------------------------
 
 function saveListLocalStorage() {
@@ -46,6 +46,14 @@ function fetchListItems() {
       itemsElements.appendChild(createProductItemElement(item))));
 }
 
+
+document.addEventListener('click', function ({ target }) {
+  if (target.classList.contains('item__add')) {
+    const itemID = target.parentElement.firstChild.innerText;
+    addItemToCart(itemID);
+  }
+})
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -56,24 +64,23 @@ function cartItemClickListener(event) {
   saveListLocalStorage();
 }
 
-const addItemstoCart = async (event) => {
-  const parentNode = event.target.parentNode;
-  const productSelected = parentNode.firstChild.innerText;
+function buttonsCLick() {
+  const buttons = document.querySelectorAll('button.item__add');
+  buttons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      addItemstoCart(event);
+    });
+  });
+}
 
-  try {
-    const response = await fetch(`${API_PRODUCT_SELECTED}${productSelected}`);
-    const result = await response.json();
-    cartItem.appendChild(createCartItemElement(result))
-    .addEventListener('click', cartItemClickListener);
-
-    saveListLocalStorage();
-  } catch (error) {
-    alert (ERROR_MESSAGE);
-  }
+async function addItemToCart(event) {
+  let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
+  itemAPI = await itemAPI.json();
+  ol[0].appendChild(createCartItemElement(itemAPI));
 }
 
 function emptyShoppingCart () {
-  const emptyCartButton = document.querySelector('.empty-cart');
+  const emptyCartButton = document.querySelector('button.empty-cart');
   const cartItems = document.querySelector(listOrdener);
   emptyCartButton.addEventListener('click', () => {
     cartItems.innerHTML = '';
@@ -91,5 +98,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 window.onload = function onload() {
   fetchListItems();
-  // addItemstoCart();
+  buttonsCLick();
+  emptyShoppingCart();
 };
