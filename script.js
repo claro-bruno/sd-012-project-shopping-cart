@@ -4,12 +4,6 @@
 //   return itemData.results.forEach((itemML) => createProductItemElement(itemML)); /* itemML não sabemos qual parametro está passando, qual valor vai ser recebido */
 // } /* forEach vai passar por cada item para pegar o produto, criando o produto */ 
 
-async function getItem() {
-  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  const itemData = await response.json();
-  return itemData.results.forEach((itemML) => createProductItemElement(itemML));
-} 
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,6 +17,18 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+// async function getItem() { /* async faz a mesma coisa da Promise, fica mais fácil de interpretar */
+//   let response /* response um objeto que recebe a propriedade Json(), que recebe uma promessa q seja retornado um fetch (API) */= await /* await esperando uma promessa, a chamada do fetch, mas somente a propriedade do Json */ fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') /* toda a API está contida no response, mas só queremos pegar o JASON */
+//   let itemData = await /* await esperando o response.json */response.json(); /* .json é uma function */
+//   return itemData.results.forEach((itemML) => createProductItemElement(itemML)); /* itemML não sabemos qual parametro está passando, qual valor vai ser recebido */
+// } /* forEach vai passar por cada item para pegar o produto, criando o produto */ 
+
+async function getItem() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const itemData = await response.json();
+  return itemData.results.forEach((itemML) => createProductItemElement(itemML));
+} 
 
 // function createProductItemElement({ id: sku, id: name, id: image }) /* ({}) desestruturando um objeto ?*/{
 //   const section = document.createElement('section');
@@ -72,7 +78,7 @@ function createProductItemElement({ id: sku, id: name, id: image }) {
 //   try {
 //     getItem();
 //   } catch /* obrigatoriamente tem que ter junto com o try, retorna sempre um erro. */ (error) {
-//     console.log(error);
+//     console.log(error); OK!
 //   }
 // };
 
