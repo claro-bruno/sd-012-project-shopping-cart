@@ -3,6 +3,7 @@ const QUERY_API = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ITEM_API = 'https://api.mercadolibre.com/items/';
 const ALERT_MSG = 'Não foi possivel concluir sua solicitação, tente novamente!';
 
+// Mentoria da Gisele
 function sumCart() {
   const values = document.querySelectorAll('.value');
   const totalCart = document.getElementsByClassName('total-price');
@@ -100,6 +101,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   }
 }
 
+// Ajuda do Caio Takeshi turma12 para compreender a lógica
 async function getElementToCart(itemID) {
   try {
     let elementsChoice = await fetch(`${ITEM_API}${itemID}`);
@@ -120,10 +122,6 @@ function addCart() {
         const elementAdd = target.parentElement.firstChild.innerText;
         getElementToCart(elementAdd);
       }
-      // if (target.classList.contains('empty-cart')) {
-      //   document.getElementsByClassName('cart__items')[0].innerHTML = '';
-      //   sumCart();
-      // }
     });
   } catch (error) {
     alert(ALERT_MSG);
