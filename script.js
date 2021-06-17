@@ -7,8 +7,7 @@ const ol = document.getElementsByClassName('cart__items');
 // ------------------------------------------------------------------------------------
 
 function saveListLocalStorage() {
-  localStorage.setItem('buyList', cartItem.innerHTML);
-  localStorage.setItem('prices', priceTotal.innerHTML);
+
 }
 
 function createProductImageElement(imageSource) {
@@ -37,6 +36,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
 function fetchListItems() {
   const itemsElements = document.querySelector('.items');
   fetch(`${API_MERCADO_LIVRE}`)
@@ -46,11 +53,10 @@ function fetchListItems() {
       itemsElements.appendChild(createProductItemElement(item))));
 }
 
-
 document.addEventListener('click', function ({ target }) {
   if (target.classList.contains('item__add')) {
-    const itemID = target.parentElement.firstChild.innerText;
-    addItemToCart(itemID);
+    const idItem = target.parentElement.firstChild.innerText;
+    addItemToCart(idItem);
   }
 })
 
@@ -64,19 +70,19 @@ function cartItemClickListener(event) {
   saveListLocalStorage();
 }
 
-function buttonsCLick() {
-  const buttons = document.querySelectorAll('button.item__add');
-  buttons.forEach((button) => {
-    button.addEventListener('click', (event) => {
-      addItemstoCart(event);
-    });
-  });
-}
-
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
   itemAPI = await itemAPI.json();
   ol[0].appendChild(createCartItemElement(itemAPI));
+}
+
+function buttonsCLick() {
+  const buttons = document.querySelectorAll('button.item__add');
+  buttons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      addItemToCart(event);
+    });
+  });
 }
 
 function emptyShoppingCart () {
@@ -86,14 +92,6 @@ function emptyShoppingCart () {
     cartItems.innerHTML = '';
     localStorage.clear();
   });
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 window.onload = function onload() {
