@@ -1,7 +1,8 @@
 const API_MERCADO_LIVRE = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const listOrdener = 'ol.cart__items';
 const loading = document.getElementsByClassName('loading');
-const shopCart = document.getElementsByClassName('cart__items'); // antiga ol
+const shopCart = document.getElementsByClassName('cart__items');
+const section = document.getElementsByClassName('items');
 // ------------------------------------------------------------------------------------
 
 function saveListLocalStorage() {
@@ -48,21 +49,18 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function fetchListItems() {
-  const itemsElements = document.querySelector('.items');
+const fetchListItems = async () => {
+  let fetchAPI = await fetch(API_MERCADO_LIVRE);
+  fetchAPI = await fetchAPI.json();
+  fetchAPI.results.forEach((API) => section[0].appendChild(createProductItemElement(API)));
   loading[0].remove();
-  fetch(`${API_MERCADO_LIVRE}`)
-    .then((response) => response.json())
-    .then((response) => response.results)
-    .then((items) => items.forEach((item) => 
-      itemsElements.appendChild(createProductItemElement(item))));
-      
-}
+};
 
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
   itemAPI = await itemAPI.json();
   shopCart[0].appendChild(createCartItemElement(itemAPI));
+  saveListLocalStorage();
 }
 
 document.addEventListener('click', function ({ target }) {
