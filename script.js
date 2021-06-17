@@ -15,9 +15,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 // Captura o id de cada um dos itens e os submete ao método innerText
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span0.item__sku').innerText;
-}
+} */
 
 // Especifica as ações após o evento da addEventListener da createCartItemElement
 function cartItemClickListener(event) {
