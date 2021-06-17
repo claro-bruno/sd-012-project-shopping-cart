@@ -34,10 +34,10 @@ function cartItemClickListener(event) {
   event.target.remove();
 }
 
-// function loading() {
-//   const carregamento = document.querySelector('.container');
-  
-// }
+function loadingCart() {
+  const carregamento = document.querySelector('.container');
+  carregamento.appendChild(createCustomElement('p', 'loading', 'loading...'));
+}
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -52,8 +52,7 @@ function addProducts() {
   addCart.forEach((cart) => {
     cart.addEventListener('click', (event) => {
       const itemid = event.target.parentElement.firstChild.innerText;
-      fetch(`https://api.mercadolibre.com/items/${itemid}`)
-      .then((response) => response.json())
+      fetch(`https://api.mercadolibre.com/items/${itemid}`).then((response) => response.json())
       .then((jsonBody) => {
         const cartValue = createCartItemElement(
           { sku: jsonBody.id, name: jsonBody.title, salePrice: jsonBody.price },
@@ -68,19 +67,17 @@ function addProducts() {
   
   function capLocalStor() {
     const valorOl = document.querySelector('.cart__items');
-    // setTimeout(() => {
     const capturaItem = localStorage.getItem('valores');
     valorOl.innerHTML = capturaItem;
     const armazLi = document.querySelectorAll('cart__item');
     armazLi.forEach((armaz) => {
       armaz.addEventListener('click', addProducts);
     });
-  // }, 2000);
   }
 
-  function fetchMode() {
-    // loading();
-    fetch(valorFetch)
+  async function fetchMode() {
+    loadingCart();
+    await fetch(valorFetch)
     .then((response) => response.json())
     .then((jsonBody) =>
     jsonBody.results.forEach((itensBody) => {
@@ -88,10 +85,9 @@ function addProducts() {
         { sku: itensBody.id, name: itensBody.title, image: itensBody.thumbnail },
         );
         document.querySelector('.items').appendChild(conver);
-      }))
-      .then(() => addProducts());
-      // const valor = document.querySelector('.loading');
-      // valor.remove;
+      }));
+      const valor = document.querySelector('.loading');
+      valor.remove();
     }
 
   function removeButton() {
@@ -103,8 +99,9 @@ function addProducts() {
     });
   }
 
-window.onload = function onload() { 
-  fetchMode();
+window.onload = async function onload() { 
+  await fetchMode();
+  addProducts();
   removeButton();
   capLocalStor();
 };
