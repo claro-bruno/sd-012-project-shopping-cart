@@ -91,7 +91,7 @@ function esvaziarCarrinho() {
 });
 }
 
-function capLocalStor() {
+function buscaLocalStorage() {
   const valorOl = document.getElementsByClassName('cart__items')[0];
   const capturaItem = localStorage.getItem('carrinhoDeCompras');
   valorOl.innerHTML = capturaItem;
@@ -103,6 +103,6 @@ function capLocalStor() {
 
 window.onload = async function onload() { 
   await buscaItensAPI();
-  capLocalStor();
+  buscaLocalStorage();
   esvaziarCarrinho();
 };
