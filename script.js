@@ -34,6 +34,15 @@ function getButton(teste) {
   return teste.querySelector('button.item__add');
 }
 
+const removeButton = () => {
+  const li = document.querySelectorAll('li.cart__item');
+  const value = document.querySelector('p.total-price');
+  li.forEach((removed) => removed.remove());
+  value.innerText = 0;
+  localStorage.removeItem('cart');
+  localStorage.removeItem('price');
+};
+
 const getPrice = (price) => {
   const totalPrice = document.querySelector('.total-price');
   const convert = parseFloat(totalPrice.innerText);
@@ -115,4 +124,6 @@ document.addEventListener('click', (event) => {
 window.onload = function onload() {
   fetchURL(urlProducts);
   checkIfSave();
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', removeButton);
 };
