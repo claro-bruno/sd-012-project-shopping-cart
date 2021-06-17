@@ -32,16 +32,16 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener());
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
 // Fazer um appendChild do item retorando pela createCartItemElement
-const criarItensDoCarrinho = () => { 
-  const idProduto = Event.target;
+const criarItensDoCarrinho = (event) => { 
+  const idProduto = event.target;
   console.log(idProduto); // Não foi consolado. 13.06
-  return fetch(`https://api.mercadolibre.com/items/${idProduto}`)
-    .then((item) => console.log(item.json))
+   fetch(`https://api.mercadolibre.com/items/${idProduto}`)
+    .then((item) => item.json()
       .then((item) => document.querySelector('.cart__items')
         .appendChild(createCartItemElement(item)));
 };
@@ -52,7 +52,7 @@ const eventoDeClique = () => {
   /* console.log(document.querySelector('.cart__items')); */
   arrayDeBotoes.forEach((botao) => {
     console.log(botao);
-    botao.addEventListener('click', criarItensDoCarrinho());
+    botao.addEventListener('click', criarItensDoCarrinho);
   });
 };
 
