@@ -42,6 +42,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Soma o preço total dos itens presentes no carrinho (Mentoria - Márcio Daniel)
 function sum() {
   const takeAllLisByClass = document.querySelectorAll('.cart__item');
   let acumulador = 0;
@@ -91,6 +92,18 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Esvazia o carrinho de compras e o Local Storage
+function emptyCart() {
+  const takeEmptyCartButton = document.querySelector('.empty-cart');
+  const takeSpanPrice = document.querySelector('#price');
+
+  takeEmptyCartButton.addEventListener('click', () => {
+    takeOlCartItem.innerText = '';
+    localStorage.clear();
+    takeSpanPrice.innerText = 0;
+  });
+}
+
 // Pega API do Mercado Livre e renderiza produtos na tela na tela (Mentoria - Ronald)
 function takeProductsFromApi() {
   return new Promise((resolve) => {
@@ -132,4 +145,5 @@ window.onload = function onload() {
 
   verifyLocalStorage();
   showTotalPrice();
+  emptyCart();
 };
