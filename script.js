@@ -3,6 +3,7 @@ const PRODUCT_URL = 'https://api.mercadolibre.com/items/';
 const itemsSection = document.querySelector('.items');
 const cartsSection = document.querySelector('.cart__items');
 const totalPriceClass = document.querySelector('.total-price');
+const loadingClass = document.querySelector('.loading');
 
 const localStorageCart = () => {
   const cartS = cartsSection.innerHTML;
@@ -63,6 +64,7 @@ const getItemFromAPI = async () => {
   try {
     const response = await fetch(BASE_URL);
     const { results } = await response.json();
+    loadingClass.remove();
     results.forEach((item) => {
       const itemDetails = {
         sku: item.id,
