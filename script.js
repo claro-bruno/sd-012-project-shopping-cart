@@ -56,8 +56,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// Requisição da api e listagem de produtos
-
 const getItens = (results) => {
   const objeto = {};
   const list = document.querySelector('.items');
@@ -78,7 +76,7 @@ function getApi() {
     .then((result) => getItens(result.results))
     .then(() => loading.remove());
 }
-//errei o commit
+
 const clearCart = () => {
   const li = document.querySelectorAll('li.cart__item');
   li.forEach((removed) => removed.remove());
