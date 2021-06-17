@@ -15,13 +15,15 @@ function createCustomElement(element, className, innerText) {
 }
 
 function createProductItemElement() {
-  const section = document.createElement('section');
+  const section = document.createElement('section');  
   section.className = 'item';
-   fetch(urlProducts)
+  const idItem = document.querySelector('.items');
+  fetch(urlProducts)
   .then((response) => response.json())
   .then((indice) => indice.results)
   .then((items) => {
       (items.forEach((item) => { 
+      idItem.appendChild(createProductItemElement());
       section.appendChild(createCustomElement('span', 'item__sku', item.id));
       section.appendChild(createCustomElement('span', 'item__title', item.title));
       //  section.appendChild(createProductImageElement(item.image));
@@ -30,14 +32,6 @@ function createProductItemElement() {
   });
   return section;
 }
-
-const getSerchResults = () => {
-  const idItem = document.querySelector('.items');
-  fetch(urlProducts)
-  .then((response) => response.json())
-  .then((indice) => indice.results)
-  .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement())));
-};
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -56,5 +50,5 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = function onload() {
-  getSerchResults();
+  createProductItemElement();
 };
