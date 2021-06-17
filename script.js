@@ -1,11 +1,17 @@
-function pegarItem() {
-  return new Promise((resolve, reject) => {
-    fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-      .then((response) => response.json())
-      .then((array) => resolve(array))
-      .catch((error) => reject(error));
-  });
+async function pegarItem() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const itemData = await response.json();
+  return itemData;
+  // .results.forEach((itemML) => createProductItemElement(itemML));
 }
+// function pegarItem() {
+//   return new Promise((resolve, reject) => {
+//     fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+//       .then((response) => response.json())
+//       .then((array) => resolve(array))
+//       .catch((error) => reject(error));
+//   });
+// }
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -25,7 +31,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
   const product = document.querySelector('.items');
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -38,7 +44,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
+  event.target.remove();
 }
 
 function fetchAddItem(id) {
@@ -49,6 +56,12 @@ function fetchAddItem(id) {
       .catch((error) => reject(error));
   });
 }
+
+// async function testeGabriela1(id){
+//   let response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+//   let itemData = await response.json();
+//   return itemData.results.forEach((itemML) => createProductItemElement(itemML));
+// }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -71,11 +84,10 @@ function addItem() {
 }
 
 window.onload = async () => {
-  try {
-    const item = await pegarItem();
-    item.results.forEach((itemML) => createProductItemElement(itemML));
-    addItem();
-  } catch (error) {
-    console.log(error);
-  }
+    // const item = await pegarItem();
+    // item.results.forEach((itemML) => createProductItemElement(itemML));
+    // addItem();
+   const item = await pegarItem();
+   item.results.forEach((itemML) => createProductItemElement(itemML));
+   addItem();
 };
