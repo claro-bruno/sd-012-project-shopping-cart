@@ -28,9 +28,29 @@ function createProductItemElement({ sku, name, image }) {
   return item.querySelector('span.item__sku').innerText;
  } */
 
+ const addStorage = (cart) => {
+  localStorage.setItem('cart', cart.innerHTML);
+};
+
+ const addPriceStorage = (totalPrice) => {
+  localStorage.setItem('price', totalPrice);
+};
+
+const updateCartPrice = (price = 0) => {
+  const priceParagraph = document.querySelector('.total-price');
+  const actualPrice = parseFloat(priceParagraph.innerHTML);
+  const totalPrice = actualPrice + price;
+  priceParagraph.innerHTML = parseFloat(totalPrice);
+  addPriceStorage(totalPrice);
+};
+
 function cartItemClickListener(event) {
-  const uList = event.target.parentNode;
+  const li = event.target;
+  const uList = li.parentNode;
+  const priceItem = parseFloat(li.innerText.split('$')[1]);
   uList.removeChild(event.target);
+  addStorage(uList);
+  updateCartPrice(priceItem * -1);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -66,10 +86,6 @@ const getItem = (itemId) => new Promise((resolve) => {
   .then((response) => response.json().then((computer) => resolve(computer)));
 });
 
-const addStorage = (cart) => {
-  localStorage.setItem('cart', cart.innerHTML);
-};
-
 const addProduct = (promise) => {
 const cart = document.querySelector('.cart__items');
 promise.then((item) => {
@@ -77,6 +93,7 @@ promise.then((item) => {
   const liItem = createCartItemElement({ sku, name, salePrice });
   cart.appendChild(liItem);
   addStorage(cart);
+  updateCartPrice(salePrice);
 });
 };
 
@@ -87,6 +104,11 @@ arrayItem.forEach((item) => {
   const button = item.querySelector('.item__add');
   button.addEventListener('click', () => addProduct(getItem(sku)));
 });
+};
+
+const getPrice = () => {
+  const price = localStorage.getItem('price');
+  updateCartPrice(price);
 };
 
 const getStorage = () => {
@@ -103,4 +125,5 @@ const getStorage = () => {
 window.onload = function onload() {
   addProductsToPage(getPromiseProducts()).then(() => addCart());
   getStorage();
+  getPrice();
  };
