@@ -95,17 +95,17 @@ function addItem() {
       saveLocalStorage();
     });
   });
-};
+}
 
 const removeAll = () => {
   const buttonRemoveAll = document.querySelector('.empty-cart');
-  buttonRemoveAll.addEventListener('click', (event) => {
+  buttonRemoveAll.addEventListener('click', () => {
     const li = document.querySelectorAll('.cart__item');
     for (let index = 0; index < li.length; index += 1) {
       li[index].remove();
     }
-  })
-}
+  });
+};
 
 window.onload = async () => {
     // const item = await pegarItem();
