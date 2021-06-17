@@ -110,11 +110,13 @@ const catchId = () => {
 
 const fetchURL = (url) => {
   const idItem = document.querySelector('.items');
+  const loading = document.querySelector('.loading');
   fetch(url)
   .then((response) => response.json())
   .then((indice) => indice.results)
   .then((items) => items.forEach((item) => idItem.appendChild(createProductItemElement(item))))
-  .then(() => catchId());
+  .then(() => catchId())
+  .then(() => loading.remove());
 };
 
 document.addEventListener('click', (event) => {
