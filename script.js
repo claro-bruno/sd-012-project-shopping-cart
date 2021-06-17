@@ -23,7 +23,7 @@ function createCustomElement(element, className, innerText) {
 function cartItemClickListener(event) {
   // coloque seu código aqui 
   const itemClicado = event.target;
-  console.log(itemClicado.parentNode);
+  /* console.log(itemClicado.parentNode); */
   itemClicado.parentNode.removeChild(itemClicado);
 }
 
@@ -84,8 +84,18 @@ const criarListaDeProdutos = () => {
           })).then(() => eventoDeClique());
 };
 
+const clearCart = () => {
+  document.querySelector('.cart__items').innerHTML = '';
+};
+
+const esvaziarCarrinho = () => {
+  document.querySelector('.empty-cart')
+    .addEventListener('click', clearCart);
+};
+
 window.onload = function onload() { 
   // Requisito 1
   criarListaDeProdutos(); 
+  esvaziarCarrinho();
   /* eventoDeClique(); */
 };
