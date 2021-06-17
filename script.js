@@ -39,7 +39,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Fazer um appendChild do item retorando pela createCartItemElement
 const criarItensDoCarrinho = (event) => { 
   const idProduto = event.target;
-  console.log(idProduto); // Não foi consolado. 13.06
    fetch(`https://api.mercadolibre.com/items/${idProduto}`)
     .then((item) => item.json())
       .then((item) => document.querySelector('.cart__items')
