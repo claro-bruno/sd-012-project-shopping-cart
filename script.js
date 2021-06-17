@@ -1,3 +1,4 @@
+const totalPrice = document.querySelector('.total-price');
 const ol = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
@@ -31,8 +32,9 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);
+  const olCartItem = document.querySelector('.cart__items');
+  localStorage.removeItem(event.target.innerHTML);
+  olCartItem.removeChild(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -45,19 +47,31 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 const getFetchML = async () => {
   const items = document.querySelector('.items');
-  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const ob = await response.json();
   const result = ob.results;
   return result.forEach((computer) => {
     items.appendChild(createProductItemElement(computer));
-  })
-}
+  });
+};
+
+const savedStorage = () => {
+  localStorage.setItem('.cart', ol.innerHTML);
+};
+
+const loadStorage = () => {
+  const load = localStorage.getItem('.cart');
+  if (load) {
+    ol.innerHTML = load;
+    ol.childNodes.forEach((loaded) => loaded.addEventListener('click', cartItemClickListener));
+  }
+};
 
 const fetchID = async (id) => {
-  const ol = document.querySelector('.cart__items');
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const ob = await response.json();
   ol.appendChild(createCartItemElement(ob));
+  savedStorage();
 };
 
 const addButtonCart = () => {
@@ -65,16 +79,16 @@ const addButtonCart = () => {
   buttonCart.forEach((button) => {
     button.addEventListener('click', () => {
       const getID = button.parentNode.firstChild.innerText;
-      fetchID(getID)
+      fetchID(getID);
     });
   });
 };
 
 const clearShop = () => {
   const clearButtonCart = document.querySelector('.empty-cart');
-  const ol = document.querySelector('.cart__items');
   clearButtonCart.addEventListener('click', () => {
     ol.innerHTML = '';
+  localStorage.clear();
   });
 };
 
@@ -82,5 +96,5 @@ window.onload = async function onload() {
   await getFetchML();
   await addButtonCart();
   await clearShop();
-
- };
+  await loadStorage();
+};
