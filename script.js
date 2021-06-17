@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
 const localStorageGetItems = () => {
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = localStorage.getItem('ol');
-  const cartItems = Object.values(document.getElementsByClassName('cart__item'));
+  const cartItems = document.querySelectorAll('.cart__item');
   cartItems.forEach((element) => {
     element.addEventListener('click', cartItemClickListener);
   });

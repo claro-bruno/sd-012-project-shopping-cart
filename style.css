@@ -1,3 +1,15 @@
+body {
+  margin: 0;
+  top: 0;
+}
+
+header {
+  background-color: yellow;
+  text-align: center;
+  top: 0;
+  height: 100%;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
