@@ -88,6 +88,18 @@ function createCartItemElement({
   return li;
 }
 
+const localStorageList = document.querySelector('ol');
+
+const saveLocalStorage = () => {
+  const saveList = document.querySelector('.cart__items');
+  localStorage.setItem('listSave', saveList.innerHTML);
+};
+
+const getLocalStorage = () => {
+  const itemGet = localStorage.getItem('listSave');
+  localStorageList.innerHTML = itemGet;
+};
+
 function cartItem() {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((btn) => {
@@ -99,16 +111,6 @@ function cartItem() {
       saveLocalStorage();
     });
   });
-}
-
-const saveLocalStorage = () => {
-  const saveList = document.querySelector('.cart__items');
-  localStorage.setItem('listSave', saveList.innerHTML);
-}
-
-const getLocalStorage = () => {
-  const itemGet = localStorage.getItem('listSave');
-  localStorageList.innerHTML = itemGet;
 }
 
 window.onload = async () => {
