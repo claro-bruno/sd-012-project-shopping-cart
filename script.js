@@ -1,9 +1,3 @@
-// async function getItem() { /* async faz a mesma coisa da Promise, fica mais fácil de interpretar */
-//   let response /* response um objeto que recebe a propriedade Json(), que recebe uma promessa q seja retornado um fetch (API) */= await /* await esperando uma promessa, a chamada do fetch, mas somente a propriedade do Json */ fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') /* toda a API está contida no response, mas só queremos pegar o JASON */
-//   let itemData = await /* await esperando o response.json */response.json(); /* .json é uma function */
-//   return itemData.results.forEach((itemML) => createProductItemElement(itemML)); /* itemML não sabemos qual parametro está passando, qual valor vai ser recebido */
-// } /* forEach vai passar por cada item para pegar o produto, criando o produto */ 
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,13 +21,17 @@ function createCustomElement(element, className, innerText) {
 //   section.appendChild(createCustomElement('span', 'item__title', name));
 //   section.appendChild(createProductImageElement(image));
 //   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  
+
 //   product.appendChild(section); /* meu product vai receber um filho chamado section, puxando o arquivo.
 //  */ 
 // /*   não precisa do return pois o product.appendChild(section); já está retornando */
 // }
 
-function createProductItemElement({ id: sku, id: name, id: image }) {
+function createProductItemElement({
+  id: sku,
+  id: name,
+  id: image
+}) {
   const section = document.createElement('section');
   section.className = 'item';
   const product = document.querySelector('.items');
@@ -55,39 +53,58 @@ function createProductItemElement({ id: sku, id: name, id: image }) {
 async function getItem() {
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const itemData = await response.json();
-  return itemData.results.forEach((itemML) => createProductItemElement(itemML));
-} 
+  return itemData
+  // .results.forEach((itemML) => createProductItemElement(itemML));
+}
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+// async function fecthAddItem(id) {
+//   const response = await fetch(´https://api.mercadolibre.com/items/${id}´);
+//   const itemData = await response.json();
+//   return itemData.results.forEach((itemML) => createProductItemElement(itemML));
+// } 
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function cartItemClickListener() {
+  
+}
 
-// window.onload = async() => {
-//   try {
-//     getItem();
-//   } catch /* obrigatoriamente tem que ter junto com o try, retorna sempre um erro. */ (error) {
-//     console.log(error); OK!
-//   }
-// };
+async function fecthAddItem(id) {
+    const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+    const result = await response.json();
+    return result;
+  }
+
+function createCartItemElement({
+  id: sku,
+  title: name,
+  price: salePrice
+}) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function cartItem() {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', async (event) => {
+      const id = event.target.parentElement.firstChild.innerHTML;
+      const itemSelected = await fecthAddItem(id);
+      const ol = document.querySelector('.cart__items');
+      ol.appendChild((createCartItemElement(itemSelected)));
+    });
+  });
+}
 
 window.onload = async () => {
-  try {
-    getItem();
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const addItem = await getItem();
+  addItem.results.forEach((itemML) => createProductItemElement(itemML));
+  cartItem();
+}
 
 // OK!
