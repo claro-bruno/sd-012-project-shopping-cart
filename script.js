@@ -1,6 +1,8 @@
 const cartList = document.querySelector('.cart__items');
 const itemsSection = document.querySelector('.items');
 const total = document.querySelector('.total-price');
+const PRODUCTS_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+const ITEM_URL = 'https://api.mercadolibre.com/items/';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -61,9 +63,9 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const appendComputers = (results) => {
-  results.forEach((computer) => {
-    itemsSection.appendChild(createProductItemElement(computer));
+const appendProducts = (results) => {
+  results.forEach((product) => {
+    itemsSection.appendChild(createProductItemElement(product));
   });
 };
 
@@ -85,7 +87,7 @@ const buttonEvents = () => {
         cartList.appendChild(loadingItem);
         const section = event.target.parentElement;
         const itemSku = getSkuFromProductItem(section);
-        const promise = await fetch(`https://api.mercadolibre.com/items/${itemSku}`);
+        const promise = await fetch(`${ITEM_URL}${itemSku}`);
         const info = await promise.json();
         removeLoading();
         appendCartItem(info);
@@ -95,14 +97,14 @@ const buttonEvents = () => {
   });
 };
 
-const fetchComputers = async () => {
+const fetchProduct = async (item) => {
   try {
     const loadingProducts = createCustomElement('p', 'loading', 'Carregando Lista de Produtos');
     itemsSection.appendChild(loadingProducts);
-    const promise = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+    const promise = await fetch(`${PRODUCTS_URL}${item}`);
     const { results } = await promise.json();
     removeLoading();
-    appendComputers(results);
+    appendProducts(results);
     buttonEvents();
   } catch (error) {
     alert('Erro ao requerir os dados. Tente novamente mais tarde');
@@ -128,8 +130,16 @@ const updateCart = () => {
   cartList.innerHTML = localStorage.getItem('cartList');
 };
 
+const reassingEvents = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+};
+
 window.onload = function onload() {
-  fetchComputers();
+  fetchProduct('computador');
   updateTotal();
   updateCart();
+  reassingEvents();
 };
