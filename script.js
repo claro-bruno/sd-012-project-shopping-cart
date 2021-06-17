@@ -32,14 +32,32 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// Adiciona/remove produtos ao carrinho
+// Adiciona produtos ao carrinho e remove produtos do carrinho e Local Storage (Mentoria - Márcio Daniel )
+function addToLocalStorage() {
+  const takeLi = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('product', takeLi);
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.remove(event.target);
+  event.target.remove();
+  addToLocalStorage();
+}
+
+// Renderiza na tela o carrinho com os produtos do Local Storage (Mentoria - Gisele Santin)
+function verifyLocalStorage() {
+  const takeFromLocalStorage = localStorage.getItem('product');
+  if (takeFromLocalStorage) {
+    takeOlCartItem.innerHTML = takeFromLocalStorage;
+  }
+  const takeLiAgain = takeOlCartItem.children;
+  Array.from(takeLiAgain).forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -77,6 +95,8 @@ function takeProductButtons() {
         .then((response) => response.json())
         .then((secondResponse) => {
           takeOlCartItem.appendChild(createCartItemElement(secondResponse));
+
+          addToLocalStorage();
         });
     });
   });
@@ -85,4 +105,6 @@ function takeProductButtons() {
 window.onload = function onload() {
   takeProductsFromApi()
     .then(() => takeProductButtons());
+
+  verifyLocalStorage();
 };
