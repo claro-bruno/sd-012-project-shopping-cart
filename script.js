@@ -38,11 +38,13 @@ function addCartItem(ItemID) {
 }
 
 function cartItemClickListener(event) {
-  if (event.target.className === ('item__add')) {
+  const target = event.target.className;
+  if (target === ('item__add')) {
     const tag = event.target.parentNode;
     const itemSku = getSkuFromProductItem(tag);
     addCartItem(itemSku);
   }
+  if (target === ('cart__item')) event.target.remove();  
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
