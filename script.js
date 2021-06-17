@@ -29,7 +29,8 @@ function createProductItemElement({ sku, name, image }) {
  } */
 
 function cartItemClickListener(event) {
-  console.log(event);
+  const uList = event.target.parentNode;
+  uList.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -68,7 +69,6 @@ const getItem = (itemId) => new Promise((resolve) => {
 const addProduct = (promise) => {
 const cart = document.querySelector('.cart__items');
 promise.then((item) => {
-  console.log(item);
   const { id: sku, title: name, price: salePrice } = item;
   const liItem = createCartItemElement({ sku, name, salePrice });
   cart.appendChild(liItem);
