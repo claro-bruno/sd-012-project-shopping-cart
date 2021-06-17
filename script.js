@@ -16,6 +16,21 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function sumPrices() {
+  const cartElements = Array.from(document.getElementsByClassName('cart__item'));
+  const productsText = [];
+  const productPrices = [];
+  let totalPrice = 0;
+  cartElements.forEach((element) =>
+    productsText.push(element.innerText));
+  productsText.forEach((element) =>
+    productPrices.push(parseFloat(element.split('$')[1])));
+  totalPrice = productPrices.reduce((a, b) => (parseFloat(a) + parseFloat(b)), 0);
+  
+  document.querySelector('.total-price')
+  .innerText = totalPrice;
+}
+
 function cartItemClickListener(li, id) {
   li.remove();
   localStorage.removeItem(id);
@@ -53,24 +68,6 @@ async function loadStoredItem(id) {
     console.log(error);
   }
  }
-
-function sumPrices() {
-  const cartElements = Array.from(document.getElementsByClassName('cart__item'));
-  const productsText = [];
-  const productPrices = [];
-  let totalPrice = 0;
-  cartElements.forEach((element) =>
-    productsText.push(element.innerText));
-  productsText.forEach((element) =>
-    productPrices.push(parseFloat(element.split('$')[1])));
-  totalPrice = productPrices.reduce((a, b) => (parseFloat(a) + parseFloat(b)), 0);
-  // console.log(cartElements);
-  // console.log(productPrices);
-  // console.log(totalPrice);
-  // let getSum = 
-  document.querySelector('.total-price')
-  .innerText = totalPrice;
-}
 
  function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
@@ -144,7 +141,17 @@ function loadCart() {
   }
 }
 
+function emptyCart() {
+  const items = document.querySelector('.cart__items');
+  while (items.firstChild) {
+    items.removeChild(items.lastChild);
+  }
+  localStorage.clear();
+  sumPrices();
+}
+
 window.onload = function onload() {
+  document.querySelector('.empty-cart').addEventListener('click', () => { emptyCart(); });
   loadCart();
   fetchProducts();
 };
