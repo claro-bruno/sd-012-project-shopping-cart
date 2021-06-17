@@ -10,18 +10,39 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-const searchComputers = () => (new Promise((resolve) => {
-    fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+const searchComputers = () => {
+  const container = document.querySelector('.items');
+  const span = document.createElement('span');
+  span.className = 'loading';
+  container.appendChild(span);
+  span.innerText = 'loading...';
+  const loading = document.querySelector('.loading');
+  return new Promise((resolve) => {
+fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
       .then((response) => response.json())
-      .then((data) => resolve(data.results));
-  })
-);
-const addComputers = (id) => (new Promise((resolve) => {
-    fetch(`https://api.mercadolibre.com/items/${id}`)
+      .then((data) => {
+        container.removeChild(loading);
+        resolve(data.results);
+      });
+  });
+};
+const addComputers = (id) => {
+  const container = document.querySelector('.cart');
+  const span = document.createElement('span');
+  span.className = 'loading';
+  container.appendChild(span);
+  span.innerText = 'loading...';
+  const loading = document.querySelector('.loading');
+
+  return new Promise((resolve) => {
+fetch(`https://api.mercadolibre.com/items/${id}`)
       .then((response) => response.json())
-      .then((data) => resolve(data));
-  })
-);
+      .then((data) => {
+        container.removeChild(loading);
+        resolve(data);
+      });
+  });
+};
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -31,24 +52,19 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 function cartItemClickListener(event) {
   const itemsCart = document.getElementsByClassName('cart__items');
-  itemsCart[0].removeChild(event.target);
-  const variavel = JSON.parse(localStorage.getItem('listCar'));
-  const itemSelected = (event.target).innerText;
-  const atualCar = variavel.filter((elementRemove) => {
-    if (!itemSelected.includes(elementRemove.sku)) {
-     return true;
-    }
-    return false;
-  });
-  localStorage.setItem('listCar', JSON.stringify(atualCar));
+itemsCart[0].removeChild(event.target);
+const variavel = JSON.parse(localStorage.getItem('listCar'));
+const itemSelected = (event.target).innerText;
+const atualCar = variavel.filter((elementRemove) => {
+  if (!itemSelected.includes(elementRemove.sku)) {
+   return true;
+  }
+  return false;
+});
+localStorage.setItem('listCar', JSON.stringify(atualCar));
 }
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -57,9 +73,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 const addComputerCartClick = (event) => {
-  const computerSelected = event.target.parentNode;
-  const itemsCart = document.getElementsByClassName('cart__items');
-  addComputers(computerSelected.childNodes[0].innerText)
+const computerSelected = event.target.parentNode;
+const itemsCart = document.getElementsByClassName('cart__items');
+addComputers(computerSelected.childNodes[0].innerText)
     .then((computers) => {
       const newItem = { sku: computers.id, name: computers.title, salePrice: computers.price,
       };
@@ -77,7 +93,6 @@ const addComputerCartClick = (event) => {
 function refreshCar() {
   const itemCar = JSON.parse(localStorage.getItem('listCar'));
   const sectionCart = document.getElementsByClassName('cart__items');
-
   if (itemCar != null) {
     itemCar.forEach((computer) => {
       const item = createCartItemElement({
@@ -92,7 +107,7 @@ function refreshCar() {
 function includeComputerCar() {
   const sectionItems = document.getElementsByClassName('items');
     (searchComputers()
-          .then((computers) => {
+      .then((computers) => {
         computers.forEach((computer) => {
           const item = createProductItemElement({
             sku: computer.id, 
@@ -108,9 +123,17 @@ function includeComputerCar() {
         }
       })
     );
-  }
-
-  window.onload = function onload() { 
-    refreshCar();
-    includeComputerCar();
-  };
+}
+function clearCar() {
+  const listCar = document.querySelector('.cart__items');
+while (listCar.firstChild) {
+  listCar.removeChild(listCar.lastChild);
+}
+localStorage.clear();
+}
+window.onload = function onload() { 
+  refreshCar();
+  includeComputerCar();
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', clearCar);
+};
