@@ -116,14 +116,14 @@ clear();
 const addLoad = () => {
   const span = document.createElement('span');
   span.className = 'loading';
-  span.innerText = "loading...";
-  sectionContainer.appendChild(span)
-}
+  span.innerText = 'loading...';
+  sectionContainer.appendChild(span);
+};
 
 const removeLoad = () => {
   const spanElement = document.querySelector('.loading');
-  sectionContainer.removeChild(spanElement)
-}
+  sectionContainer.removeChild(spanElement);
+};
 // Requesito 1
 // Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
 // E utilizando o Slack com a dúvida de Eder Santos
@@ -135,7 +135,7 @@ const getProduct = async () => {
   computer.results.forEach((element) => {
     sectionItems.appendChild(createProductItemElement(element));
   });
-  removeLoad()
+  removeLoad();
   addPurchases();
 };
 
