@@ -34,17 +34,16 @@ function cartItemClickListener(event) {
   const ol = document.querySelector('.cart__items')
   event.target.remove(ol)
   saveCart()
+  getPrice()
 }
-
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  return li;
+  return li; 
 }
-
 // Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
 const addPurchases = () => {
   const button = document.querySelectorAll('.item__add');
@@ -55,6 +54,7 @@ const addPurchases = () => {
       const url = `https://api.mercadolibre.com/items/${id}`;
       fetch(url).then((response) => response.json().then((i) => {
         ol.appendChild(createCartItemElement(i))
+        getPrice()
         saveCart()
       }));
     });
@@ -77,11 +77,16 @@ const getProduct = async () => {
 // https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js#:~:text=Para%20salvar%20no%20localStorage%20%2C%20basta,parse%20.
 // https://www.youtube.com/watch?v=pLtAZF8FDXE&ab_channel=CFBCursos
 const saveCart = () => {
+  const price = document.querySelector('.total-price') 
   const ol = document.querySelector('.cart__items')
+  localStorage.setItem('price', price.innerHTML)
   localStorage.setItem('cart', ol.innerHTML);
 };
+// Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
   const ol = document.querySelector('.cart__items')
+  const p = document.querySelector('.total-price')
+  p.innerHTML = localStorage.getItem('price')
   ol.innerHTML = localStorage.getItem('cart')
   const list = document.querySelectorAll('.cart__items');
   list.forEach((item) => item.addEventListener('click', cartItemClickListener))
@@ -89,13 +94,28 @@ const addSaveCart = () => {
 const createPrice = () => {
   const section = document.querySelector('.cart')
   const priceTotal = document.createElement('p')
-  priceTotal.textContent = 'Total:'
+  // priceTotal.textContent = 'Total:'
   priceTotal.className = 'total-price'
   section.appendChild(priceTotal)
 };
 
+// requisito 5 auxiliado por Julio Barros
+const getPrice = () => {
+  const li = document.querySelectorAll('.cart__item')
+  let price = 0;
+  li.forEach((item) => {
+    const liTxt = item.innerText;
+    const position = liTxt.indexOf('$') +1;
+    const positionFinal = liTxt.length
+    const ultimatePosition = liTxt.substr(position, positionFinal);
+    const valor = parseFloat(ultimatePosition)
+    price += valor
+  })
+  const p = document.querySelector('.total-price')
+  p.innerText = price
+};
 window.onload = function onload() { 
   getProduct();
-  addSaveCart();
   createPrice();
+  addSaveCart();
 };
