@@ -1,4 +1,6 @@
 // Cria as img's que abrigaram as imagens de cada um dos elementos html
+const arrayDeValores = [];
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -13,13 +15,20 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
-// Captura o id de cada um dos itens e os submete ao método innerText
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span0.item__sku').innerText;
 } */
 
-// Especifica as ações após o evento da addEventListener da createCartItemElement
+const sumPrice = (price) => {
+  arrayDeValores.push(price.salePrice);
+  const precoFinal = arrayDeValores.reduce((acc, current) => {
+    let acumulador = acc;
+    acumulador += current;
+    return acumulador;
+      }, 0);
+      document.querySelector('.total-price').innerHTML = `Preço Total: ${precoFinal}`;
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui 
   const itemClicado = event.target;
@@ -34,6 +43,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  sumPrice({ salePrice });
   return li;
 }
 
@@ -84,10 +94,12 @@ const criarListaDeProdutos = () => {
           })).then(() => eventoDeClique());
 };
 
+// Req 6
 const clearCart = () => {
   document.querySelector('.cart__items').innerHTML = '';
 };
 
+// Req 6
 const esvaziarCarrinho = () => {
   document.querySelector('.empty-cart')
     .addEventListener('click', clearCart);
