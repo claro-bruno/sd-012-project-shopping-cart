@@ -76,7 +76,7 @@ const getApi = async () => {
 };
 
 const getPrice = (price) => {
-  arrPrices.push(price)
+  arrPrices.push(price);
   console.log(arrPrices);
   const sumCart = arrPrices.reduce((acc, curr) => acc + curr).toFixed(2);
   console.log(sumCart);
