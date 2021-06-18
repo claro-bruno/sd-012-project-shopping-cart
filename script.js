@@ -23,6 +23,7 @@ const localStorageSaveItems = () => {
   const saved = localStorage.getItem('cart');
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = saved;
+  saved.addEventListener('click',clickClearCart);
 };
   
 function cartItemClickListener(event) {
@@ -92,7 +93,19 @@ function getItem() {
     .then((array) => getProducts(array));
 }
 
+function clearAllCart() {
+ const listCart=  document.querySelector('ol');
+ listCart.innerHTML = ''; 
+ localStorage.clear(); 
+}
+
+const clickClearCart = () => {
+  const btnClear = document.querySelector('.empty-cart');
+  btnClear.addEventListener('click', clearAllCart);
+};
+
 window.onload = function onload() {
   getItem();
   localStorageSaveItems();
+  clickClearCart();
 };
