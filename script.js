@@ -1,18 +1,15 @@
-// Algoritmos do colega André Lorenzoni.
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
-
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
-
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -25,11 +22,10 @@ function createProductItemElement({ sku, name, image }) {
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
  } */
-const addStorage = (cart) => {
+ const addStorage = (cart) => {
   localStorage.setItem('cart', cart.innerHTML);
 };
-
-const addPriceStorage = (totalPrice) => {
+ const addPriceStorage = (totalPrice) => {
   localStorage.setItem('price', totalPrice);
 };
 
@@ -42,9 +38,9 @@ const updateCartPrice = (price = 0) => {
 };
 
 function cartItemClickListener(event) {
-  const li = event.target;
+  const li = event.target;  
   const oList = li.parentNode;
-  const priceItem = parseFloat(li.innerText.split('$')[1]);
+  const priceItem = parseFloat(li.innerText.split('$')[1]); 
   oList.removeChild(event.target);
   addStorage(oList);
   updateCartPrice(priceItem * -1);
@@ -61,9 +57,9 @@ function createCartItemElement({ sku, name, salePrice }) {
 const getPromiseProducts = () => new Promise((resolve) => {
     fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json().then((computer) => resolve(computer)));
-});
+  });
 
-const addProductsToPage = (promise) => {
+const addProductsToPage = (promise) => {  
   const items = document.querySelector('.items');
   const loading = createCustomElement('h1', 'loading', 'LOADING...');
   items.appendChild(loading);
@@ -71,7 +67,7 @@ const addProductsToPage = (promise) => {
     items.removeChild(loading);
     computer.results.forEach((item) => {
       const { id: sku, title: name, thumbnail: image } = item;
-      const theItem = createProductItemElement({ sku, name, image });
+      const theItem = createProductItemElement({ sku, name, image });      
       items.appendChild(theItem);
     });
   });
@@ -81,32 +77,28 @@ const getItem = (itemId) => new Promise((resolve) => {
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
   .then((response) => response.json().then((computer) => resolve(computer)));
 });
-
 const addProduct = (promise) => {
-  const cart = document.querySelector('.cart__items');
-  promise.then((item) => {
-    const { id: sku, title: name, price: salePrice } = item;
-    const liItem = createCartItemElement({ sku, name, salePrice });
-    cart.appendChild(liItem);
-    addStorage(cart);
-    updateCartPrice(salePrice);
-  });
+const cart = document.querySelector('.cart__items');
+promise.then((item) => {
+  const { id: sku, title: name, price: salePrice } = item;
+  const liItem = createCartItemElement({ sku, name, salePrice });
+  cart.appendChild(liItem);
+  addStorage(cart);
+  updateCartPrice(salePrice);
+});
 };
-
 const addCart = () => {
-  const arrayItem = Array.from(document.getElementsByClassName('item'));
-  arrayItem.forEach((item) => {
-    const sku = item.querySelector('.item__sku').innerText;
-    const button = item.querySelector('.item__add');
-    button.addEventListener('click', () => addProduct(getItem(sku)));
-  });
+const arrayItem = Array.from(document.getElementsByClassName('item'));
+arrayItem.forEach((item) => {
+  const sku = item.querySelector('.item__sku').innerText;
+  const button = item.querySelector('.item__add');
+  button.addEventListener('click', () => addProduct(getItem(sku)));
+});
 };
-
 const getPrice = () => {
   const price = localStorage.getItem('price');
   updateCartPrice(price);
 };
-
 const getStorage = () => {
   const storage = localStorage.getItem('cart');
   if (storage) {
@@ -135,4 +127,4 @@ window.onload = function onload() {
   getStorage();
   getPrice();
   cleanCart();
- }; 
+ };
