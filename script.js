@@ -62,10 +62,10 @@ async function getItem() {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  const totalItems = document.querySelectorAll('.cart__item');
+  const totalItem = document.querySelectorAll('.cart__item');
   const totalItemPrice = document.querySelector('.total-price');
   let total = 0;
-  totalItems.forEach((element) => {
+  totalItem.forEach((element) => {
     const price = -element.innerText.split('$')[1];
     total -= price;
   });
