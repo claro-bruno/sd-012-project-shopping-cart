@@ -1,5 +1,6 @@
 const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
+const ol = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -18,7 +19,6 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -26,13 +26,33 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// ffonte de como salvar o localStorage:
+// https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js#:~:text=Para%20salvar%20no%20localStorage%20%2C%20basta,parse%20.
+// https://www.youtube.com/watch?v=pLtAZF8FDXE&ab_channel=CFBCursos
+const saveCart = () => {
+  const price = document.querySelector('.total-price');
+  localStorage.setItem('price', price.innerHTML);
+  localStorage.setItem('cart', ol.innerHTML);
+};
+
+// Requesito 1
+// Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
+// E utilizando o Slack com a dúvida de Eder Santos
+const getProduct = async () => {
+  const response = await fetch(urlComputador);
+  const computer = await response.json();
+  const sectionItems = document.querySelector('.items');
+  computer.results.forEach((element) => {
+    sectionItems.appendChild(createProductItemElement(element));
+  });
+  addPurchases();
+};
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 } */
 // Requisito 3
 // Auxilio da Gisele no slack do Sérgio A. Barbosa
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items')
   event.target.remove(ol);
   saveCart();
   getPrice();
@@ -48,7 +68,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
 const addPurchases = () => {
   const button = document.querySelectorAll('.item__add');
-  const ol = document.querySelector('.cart__items');
   button.forEach((b) => {
     b.addEventListener('click', () => {
       const id = b.parentNode.firstChild.innerText;
@@ -61,31 +80,9 @@ const addPurchases = () => {
     });
   });
 };
-// Requesito 1
-// Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
-// E utilizando o Slack com a dúvida de Eder Santos
-const getProduct = async () => {
-  const response = await fetch(urlComputador);
-  const computer = await response.json();
-  const sectionItems = document.querySelector('.items');
-  computer.results.forEach((element) => {
-    sectionItems.appendChild(createProductItemElement(element));
-  });
-  addPurchases();
-};
 
-// ffonte de como salvar o localStorage:
-// https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js#:~:text=Para%20salvar%20no%20localStorage%20%2C%20basta,parse%20.
-// https://www.youtube.com/watch?v=pLtAZF8FDXE&ab_channel=CFBCursos
-const saveCart = () => {
-  const price = document.querySelector('.total-price');
-  const ol = document.querySelector('.cart__items');
-  localStorage.setItem('price', price.innerHTML);
-  localStorage.setItem('cart', ol.innerHTML);
-};
 // Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
-  const ol = document.querySelector('.cart__items');
   const p = document.querySelector('.total-price');
   p.innerHTML = localStorage.getItem('price');
   ol.innerHTML = localStorage.getItem('cart');
