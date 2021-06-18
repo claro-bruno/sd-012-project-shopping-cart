@@ -135,5 +135,4 @@ window.onload = function onload() {
   getStorage();
   getPrice();
   cleanCart();
- };
- 
+ }; 
