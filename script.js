@@ -4,8 +4,7 @@ const cartItems = document.querySelector('.cart__items');
 const cartItem = document.getElementsByClassName('cart__item');
 const emptyCart = document.querySelector('.empty-cart');
 const loading = document.querySelector('.loading');
-let totalPrice = document.querySelector('.total-price');
-const liPrice = document.createElement('li');
+const totalPrice = document.querySelector('.total-price');
 const arrPrices = [];
 
 function createProductImageElement(imageSource) {
@@ -76,22 +75,22 @@ const getApi = async () => {
   });
 };
 
-// Traz o id pego pelo evento e o pesquisa no fetch. já chama a função do save local storage
-const getApiId = async (id) => {
-  const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const response = await promiseId.json();
-  getPrice(response.base_price)
-  cartItems.appendChild(createCartItemElement(response));
-  saveToLocalStorage();
-};
-
 const getPrice = (price) => {
   arrPrices.push(price)
   console.log(arrPrices);
   const sumCart = arrPrices.reduce((acc, curr) => acc + curr).toFixed(2);
   console.log(sumCart);
   totalPrice.innerHTML = (`TOTAL: ${sumCart}`);
-}
+};
+
+// Traz o id pego pelo evento e o pesquisa no fetch. já chama a função do save local storage
+const getApiId = async (id) => {
+  const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const response = await promiseId.json();
+  getPrice(response.base_price);
+  cartItems.appendChild(createCartItemElement(response));
+  saveToLocalStorage();
+};
 
 // evento de clique no qual é checado se o target tem certa classe, se sim o target é levado para funcao getSku e é chamado o getApiId.
 const evtBtn = () => {
