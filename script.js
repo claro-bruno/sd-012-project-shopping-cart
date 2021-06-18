@@ -34,17 +34,25 @@ function fetchProducts() {
       listItens.appendChild(createProductItemElement(infoProduct));
     }));
 }
-/* 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+/* function getSkuFromProductItem(item) {
+  return (item.querySelector('span.item__sku').innerText);
+} */
+function reloadCart() {
+  const listSave = localStorage.getItem('cart');
+  const listCart = document.querySelector('ol.cart__items');
+  if (listSave !== null) listCart.innerHTML = listSave; 
 }
-*/
+
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
     const item = event.target;
     const list = document.querySelector('.cart__items');
     list.removeChild(item);
   }
+}
+function addCartStorage() {
+  const list = document.querySelector('ol.cart__items');
+  localStorage.setItem('cart', list.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -53,14 +61,15 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   list.appendChild(li);
+  addCartStorage();
   li.addEventListener('click', (event) => cartItemClickListener(event));
 }
 
 function fetchForId(id) {
   fetch(`${URL_ITEM}${id}`)
-  .then((response) => response.json())
-  .then((results) => createCartItemElement(results));
- }
+    .then((response) => response.json())
+    .then((results) => createCartItemElement(results));
+}
 
 function listenEventAddToCart() {
   document.addEventListener('click', (event) => {
@@ -74,4 +83,5 @@ function listenEventAddToCart() {
 window.onload = function onload() {
   fetchProducts();
   listenEventAddToCart();
+  reloadCart();
 };
