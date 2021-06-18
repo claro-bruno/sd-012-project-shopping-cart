@@ -1,4 +1,17 @@
-const cartItems = document.querySelector('.cart__item');
+const cartItem = document.querySelector('.cart__items');
+
+function sumPrices() {
+  const classCartItem = '.cart__item';
+  const cartItems = [...document.querySelectorAll(classCartItem)];
+  const prices = cartItems.map(({ innerHTML }) => innerHTML.match(/PRICE: \$([\s\S]+)/)[1]);
+  console.log(prices);
+  let sum = 0;
+  prices.forEach((price) => { sum += parseFloat(price); });
+  sum = parseFloat(sum.toFixed(2));
+
+  const printPrice = document.querySelector('.total-price');
+  printPrice.innerHTML = `${sum}`;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -15,20 +28,20 @@ function createCustomElement(element, className, innerText) {
 }
 
 const localSaveCart = () => {
-  const ol = document.querySelector('.cart__items').innerHTML;
-  localStorage.setItem('cart', ol);
+  const olItens = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', olItens);
 };
 
 const localStorageSaveItems = () => {
   const saved = localStorage.getItem('cart');
-  const ol = document.querySelector('.cart__items');
-  ol.innerHTML = saved;
-  saved.addEventListener('click',clickClearCart);
+  const olCarts = document.querySelector('.cart__items');
+  olCarts.innerHTML = saved;
 };
   
 function cartItemClickListener(event) {
   event.target.remove();
   localSaveCart();  
+  sumPrices();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -38,6 +51,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
     li.addEventListener('click', cartItemClickListener);  
     document.querySelector('ol').appendChild(li);
     localSaveCart();
+    sumPrices();
     }
   
 const addItemsCart = (sku) => {
@@ -94,7 +108,7 @@ function getItem() {
 }
 
 function clearAllCart() {
- const listCart=  document.querySelector('ol');
+ const listCart = document.querySelector('ol');
  listCart.innerHTML = ''; 
  localStorage.clear(); 
 }
@@ -105,7 +119,14 @@ const clickClearCart = () => {
 };
 
 window.onload = function onload() {
+  if (localStorage.cart) {
+  const itemsCart = document.querySelectorAll('.cart__items');
+  itemsCart.forEach((item) => {
+  item.addEventListener('click', cartItemClickListener);  
+  });
+}
   getItem();
   localStorageSaveItems();
   clickClearCart();
+  sumPrices();
 };
