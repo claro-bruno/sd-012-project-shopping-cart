@@ -1,3 +1,34 @@
+function storagedCartItems() {
+  if (localStorage.getItem('cartItems')) {
+    return JSON.parse(localStorage.getItem('cartItems'));
+  }
+  return [];
+}
+
+function setStorage(cartItemsArray) {
+  localStorage.setItem('cartItems', JSON.stringify(cartItemsArray));
+}
+
+function allCartItems() {
+  const classCartItem = '.cart__item';
+  const cartItems = [...document.querySelectorAll(classCartItem)];
+  const allItems = cartItems.map((cartItem) => {
+    const item = cartItem.innerHTML
+      .match(/SKU: ([\S]+) \| NAME: ([\s\S]+) \| PRICE: \$([\s\S]+)/);
+    return {
+      sku: item[1],
+      name: item[2],
+      salePrice: item[3],
+    };
+  });
+  return allItems;
+}
+
+function updateStorage() {
+  const cartItems = allCartItems();
+  setStorage(cartItems);
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -19,6 +50,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   const { target } = event;
   target.remove();
+  updateStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -41,6 +73,7 @@ async function addToCart(itemId) {
   };
   const createCartList = createCartItemElement(cartItem);
   cartListLocation.appendChild(createCartList);
+  updateStorage();
 }
 
 function addToCartClickListener(event) {
@@ -52,6 +85,14 @@ function ClickAddToCartButton() {
   const addToCartButton = document.querySelectorAll('.item__add');
   addToCartButton.forEach((button) =>
     button.addEventListener('click', addToCartClickListener));
+}
+
+function loadStorage() {
+  const cartListLocation = document.querySelector('.cart__items');
+  const cartItems = storagedCartItems();
+  cartItems.forEach((cartItem) => {
+    cartListLocation.appendChild(createCartItemElement(cartItem));
+  });
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -85,4 +126,5 @@ async function fetchItems() {
 
 window.onload = function onload() {
   fetchItems();
+  loadStorage();
 };
