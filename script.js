@@ -92,9 +92,17 @@ const getLocalStorageList = () => {
   carrinhoDosItems.innerHTML = getItemList;
 };
 
+const emptyCartItems = () => {
+  const buttonEmptyCar = document.querySelector('.empty-cart');
+  buttonEmptyCar.addEventListener('click', () => {
+  carrinhoDosItems.remove();
+ });
+};
+
 window.onload = async () => { 
   const receiveItems = await fet();
   receiveItems.results.forEach((element) => createProductItemElement(element));
   buttonAdd();
   getLocalStorageList();
+  emptyCartItems();
 };
