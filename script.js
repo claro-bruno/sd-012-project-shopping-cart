@@ -6,11 +6,16 @@ const container = document.querySelector('.container');
 const loading = () => {
   container.appendChild(document.createElement('h1'));
   container.children[2].classList.add('loading');
-  container.children[2].innerHTML = 'loading';
+  container.children[2].innerHTML = 'loading...';
   console.log(container.children[2]);
 };
 
-const load = () => container.removeChild(container.children[2]);
+loading();
+
+const load = () => {
+  container.children[2].remove();
+  console.log(container.children[2]);
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -66,12 +71,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Fazer um appendChild do item retorando pela createCartItemElement
 const criarItensDoCarrinho = (event) => { 
 const idProduto = event.target.parentNode.firstChild.innerHTML;
-loading();
 fetch(`https://api.mercadolibre.com/items/${idProduto}`)
   .then((item) => item.json())
     .then((item) => document.querySelector('.cart__items')
       .appendChild(createCartItemElement(item)));
-load();
 };
 
 const eventoDeClique = () => {
@@ -101,16 +104,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 const criarListaDeProdutos = () => {
 const produtoAlvo = 'computador';
-loading();
 fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
    .then((response) => response.json())
-     .then((response) => response.results
-       .forEach((elemento) => {
+     .then((response) => {
+        load();  
+        response.results
+          .forEach((elemento) => {
           /* console.log(elemento); */
           const elementoPai = document.querySelector('.items');
           elementoPai.appendChild(createProductItemElement(elemento));
-          })).then(() => eventoDeClique());
-load();
+          });
+        }).then(() => eventoDeClique());        
 };
 
 // Req 6
