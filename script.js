@@ -1,5 +1,6 @@
 // Cria as img's que abrigaram as imagens de cada um dos elementos html
 const arrayDeValores = [];
+let precoFinal = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -21,19 +22,21 @@ function createCustomElement(element, className, innerText) {
 
 const sumPrice = (price) => {
   arrayDeValores.push(price.salePrice);
-  const precoFinal = arrayDeValores.reduce((acc, current) => {
+  precoFinal = arrayDeValores.reduce((acc, current) => {
     let acumulador = acc;
     acumulador += current;
     return acumulador;
       }, 0);
-      document.querySelector('.total-price').innerHTML = `Preço Total: ${precoFinal}`;
+      document.querySelector('.total-price').innerHTML = `Preço Total: $${precoFinal}`;
 };
 
 function cartItemClickListener(event) {
   // coloque seu código aqui 
   const itemClicado = event.target;
-  /* console.log(itemClicado.parentNode); */
   itemClicado.parentNode.removeChild(itemClicado);
+  const itemRetirado = itemClicado.innerText.split('PRICE: $')[1];
+  precoFinal -= itemRetirado;
+  document.querySelector('.total-price').innerHTML = `Preço Total: $${precoFinal}`;
 }
 
 // Cria o elemento da lista do carrinho de compras referente a cada section e submete tais elementos a um evento
@@ -42,8 +45,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
   sumPrice({ salePrice });
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
