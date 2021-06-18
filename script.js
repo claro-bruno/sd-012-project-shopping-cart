@@ -14,7 +14,7 @@ const fetchCartId = async (link) => {
 };
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -65,9 +65,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   criaFilho(section);
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 window.onload = async function onload() { 
   await fetchList(API_URL).then((lista) => lista.results
