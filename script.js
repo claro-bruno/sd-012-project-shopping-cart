@@ -1,16 +1,18 @@
 const cartItem = document.querySelector('.cart__items');
 
 function sumPrices() {
-  const classCartItem = '.cart__item';
-  const cartItems = [...document.querySelectorAll(classCartItem)];
-  const prices = cartItems.map(({ innerHTML }) => innerHTML.match(/PRICE: \$([\s\S]+)/)[1]);
-  console.log(prices);
-  let sum = 0;
-  prices.forEach((price) => { sum += parseFloat(price); });
-  sum = parseFloat(sum.toFixed(2));
-
-  const printPrice = document.querySelector('.total-price');
-  printPrice.innerHTML = `${sum}`;
+const listCart = document.querySelectorAll('.cart__item');
+let sum = 0;
+listCart.forEach((itens) => {
+const liText = itens.innerText;
+const posicaoInicial = liText.indexOf('$') + 1;
+const posicaoFinal = liText.length;
+const price = liText.substr(posicaoInicial, posicaoFinal);
+const priceFinal = parseFloat(price);
+sum += priceFinal;
+});
+const priceTotal = document.querySelector('.total-price');
+priceTotal.innerText = sum;
 }
 
 function createProductImageElement(imageSource) {
@@ -28,14 +30,13 @@ function createCustomElement(element, className, innerText) {
 }
 
 const localSaveCart = () => {
-  const olItens = document.querySelector('.cart__items').innerHTML;
+  const olItens = cartItem.innerHTML;
   localStorage.setItem('cart', olItens);
 };
 
 const localStorageSaveItems = () => {
   const saved = localStorage.getItem('cart');
-  const olCarts = document.querySelector('.cart__items');
-  olCarts.innerHTML = saved;
+  cartItem.innerHTML = saved;
 };
   
 function cartItemClickListener(event) {
@@ -111,6 +112,7 @@ function clearAllCart() {
  const listCart = document.querySelector('ol');
  listCart.innerHTML = ''; 
  localStorage.clear(); 
+ sumPrices();
 }
 
 const clickClearCart = () => {
