@@ -1,6 +1,14 @@
 // Cria as img's que abrigaram as imagens de cada um dos elementos html
 const arrayDeValores = [];
 let precoFinal = 0;
+const container = document.querySelector('.container');
+
+const loading = () => {
+  container.appendChild(document.createElement('h1'));
+  container.children[2].innerText = 'loading...';
+};
+
+const load = () => container.removeChild(container.children[2]);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -55,12 +63,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 // Fazer um appendChild do item retorando pela createCartItemElement
 const criarItensDoCarrinho = (event) => { 
-  const idProduto = event.target.parentNode.firstChild.innerHTML;
-  /* console.log(idProduto);   */
-  fetch(`https://api.mercadolibre.com/items/${idProduto}`)
-    .then((item) => item.json())
-      .then((item) => document.querySelector('.cart__items')
-        .appendChild(createCartItemElement(item)));
+const idProduto = event.target.parentNode.firstChild.innerHTML;
+loading();
+fetch(`https://api.mercadolibre.com/items/${idProduto}`)
+  .then((item) => item.json())
+    .then((item) => document.querySelector('.cart__items')
+      .appendChild(createCartItemElement(item)));
+load();
 };
 
 const eventoDeClique = () => {
@@ -89,8 +98,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // Acessa todos os itens a partir do retorno do objeto da API
 
 const criarListaDeProdutos = () => {
-  const produtoAlvo = 'computador';
- fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
+const produtoAlvo = 'computador';
+loading();
+fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
    .then((response) => response.json())
      .then((response) => response.results
        .forEach((elemento) => {
@@ -98,6 +108,7 @@ const criarListaDeProdutos = () => {
           const elementoPai = document.querySelector('.items');
           elementoPai.appendChild(createProductItemElement(elemento));
           })).then(() => eventoDeClique());
+load();
 };
 
 // Req 6
@@ -115,5 +126,4 @@ window.onload = function onload() {
   // Requisito 1
   criarListaDeProdutos(); 
   esvaziarCarrinho();
-  /* eventoDeClique(); */
 };
