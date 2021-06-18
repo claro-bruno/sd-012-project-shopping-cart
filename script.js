@@ -1,3 +1,13 @@
+const createPrice = () => {
+  const section = document.querySelector('.cart');
+  const priceTotal = document.createElement('p');
+  priceTotal.className = 'total-price';
+  section.appendChild(priceTotal);
+};
+createPrice();
+
+const price = document.querySelector('.total-price');
+
 const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
 const ol = document.querySelector('.cart__items');
@@ -25,12 +35,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-
 // ffonte de como salvar o localStorage:
 // https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js#:~:text=Para%20salvar%20no%20localStorage%20%2C%20basta,parse%20.
 // https://www.youtube.com/watch?v=pLtAZF8FDXE&ab_channel=CFBCursos
 const saveCart = () => {
-  const price = document.querySelector('.total-price');
   localStorage.setItem('price', price.innerHTML);
   localStorage.setItem('cart', ol.innerHTML);
 };
@@ -56,7 +64,7 @@ function cartItemClickListener(event) {
   event.target.remove(ol);
   saveCart();
   getPrice();
-}
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -83,17 +91,11 @@ const addPurchases = () => {
 
 // Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
-  const p = document.querySelector('.total-price');
-  p.innerHTML = localStorage.getItem('price');
+  /* const p = document.querySelector('.total-price'); */
+  price.innerHTML = localStorage.getItem('price');
   ol.innerHTML = localStorage.getItem('cart');
   const list = document.querySelectorAll('.cart__items');
   list.forEach((item) => item.addEventListener('click', cartItemClickListener));
-};
-const createPrice = () => {
-  const section = document.querySelector('.cart');
-  const priceTotal = document.createElement('p');
-  priceTotal.className = 'total-price';
-  section.appendChild(priceTotal);
 };
 
 // requisito 5 auxiliado por Julio Barros
@@ -102,14 +104,13 @@ const getPrice = () => {
   let price1 = 0;
   li.forEach((item) => {
     const liTxt = item.innerText;
-    const position = liTxt.indexOf('$') + 1;
+    const position = liTxt.indexOf('$')+1;
     const positionFinal = liTxt.length;
     const ultimatePosition = liTxt.substr(position, positionFinal);
     const valor = parseFloat(ultimatePosition);
     price1 += valor;
   });
-  const p = document.querySelector('.total-price');
-  p.innerText = price1;
+  price.innerText = price1;
 };
 
 // requisito 6 auxiliado por Julio Barros
@@ -126,6 +127,6 @@ const clear = () => {
 clear();
 window.onload = function onload() { 
   getProduct();
-  createPrice();
+  // createPrice();
   addSaveCart();
 };
