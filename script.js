@@ -12,6 +12,8 @@ const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADO
 
 const ol = document.querySelector('.cart__items');
 
+const sectionContainer = document.querySelector('.container');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -92,7 +94,6 @@ const addPurchases = () => {
 };
 // Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
-  /* const p = document.querySelector('.total-price'); */
   price.innerHTML = localStorage.getItem('price');
   ol.innerHTML = localStorage.getItem('cart');
   const list = document.querySelectorAll('.cart__items');
@@ -111,16 +112,30 @@ const clear = () => {
 };
 
 clear();
+
+const addLoad = () => {
+  const span = document.createElement('span');
+  span.className = 'loading';
+  span.innerText = "loading...";
+  sectionContainer.appendChild(span)
+}
+
+const removeLoad = () => {
+  const spanElement = document.querySelector('.loading');
+  sectionContainer.removeChild(spanElement)
+}
 // Requesito 1
 // Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
 // E utilizando o Slack com a dúvida de Eder Santos
 const getProduct = async () => {
+  addLoad();
   const response = await fetch(urlComputador);
   const computer = await response.json();
   const sectionItems = document.querySelector('.items');
   computer.results.forEach((element) => {
     sectionItems.appendChild(createProductItemElement(element));
   });
+  removeLoad()
   addPurchases();
 };
 
