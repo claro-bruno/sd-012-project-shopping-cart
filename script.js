@@ -26,17 +26,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 // Requisito 3
 // Auxilio da Gisele no slack do Sérgio A. Barbosa
 function cartItemClickListener(event) {
   const ol = document.querySelector('.cart__items')
-  event.target.remove(ol)
-  saveCart()
-  getPrice()
-}
+  event.target.remove(ol);
+  saveCart();
+  getPrice();
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -48,15 +48,15 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Requisito 2, Auxiliado pelo slack de Diogo Sant'Anna
 const addPurchases = () => {
   const button = document.querySelectorAll('.item__add');
-  const ol = document.querySelector('.cart__items')
+  const ol = document.querySelector('.cart__items');
   button.forEach((b) => {
     b.addEventListener('click', () => {
       const id = b.parentNode.firstChild.innerText;
       const url = `https://api.mercadolibre.com/items/${id}`;
       fetch(url).then((response) => response.json().then((i) => {
-        ol.appendChild(createCartItemElement(i))
-        getPrice()
-        saveCart()
+        ol.appendChild(createCartItemElement(i));
+        getPrice();
+        saveCart();
       }));
     });
   });
@@ -78,55 +78,55 @@ const getProduct = async () => {
 // https://pt.stackoverflow.com/questions/329223/armazenar-um-array-de-objetos-em-um-local-storage-com-js#:~:text=Para%20salvar%20no%20localStorage%20%2C%20basta,parse%20.
 // https://www.youtube.com/watch?v=pLtAZF8FDXE&ab_channel=CFBCursos
 const saveCart = () => {
-  const price = document.querySelector('.total-price') 
-  const ol = document.querySelector('.cart__items')
-  localStorage.setItem('price', price.innerHTML)
+  const price = document.querySelector('.total-price');
+  const ol = document.querySelector('.cart__items');
+  localStorage.setItem('price', price.innerHTML);
   localStorage.setItem('cart', ol.innerHTML);
 };
 // Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
-  const ol = document.querySelector('.cart__items')
-  const p = document.querySelector('.total-price')
-  p.innerHTML = localStorage.getItem('price')
-  ol.innerHTML = localStorage.getItem('cart')
+  const ol = document.querySelector('.cart__items');
+  const p = document.querySelector('.total-price');
+  p.innerHTML = localStorage.getItem('price');
+  ol.innerHTML = localStorage.getItem('cart');
   const list = document.querySelectorAll('.cart__items');
-  list.forEach((item) => item.addEventListener('click', cartItemClickListener))
+  list.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 const createPrice = () => {
-  const section = document.querySelector('.cart')
-  const priceTotal = document.createElement('p')
-  priceTotal.className = 'total-price'
-  section.appendChild(priceTotal)
+  const section = document.querySelector('.cart');
+  const priceTotal = document.createElement('p');
+  priceTotal.className = 'total-price';
+  section.appendChild(priceTotal);
 };
 
 // requisito 5 auxiliado por Julio Barros
 const getPrice = () => {
-  const li = document.querySelectorAll('.cart__item')
+  const li = document.querySelectorAll('.cart__item');
   let price = 0;
   li.forEach((item) => {
     const liTxt = item.innerText;
-    const position = liTxt.indexOf('$') +1;
-    const positionFinal = liTxt.length
+    const position = liTxt.indexOf('$')+1;
+    const positionFinal = liTxt.length;
     const ultimatePosition = liTxt.substr(position, positionFinal);
-    const valor = parseFloat(ultimatePosition)
-    price += valor
-  })
-  const p = document.querySelector('.total-price')
-  p.innerText = price
+    const valor = parseFloat(ultimatePosition);
+    price += valor;
+  });
+  const p = document.querySelector('.total-price');
+  p.innerText = price;
 };
 
 // requisito 6 auxiliado por Julio Barros
 const clear = () => {
-  const btn = document.querySelector('.empty-cart')
-  btn.addEventListener('click', () =>{
-    const li = document.querySelectorAll('.cart__item')
-    li.forEach((item) => item.parentNode.removeChild(item))
-    getPrice()
-    localStorage.clear()
-  })
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', () => {
+    const li = document.querySelectorAll('.cart__item');
+    li.forEach((item) => item.parentNode.removeChild(item));
+    getPrice();
+    localStorage.clear();
+  });
 };
 
-clear()
+clear();
 window.onload = function onload() { 
   getProduct();
   createPrice();
