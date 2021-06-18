@@ -38,11 +38,15 @@ function getSkuFromProductItem(item) {
 
 const saveToLocalStorage = () => {
   localStorage.setItem('cart-item', JSON.stringify(cartItems.innerHTML));
+  localStorage.setItem('valor-total', JSON.stringify(totalPrice.innerHTML));
 };
 
 const getLocalStorage = () => {
   const itensCart = localStorage.getItem('cart-item');
   cartItems.innerHTML = JSON.parse(itensCart);
+  const precoTotal = localStorage.getItem('valor-total');
+  totalPrice.innerHTML = JSON.parse(precoTotal);
+
 };
 
 // remove item clicado carrinho.
@@ -75,20 +79,21 @@ const getApi = async () => {
   });
 };
 
+// vai populando o arrayPrices com os preços do itens pego no response.base_price e o coloca no totalprice.innerhtml.
 const getPrice = (price) => {
   arrPrices.push(price);
   console.log(arrPrices);
   const sumCart = arrPrices.reduce((acc, curr) => acc + curr).toFixed(2);
   console.log(sumCart);
-  totalPrice.innerHTML = (`TOTAL: ${sumCart}`);
+  totalPrice.innerText = (`TOTAL : ${sumCart}`);
 };
 
 // Traz o id pego pelo evento e o pesquisa no fetch. já chama a função do save local storage
 const getApiId = async (id) => {
   const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const response = await promiseId.json();
-  getPrice(response.base_price);
   cartItems.appendChild(createCartItemElement(response));
+  getPrice(response.base_price);
   saveToLocalStorage();
 };
 
@@ -106,6 +111,7 @@ const evtBtn = () => {
 const clearCart = () => {
   emptyCart.addEventListener('click', () => {
     localStorage.clear();
+    totalPrice.innerHTML = '';
     if (cartItems.firstChild) {
       cartItems.innerHTML = '';
     }
