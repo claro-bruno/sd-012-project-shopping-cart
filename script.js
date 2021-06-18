@@ -1,5 +1,6 @@
 const urlComputador = 'https://api.mercadolibre.com/sites/MLB/search?q=COMPUTADOR';
 
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -94,7 +95,6 @@ const addSaveCart = () => {
 const createPrice = () => {
   const section = document.querySelector('.cart')
   const priceTotal = document.createElement('p')
-  // priceTotal.textContent = 'Total:'
   priceTotal.className = 'total-price'
   section.appendChild(priceTotal)
 };
@@ -114,6 +114,19 @@ const getPrice = () => {
   const p = document.querySelector('.total-price')
   p.innerText = price
 };
+
+// requisito 6 auxiliado por Julio Barros
+const clear = () => {
+  const btn = document.querySelector('.empty-cart')
+  btn.addEventListener('click', () =>{
+    const li = document.querySelectorAll('.cart__item')
+    li.forEach((item) => item.parentNode.removeChild(item))
+    getPrice()
+    localStorage.clear()
+  })
+};
+
+clear()
 window.onload = function onload() { 
   getProduct();
   createPrice();
