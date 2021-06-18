@@ -56,7 +56,7 @@ function cartItemClickListener(event) {
   event.target.remove(ol);
   saveCart();
   getPrice();
-};
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -99,17 +99,17 @@ const createPrice = () => {
 // requisito 5 auxiliado por Julio Barros
 const getPrice = () => {
   const li = document.querySelectorAll('.cart__item');
-  let price = 0;
+  let price1 = 0;
   li.forEach((item) => {
     const liTxt = item.innerText;
-    const position = liTxt.indexOf('$')+1;
+    const position = liTxt.indexOf('$') + 1;
     const positionFinal = liTxt.length;
     const ultimatePosition = liTxt.substr(position, positionFinal);
     const valor = parseFloat(ultimatePosition);
-    price += valor;
+    price1 += valor;
   });
   const p = document.querySelector('.total-price');
-  p.innerText = price;
+  p.innerText = price1;
 };
 
 // requisito 6 auxiliado por Julio Barros
