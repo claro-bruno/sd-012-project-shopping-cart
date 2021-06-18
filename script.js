@@ -38,8 +38,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
   // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -85,5 +86,4 @@ window.onload = async () => {
   const receiveItems = await fet();
   receiveItems.results.forEach((element) => createProductItemElement(element));
   buttonAdd();
-  // fetItemId()
 };
