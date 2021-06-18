@@ -43,9 +43,16 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
-
 function cartItemClickListener(event) {
   event.target.remove();
+  let total = 0;
+  const totalItem = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+  totalItem.forEach((element) => {
+    const price = -element.innerText.split('$')[1];
+    total -= price;
+  });
+  totalPrice.innerText = total;
 }
 
 function fetchAddItem(id) {
@@ -84,6 +91,18 @@ const getLocalStorage = () => {
   localStorageList.innerHTML = pegaItemLS;
 };
 
+// Esse requisito eu fiz com as duvidas resolvidas no slack através da tread da marcela no requisito 4 direcionando ao gitHub https://trybecourse.slack.com/archives/C01T2C18DSM/p1623351073321900
+const verificaValor = () => {
+  let total = 0;
+  const totalItem = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+  totalItem.forEach((element) => {
+    const price = +element.innerText.split('$')[1];
+    total += price;
+  });
+  totalPrice.innerText = total;
+};
+
 function addItem() {
   const botao = document.querySelectorAll('.item__add');
   botao.forEach((btn) => {
@@ -93,6 +112,7 @@ function addItem() {
       const ol = document.querySelector('.cart__items');
       ol.appendChild(createCartItemElement(itemSelected));
       saveLocalStorage();
+      verificaValor();
     });
   });
 }
@@ -100,7 +120,7 @@ function addItem() {
 const removeAll = () => {
   const buttonRemoveAll = document.querySelector('.empty-cart');
   buttonRemoveAll.addEventListener('click', () => {
-    const li = document.querySelectorAll('.cart__item');
+    const li = document.querySelectorAll('li');
     for (let index = 0; index < li.length; index += 1) {
       li[index].remove();
     }
