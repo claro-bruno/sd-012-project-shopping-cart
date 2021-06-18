@@ -140,8 +140,20 @@ async function fetchItems() {
   ClickAddToCartButton();
 }
 
+function clearCart() {
+  document.querySelector('ol.cart__items').innerHTML = '';
+  updateStorage();
+  sumPrices();
+}
+
+const clearCartClickListener = () => {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', clearCart);
+};
+
 window.onload = function onload() {
   fetchItems();
   loadStorage();
   sumPrices();
+  clearCartClickListener();
 };
