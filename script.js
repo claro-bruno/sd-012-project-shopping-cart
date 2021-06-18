@@ -39,7 +39,7 @@ function cartItemClickListener(event) {
   arrayDeValores.splice(arrayDeValores
     .find((item, index) => (item === itemRetirado ? index : '')), 1);
   precoFinal -= itemRetirado;
-  document.querySelector('.total-price').innerHTML = `Preço Total: $${precoFinal}`;
+  document.querySelector('.total-price').innerHTML = `${precoFinal}`;
 }
 
 // Cria o elemento da lista do carrinho de compras referente a cada section e submete tais elementos a um evento
