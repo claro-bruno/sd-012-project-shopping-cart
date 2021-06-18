@@ -43,17 +43,19 @@ const saveCart = () => {
   localStorage.setItem('cart', ol.innerHTML);
 };
 
-// Requesito 1
-// Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
-// E utilizando o Slack com a dúvida de Eder Santos
-const getProduct = async () => {
-  const response = await fetch(urlComputador);
-  const computer = await response.json();
-  const sectionItems = document.querySelector('.items');
-  computer.results.forEach((element) => {
-    sectionItems.appendChild(createProductItemElement(element));
+// requisito 5 auxiliado por Julio Barros
+const getPrice = () => {
+  const li = document.querySelectorAll('.cart__item');
+  let price1 = 0;
+  li.forEach((item) => {
+    const liTxt = item.innerText;
+    const position = liTxt.indexOf('$') + 1;
+    const positionFinal = liTxt.length;
+    const ultimatePosition = liTxt.substr(position, positionFinal);
+    const valor = parseFloat(ultimatePosition);
+    price1 += valor;
   });
-  addPurchases();
+  price.innerText = price1;
 };
 /* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -64,7 +66,7 @@ function cartItemClickListener(event) {
   event.target.remove(ol);
   saveCart();
   getPrice();
-};
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -88,7 +90,6 @@ const addPurchases = () => {
     });
   });
 };
-
 // Requisito 4 auxiliado pelo Julio Barros
 const addSaveCart = () => {
   /* const p = document.querySelector('.total-price'); */
@@ -96,21 +97,6 @@ const addSaveCart = () => {
   ol.innerHTML = localStorage.getItem('cart');
   const list = document.querySelectorAll('.cart__items');
   list.forEach((item) => item.addEventListener('click', cartItemClickListener));
-};
-
-// requisito 5 auxiliado por Julio Barros
-const getPrice = () => {
-  const li = document.querySelectorAll('.cart__item');
-  let price1 = 0;
-  li.forEach((item) => {
-    const liTxt = item.innerText;
-    const position = liTxt.indexOf('$')+1;
-    const positionFinal = liTxt.length;
-    const ultimatePosition = liTxt.substr(position, positionFinal);
-    const valor = parseFloat(ultimatePosition);
-    price1 += valor;
-  });
-  price.innerText = price1;
 };
 
 // requisito 6 auxiliado por Julio Barros
@@ -125,8 +111,20 @@ const clear = () => {
 };
 
 clear();
+// Requesito 1
+// Requisito 1, auxiliado por:https://www.youtube.com/watch?v=Zl_jF7umgcs&ab_channel=RogerMelo , aprendendo a usar async/await
+// E utilizando o Slack com a dúvida de Eder Santos
+const getProduct = async () => {
+  const response = await fetch(urlComputador);
+  const computer = await response.json();
+  const sectionItems = document.querySelector('.items');
+  computer.results.forEach((element) => {
+    sectionItems.appendChild(createProductItemElement(element));
+  });
+  addPurchases();
+};
+
 window.onload = function onload() { 
   getProduct();
-  // createPrice();
   addSaveCart();
 };
