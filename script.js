@@ -42,4 +42,4 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// abaixo
+// deletar esse commit
