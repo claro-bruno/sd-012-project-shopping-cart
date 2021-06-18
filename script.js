@@ -20,16 +20,31 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const price = document.querySelector('.price');
+const createTotal = document.createElement('span');
+createTotal.className = 'total-price';
+price.appendChild(createTotal);
+
+function sum() {
+  let total = 0;
+  listCart.childNodes.forEach((element) => {
+    total += parseFloat(element.innerText.split('$')[1]);
+  });
+  createTotal.innerText = total;
+}
+
 // função que pega o elemento do evento do click e o remove.
 function cartItemClickListener(event) {
   const item = event.target;
   listCart.removeChild(item);
+  sum();
   }
 
 // remove os elementos filhos ao clicar no botão.
 const esvaziarCarrinho = document.querySelector('.empty-cart');
 esvaziarCarrinho.addEventListener('click', () => {
     listCart.innerHTML = '';
+    sum();
   });
 
 // função que cria as li do carrinho de compras.
@@ -44,6 +59,7 @@ return li;
 // função que adiciona o produto pego na função getProductId() ao carrinho utilizando a função createCartItemElement();
 function addProductToCar(element) {
   listCart.appendChild(createCartItemElement(element));
+  sum();
 }
 
 function getProductId(event) {
@@ -66,13 +82,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   .addEventListener('click', getProductId);
   return section;
 }
-// // função que adiciona os produtos pego na fetchItem() aos elementos criados na createProductItemElement().
-// const getProductAddElement = (produtos) => {
-//   const itemContent = document.querySelector('.items');
-//   produtos.forEach((item) => {
-//     itemContent.appendChild(createProductItemElement(item));
-//   });
-// };
 
 // função que coleta as informações sobre os produtos e adiciona as <sections> criadas na createProductItemElement().
 const fetchItems = () => { // extrai o array de elementos do arquivo jason e manda pra a função getProductAddElement().
