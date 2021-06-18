@@ -5,6 +5,15 @@ const shopCart = document.getElementsByClassName('cart__items');
 const sectionToFetch = document.getElementsByClassName('items');
 // ------------------------------------------------------------------------------------
 
+function saveListLocalStorage() {
+  const LocalDB = document.getElementsByClassName('cart__items');
+  localStorage.setItem('item', LocalDB[0].innerHTML);
+}
+
+function restoreLocalSorage() {
+  shopCart[0].innerHTML = localStorage.getItem('item');
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -51,15 +60,6 @@ const fetchListItems = async () => {
   fetchAPI.results.forEach((API) => sectionToFetch[0].appendChild(createProductItemElement(API)));
   loading[0].remove();
 };
-
-function saveListLocalStorage() {
-  const LocalDB = document.getElementsByClassName('cart__items');
-  localStorage.setItem('item', LocalDB[0].innerHTML);
-}
-
-function restoreLocalSorage() {
-  shopCart[0].innerHTML = localStorage.getItem('item');
-}
 
 async function addItemToCart(event) {
   let itemAPI = await fetch(`https://api.mercadolibre.com/items/${event}`);
