@@ -102,6 +102,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // Requisito 1
 // Acessa todos os itens a partir do retorno do objeto da API
 
+/* Para a finalização do req7 foi utilizado como referência o código do Rodrigo Marlone para a disposição adequada
+do load, durante a requisição do fetch. Link do repositorio do estudante = https://github.com/tryber/sd-012-project-shopping-cart/pull/2  */
+
 const criarListaDeProdutos = () => {
 const produtoAlvo = 'computador';
 fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produtoAlvo}`)
