@@ -31,9 +31,9 @@ function createProductItemElement({ sku, name, image }) {
 
   const updateCartPrice = (price = 0) => {
   const priceParagraph = document.querySelector('.total-price');
-  const actualPrice = parseFloat(priceParagraph.innerHTML);
-  const totalPrice = actualPrice + price;
-  priceParagraph.innerHTML = parseFloat(totalPrice);
+//const actualPrice = parseFloat(priceParagraph.innerHTML);
+//const totalPrice = actualPrice + price;
+//priceParagraph.innerHTML = parseFloat(totalPrice);
   const actualPrice = parseFloat(priceParagraph.innerHTML).toFixed(2);
   const totalPrice = parseFloat(actualPrice) + price;
   priceParagraph.innerHTML = parseFloat(Math.round(totalPrice * 100) / 100);
@@ -42,11 +42,11 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   const li = event.target;
-  const uList = li.parentNode;
+//const uList = li.parentNode;
   const oList = li.parentNode;
   const priceItem = parseFloat(li.innerText.split('$')[1]);
-  uList.removeChild(event.target);
-  addStorage(uList);
+//uList.removeChild(event.target);
+//addStorage(uList);
   oList.removeChild(event.target);
   addStorage(oList);
   updateCartPrice(priceItem * -1);
@@ -66,7 +66,7 @@ const getPromiseProducts = () => new Promise((resolve) => {
   });
 
 const addProductsToPage = (promise) => {
-  const itens = document.querySelector('.items');
+//const itens = document.querySelector('.items');
   const items = document.querySelector('.items');
   const loading = createCustomElement('h1', 'loading', 'LOADING...');
   items.appendChild(loading);
@@ -75,7 +75,7 @@ const addProductsToPage = (promise) => {
     computer.results.forEach((item) => {
       const { id: sku, title: name, thumbnail: image } = item;
       const theItem = createProductItemElement({ sku, name, image });
-      itens.appendChild(theItem);
+//itens.appendChild(theItem);
       items.appendChild(theItem);
     });
   });
