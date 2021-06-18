@@ -27,7 +27,7 @@ const sumPrice = (price) => {
     acumulador += current;
     return acumulador;
       }, 0);
-      document.querySelector('.total-price').innerHTML = `Preço Total: $${precoFinal}`;
+      document.querySelector('.total-price').innerHTML = `${precoFinal}`;
 };
 
 function cartItemClickListener(event) {
