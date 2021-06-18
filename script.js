@@ -1,5 +1,6 @@
 const URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const listCart = document.querySelector('.cart__items');
+const cart = document.querySelector('.cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -75,12 +76,20 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 
 // função que coleta as informações sobre os produtos e adiciona as <sections> criadas na createProductItemElement().
 const fetchItems = () => { // extrai o array de elementos do arquivo jason e manda pra a função getProductAddElement().
+  const loading = document.createElement('p');
+  loading.innerHTML = 'Procurando...';
+  loading.className = 'loading';
+  
   const itemContent = document.querySelector('.items');
+  cart.appendChild(loading);
   fetch(URL)
   .then((response) => response.json())
-  .then((produtos) => produtos.results.forEach((item) => {
+  .then((produtos) => {
+    cart.removeChild(loading);
+    produtos.results.forEach((item) => {
     itemContent.appendChild(createProductItemElement(item));
-  }));
+  });
+});
 };
 
 window.onload = function onload() {
