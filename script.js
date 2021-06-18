@@ -15,6 +15,15 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const priceArray = [];
+
+function getTotalPrice({ salePrice }) {
+  priceArray.push(salePrice);
+  const sumOfPrices = priceArray.reduce((acc, crr) => acc + crr, 0);
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = `${sumOfPrices}`;
+}
+
 const cartItems = 'cart__items';
 function cartDeposit() {
   localStorage.setItem('shoppingCart',
@@ -24,13 +33,22 @@ function cartDeposit() {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
+}
+
+function clearCart() {
+  const clearBtn = document.querySelector('.empty-cart');
+  const cartOl = document.querySelector(`.${cartItems}`);
+  clearBtn.addEventListener('click', () => {
+    while (cartOl.firstChild) {
+      cartOl.removeChild(cartOl.firstChild);
+    }
+    cartDeposit();
+  });
 }
 
 // function getSkuFromProductItem(item) {
@@ -39,6 +57,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  const priceToBeRemoved = Number(event.target.innerText.split('$')[1]);
+  if (priceToBeRemoved > 0) {
+    const newObj = { salePrice: -priceToBeRemoved };
+    getTotalPrice(newObj);
+  }
   cartDeposit();
 }
 
@@ -59,9 +82,11 @@ function addCart(id) {
       name: object.title,
       salePrice: object.price,
     };
+    
     const cartOl = document.querySelector(`.${cartItems}`);
       cartOl.appendChild(createCartItemElement(newObj));
       cartDeposit();
+      getTotalPrice(newObj);
   });
 }
 
@@ -74,16 +99,22 @@ function addToCart() {
   });
 }
 
-function fechAPI() {
-  const list = document.querySelector('.items');
-  fetch(`${BASE_URL}computador`)
-  .then((response) => response.json())
-  .then((product) => product.results.forEach((item) => 
-  list.appendChild(createProductItemElement(item))));
-}
-
+const fechAPI = async () => {
+  const load = document.querySelector('.loading');
+  load.innerHTML = 'loading';
+  fetch(`${BASE_URL}computador`);
+  let obj = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  obj = await obj.json();
+  const items = document.querySelector('.items');
+  obj.results.forEach((item) => {
+    items.appendChild(createProductItemElement(item));
+  });
+  load.remove();
+};
+  
 window.onload = function onload() { 
   fechAPI();
   addToCart();
   cartDeposit();
+  clearCart();
 };
