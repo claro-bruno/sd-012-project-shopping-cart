@@ -62,10 +62,10 @@ async function getItem() {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  const totalItem = document.querySelectorAll('.cart__item');
+  const totalItems = document.querySelectorAll('.cart__item');
   const totalItemPrice = document.querySelector('.total-price');
   let total = 0;
-  totalItem.forEach((element) => {
+  totalItems.forEach((element) => {
     const price = -element.innerText.split('$')[1];
     total -= price;
   });
@@ -136,7 +136,7 @@ function cartItem() {
 const clearAll = () => {
   const btnRemoveAll = document.querySelector('.empty-cart');
   btnRemoveAll.addEventListener('click', () => {
-    const list = document.querySelectorAll('.cart__item');
+    const list = document.querySelectorAll('li');
     for (let index = 0; index < list.length; index += 1) {
     list[index].remove();
     }
