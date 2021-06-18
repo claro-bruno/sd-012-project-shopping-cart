@@ -46,7 +46,6 @@ const getLocalStorage = () => {
   cartItems.innerHTML = JSON.parse(itensCart);
   const precoTotal = localStorage.getItem('valor-total');
   totalPrice.innerHTML = JSON.parse(precoTotal);
-
 };
 
 // remove item clicado carrinho.
