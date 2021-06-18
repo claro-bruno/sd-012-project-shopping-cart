@@ -1,5 +1,23 @@
 const APIURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const cartItems = document.querySelector('.cart__items');
+const cart = document.querySelector('.cart');
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
+const removeLoading = () => {
+  const loadingRemove = document.querySelector('.loading');
+  loadingRemove.remove();
+};
+
+const loading = () => {
+  const createLoading = createCustomElement('span', 'loading', 'loading...');
+  cart.appendChild(createLoading);
+};
 
 function saveOnStorage() { 
   localStorage.setItem('cartItem', cartItems.innerHTML);
@@ -15,13 +33,6 @@ function createProductImageElement(imageSource) {
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-}
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { 
@@ -79,15 +90,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function getItems() {
   const sectionItems = document.querySelector('.items');
+  loading();
   fetch(APIURL)
   .then((response) => response.json())
   .then((response) => response.results.forEach((current) => {
   sectionItems.appendChild(createProductItemElement(current));
   }));
+  setTimeout(removeLoading, 3000); // timeout pra passar no cypress!!!!!!!!!!!!!!
 }
 
 window.onload = function onload() {
+  document.addEventListener('click', cartItemClickListener);
   LoadFromStorage();
   getItems();
-  document.addEventListener('click', cartItemClickListener);
 };
