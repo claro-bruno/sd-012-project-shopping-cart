@@ -6,7 +6,7 @@ const container = document.querySelector('.container');
 const loading = () => {
   container.appendChild(document.createElement('h1'));
   container.children[2].classList = 'loading';
-  container.children[2].innerText = 'loading...';
+  container.children[2].innerText = 'loading';
 };
 
 const load = () => container.removeChild(container.children[2]);
