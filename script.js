@@ -35,6 +35,9 @@ function cartItemClickListener(event) {
   const itemClicado = event.target;
   itemClicado.parentNode.removeChild(itemClicado);
   const itemRetirado = itemClicado.innerText.split('PRICE: $')[1];
+  console.log(itemRetirado);
+  arrayDeValores.splice(arrayDeValores
+    .find((item, index) => (item === itemRetirado ? index : '')), 1);
   precoFinal -= itemRetirado;
   document.querySelector('.total-price').innerHTML = `Preço Total: $${precoFinal}`;
 }
