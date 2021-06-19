@@ -34,9 +34,17 @@ function updateLocalStorage() {
   getCart.forEach((item, index) => localStorage.setItem(`cart ${index}`, item.outerHTML));
 }
 
+function totalPrice(price) {
+  const getActualPrice = document.querySelector('.total-price').innerText;
+  const updatePrice = Number(getActualPrice) + Number(price);
+  document.querySelector('.total-price').innerText = Math.round(updatePrice * 100) / 100;
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  const removeElement = event.target.innerHTML.split('$')[1];
+  totalPrice(`-${removeElement}`);
   updateLocalStorage();
 }
 
@@ -71,6 +79,7 @@ function addItemToCart() {
           const li = createCartItemElement(produto);
           const getOl = document.querySelector('.cart__items');
           getOl.appendChild(li);
+          totalPrice(produto.price);
           updateLocalStorage();
         });
     });
