@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -41,6 +41,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function getMercadoLivreApi() {
+  // Baseado na PR do Thalles Carneiro - T12 https://github.com/tryber/sd-012-project-shopping-cart/pull/9
   const getElementSection = document.querySelector('.items');
   const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJSON = await response.json();
@@ -51,6 +52,23 @@ async function getMercadoLivreApi() {
   });
 }
 
-window.onload = function onload() {
-  getMercadoLivreApi();
+function addItemToCart() {
+  const btn = document.querySelectorAll('.item__add');
+  btn.forEach((item) => {
+    item.addEventListener('click', (event) => {
+      const itemID = getSkuFromProductItem(event.target.parentElement);
+      fetch(`https://api.mercadolibre.com/items/${itemID}`)
+        .then((response) => response.json())
+        .then((produto) => {
+          const li = createCartItemElement(produto);
+          const getOl = document.querySelector('.cart__items');
+          getOl.appendChild(li);
+        });
+    });
+  });
+}
+
+window.onload = async function onload() {
+  await getMercadoLivreApi();
+  await addItemToCart();
 };
