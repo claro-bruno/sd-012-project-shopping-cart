@@ -1,5 +1,5 @@
-const pc = document.querySelector('.items');
-const cartItems = document.getElementsByClassName('cart__items');
+const items = document.querySelector('.items');
+const cartItems = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,34 +43,34 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const eventoBotao = () => {
-  const botaoAddCarrinho = document.getElementsByClassName('item__add');
-  for(let index = 0; index < botaoAddCarrinho.length; index += 1){
-    botaoAddCarrinho[index].addEventListener('click', (event) => {
-      console.log(event);
-    });
-  };
-};
-
-
-const fet = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') 
-  .then((response) => response.json())
-  .then((data) => {
-    data.results.forEach((element) => {
-      pc.appendChild(createProductItemElement(element));
-    });
-  });
-};
-
-const carrinho = (id) => {
+const callApiItemsByID = (id) => { // Requisito 2
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json())
   .then((data) => {
-    data.results.forEach((element) => {
-      cartItems.appendChild(createCartItemElement(element));
+    const itemByID = createCartItemElement(data);
+    cartItems.appendChild(itemByID);
+  });
+};
+
+const AddItemOnCart = () => { // Requisito 2
+  const getButtonOfItem = document.querySelectorAll('.item__add'); // retorna HTML Colection
+  getButtonOfItem.forEach((element) => {
+    element.addEventListener('click', (event) => {
+      const getItemByID = event.target.parentElement.firstChild.innerText; // Para fazer essa linha, eu olhei o código do Henrique Alaracon.
+      callApiItemsByID(getItemByID); // Pois eu não estava conseguindo acessar o ID do primeiro elemento chamado no click.
     });
   });
 };
 
-window.onload = function onload() { fet(); eventoBotao(); };
+const renderProduct = () => { //  Requisito 1 - feito
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  .then((response) => response.json())
+  .then((data) => {
+    data.results.forEach((element) => {
+      items.appendChild(createProductItemElement(element));
+    });
+  })
+  .then(() => AddItemOnCart());
+};
+
+window.onload = function onload() { renderProduct(); AddItemOnCart(); };
