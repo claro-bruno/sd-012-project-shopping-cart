@@ -28,9 +28,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function updateLocalStorage() {
+  const getCart = document.querySelector('ol').childNodes;
+  localStorage.clear();
+  getCart.forEach((item, index) => localStorage.setItem(`cart ${index}`, item.outerHTML));
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  updateLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -64,12 +71,24 @@ function addItemToCart() {
           const li = createCartItemElement(produto);
           const getOl = document.querySelector('.cart__items');
           getOl.appendChild(li);
+          updateLocalStorage();
         });
     });
+  });
+}
+
+function loadCart() {
+  const getLocal = Object.values(localStorage);
+  const getOL = document.querySelector('.cart__items');
+  // pega valores do local storage em forma de string
+  getLocal.forEach((liString, index) => {
+    // concatena com Ol 
+    getOL.innerHTML += localStorage.getItem(`cart ${index}`);
   });
 }
 
 window.onload = async function onload() {
   await getMercadoLivreApi();
   await addItemToCart();
+  loadCart();
 };
