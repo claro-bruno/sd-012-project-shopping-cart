@@ -56,10 +56,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
     }
   
 const addItemsCart = (sku) => {
-      fetch(`https://api.mercadolibre.com/items/${sku}`)
+         fetch(`https://api.mercadolibre.com/items/${sku}`)
         .then((response) => response.json())
         .then((product) => createCartItemElement(product));
-    };
+       };
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -87,6 +87,8 @@ function showComputers(computer) {
 
 const getProducts = (array) => {
   const sectionItems = document.querySelector('.items');
+  const pLoading = document.querySelector('.loading');
+  pLoading.remove();
   array.results.forEach((current) => {
   const { 
     id: sku, 
@@ -105,8 +107,8 @@ function getItem() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computer';
   fetch(url)
     .then((response) => response.json())
-    .then((array) => getProducts(array));
-}
+    .then((array) => getProducts(array));   
+  }
 
 function clearAllCart() {
  const listCart = document.querySelector('ol');
@@ -131,4 +133,4 @@ window.onload = function onload() {
   localStorageSaveItems();
   clickClearCart();
   sumPrices();
-};
+  };
