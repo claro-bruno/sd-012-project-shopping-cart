@@ -27,12 +27,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+function cartItemClickListener(event) { // Requisito 3 - remover item do carrinho
+  cartItems.removeChild(event.target); 
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
