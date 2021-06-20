@@ -1,5 +1,5 @@
-const cartItems = 'cart__items';
-// const sumOfPrices = 'total-price';
+const cartItems = '.cart__items';
+const sumOfPrices = '.total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -17,44 +17,55 @@ function createCustomElement(element, className, innerText) {
 
 // ------------------------------------------------------------------------------
 
-const priceArray = [];
+let priceArray = [];
 
 function getTotalPrice({ salePrice }) {
-  priceArray.push(salePrice);
-  const totalPrice = document.querySelector('.total-price');
-  const sumOfPrices = priceArray.reduce((acc, crr) => acc + crr, 0);
-  totalPrice.innerText = `${sumOfPrices}`;
+  const totalPrice = document.querySelector(sumOfPrices);
+  if (salePrice === -1) {
+    priceArray = [];
+    totalPrice.innerText = 0;
+  } else {
+    priceArray.push(salePrice);
+    const priceSum = priceArray.reduce((acc, crr) => acc + crr, 0);
+    // priceSum = +priceSum.toFixed(2);
+    totalPrice.innerText = `${priceSum}`;
+  }
 }
 
 // ------------------------------------------------------------------------------
 
 function storeCart() {
-  localStorage.setItem('shoppingCart', document.querySelector(`.${cartItems}`).innerHTML);
-  // localStorage.setItem('totalPriceCart', document.querySelector(`.${sumOfPrices}`).innerHTML);
+  localStorage.setItem('shoppingCart', document.querySelector(`${cartItems}`).innerHTML);
 }
 
+function storePrices() {
+  const prices = document.querySelector(`${sumOfPrices}`).innerHTML;
+  localStorage.setItem('totalPriceCart', prices);
+}
 // ------------------------------------------------------------------------------
 
 function clearCart() {
   const clearButton = document.querySelector('.empty-cart');
-  const olCart = document.querySelector(`.${cartItems}`);
+  const olCart = document.querySelector(`${cartItems}`);
   clearButton.addEventListener('click', () => {
     while (olCart.firstChild) {
       olCart.removeChild(olCart.firstChild);
     }
     storeCart();
-    document.querySelector('.total-price').innerText = '';
+    getTotalPrice({ salePrice: -1 });
+    storePrices();
   });
 }
 // ------------------------------------------------------------------------------
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
+  const img = image.replace(/-I.jpg/g, '-O.jpg');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createProductImageElement(img));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
@@ -89,10 +100,10 @@ function cartItemClickListener(event) {
   event.target.remove();
   const priceToBeRemoved = Number(event.target.innerText.split('$')[1]);
   if (priceToBeRemoved > 0) {
-    const newObj = { salePrice: -priceToBeRemoved };
-    getTotalPrice(newObj);
+    getTotalPrice({ salePrice: -priceToBeRemoved });
   }
   storeCart();
+  storePrices();
 }
 // ------------------------------------------------------------------------------
 
@@ -115,10 +126,11 @@ function fetchAddToCart(id) {
         name: object.title, 
         salePrice: object.price, 
       };
-      const olCartItems = document.querySelector(`.${cartItems}`);
+      const olCartItems = document.querySelector(`${cartItems}`);
       olCartItems.appendChild(createCartItemElement(newObj));
-      storeCart();  
+      storeCart();
       getTotalPrice(newObj);
+      storePrices();
     });
 }
 
@@ -134,12 +146,16 @@ function addEventAddToCart() {
 // ------------------------------------------------------------------------------
 
 function getStoredCart() {
-  // const storedPrice = localStorage.getItem('totalPriceCart')
-  // document.querySelector(`.${sumOfPrices}`).innerHTML = storedPrice;
   const storedCart = localStorage.getItem('shoppingCart');
-  document.querySelector(`.${cartItems}`).innerHTML = storedCart;
+  document.querySelector(`${cartItems}`).innerHTML = storedCart;
   document.querySelectorAll('.cart__item').forEach((item) => 
   item.addEventListener('click', cartItemClickListener));
+}
+
+function getStoredPrice() {
+  const storedPrice = localStorage.getItem('totalPriceCart');
+  const numberStoredPrice = Number(storedPrice);
+  getTotalPrice({ salePrice: numberStoredPrice });
 }
 
 // ------------------------------------------------------------------------------
@@ -148,5 +164,6 @@ window.onload = function onload() {
   fetchProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   addEventAddToCart();
   getStoredCart();
+  getStoredPrice();
   clearCart();
 };
