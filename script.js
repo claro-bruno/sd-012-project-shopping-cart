@@ -1,5 +1,11 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const itemsCart = document.getElementsByClassName('cart__item');
+
+const saveLocalStorage = localStorage.getItem('textoItem');
+cartItems.innerHTML = saveLocalStorage;
+
+// Este Requisito 4, foi feito com a ajuda do David Gonzaga
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -28,27 +34,35 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 }
 
 // function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-function cartItemClickListener(event) { // Requisito 3 - remover item do carrinho
-  cartItems.removeChild(event.target); 
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-const callApiItemsByID = (id) => { // Requisito 2
-  fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((response) => response.json())
-  .then((data) => {
-    const itemByID = createCartItemElement(data);
+  //   return item.querySelector('span.item__sku').innerText;
+  // }
+  
+  function cartItemClickListener(event) { // Requisito 3 - remover item do carrinho
+    cartItems.removeChild(event.target); 
+    const textItem = cartItems.innerHTML;
+    localStorage.setItem('textoItem', textItem);
+  }
+  
+  Array.from(itemsCart).forEach((li) => { // Requisito 4
+    li.addEventListener('click', cartItemClickListener);
+  });
+  
+  function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+    const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    li.addEventListener('click', cartItemClickListener);
+    return li;
+  }
+  
+  const callApiItemsByID = (id) => { // Requisito 2
+    fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const itemByID = createCartItemElement(data);
     cartItems.appendChild(itemByID);
+    const textItem = cartItems.innerHTML;
+    localStorage.setItem('textoItem', textItem);
   });
 };
 
@@ -56,7 +70,7 @@ const AddItemOnCart = () => { // Requisito 2
   const getButtonOfItem = document.querySelectorAll('.item__add'); // retorna HTML Colection
   getButtonOfItem.forEach((element) => {
     element.addEventListener('click', (event) => {
-      const getItemByID = event.target.parentElement.firstChild.innerText; // Para fazer essa linha, eu olhei o código do Henrique Alaracon.
+      const getItemByID = event.target.parentElement.firstChild.innerText; // Para fazer essa linha, eu olhei o código do Henrique Alarcon.
       callApiItemsByID(getItemByID); // Pois eu não estava conseguindo acessar o ID do primeiro elemento chamado no click.
     });
   });
