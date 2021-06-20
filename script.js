@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-semi */
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -96,8 +97,19 @@ function loadCart() {
   });
 }
 
+function emptyCart() {
+  const getBtn = document.querySelector('.empty-cart');
+  getBtn.addEventListener('click', () => {
+    const getCartItems = document.querySelectorAll('li.cart__item');
+    getCartItems.forEach((item) => {
+      item.remove();
+    });
+  });
+}
+
 window.onload = async function onload() {
   await getMercadoLivreApi();
   await addItemToCart();
   loadCart();
+  emptyCart();
 };
