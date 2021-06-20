@@ -107,9 +107,15 @@ function emptyCart() {
   });
 }
 
+function removeLoading() {
+  const getLoading = document.querySelector('.loading');
+  getLoading.remove();
+}
+
 window.onload = async function onload() {
   await getMercadoLivreApi();
   await addItemToCart();
   loadCart();
   emptyCart();
+  removeLoading();
 };
