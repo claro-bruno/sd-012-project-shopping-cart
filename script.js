@@ -31,13 +31,13 @@ const pageProducts = (products) => {
   const productsList = document.querySelector('.items');
   productsList.appendChild(loading);
   products.then((items) => {
+    productsList.removeChild(loading);
     items.results.forEach((item) => {
       const product = createProductItemElement({
          sku: [item.id], name: [item.title], image: [item.thumbnail] });
       productsList.appendChild(product);
     });
   });
-  productsList.removeChild(loading);
   return productsList;
 };
 
@@ -46,7 +46,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const cartList = document.querySelector('.cart__items');
+  cartList.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -56,7 +57,37 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+const getItemById = (id) => new Promise((resolve) => {
+    fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
+    response.json().then((product) => resolve(product));
+    });
+  });
 
-window.onload = function onload() { 
+const verifyItem = (item) => {
+  if (item.className === 'item__add') {
+    return true;
+  }
+};  
+
+const addToCart = (item) => {
+    const itemSku = getSkuFromProductItem(item);
+    const cart = document.querySelector('.cart');
+    const cartList = document.querySelector('.cart__items');
+    const loading = createCustomElement('h2', 'loading', 'LOADING...');
+    cart.appendChild(loading);
+    return getItemById(itemSku).then((product) => {
+      cart.removeChild(loading);
+      const cartItem = createCartItemElement(
+        { sku: [product.id], name: [product.title], salePrice: [product.price] },
+);
+      cartList.appendChild(cartItem);
+    });
+  };
+window.onload = function onload() {
   pageProducts(getItems());
+  document.body.addEventListener('click', (event) => {
+    if (verifyItem(event.target) === true) {
+      return addToCart(event.target.parentNode);
+    }
+  });
 };
