@@ -1,4 +1,5 @@
 const items = document.querySelector('.items');
+items.innerHTML = '<span class="loading">Loading</span>';
 const cartItems = document.querySelector('.cart__items');
 const itemsCart = document.getElementsByClassName('cart__item');
 const sectionItem = document.querySelector('.cart');
@@ -108,6 +109,7 @@ const renderProduct = () => { //  Requisito 1 - feito
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
   .then((data) => {
+    items.innerHTML = '';
     data.results.forEach((element) => {
       items.appendChild(createProductItemElement(element));
     });
