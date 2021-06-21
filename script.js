@@ -1,9 +1,27 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const itemsCart = document.getElementsByClassName('cart__item');
+const sectionItem = document.querySelector('.cart');
+let sum = 0;
+const localString = localStorage.getItem('totalcarrinho');
+if (localString !== null) {
+  sum = parseFloat(localString);
+}
+
+const result = document.createElement('p');
+result.innerText = 'TOTAL:';
+sectionItem.appendChild(result);
+
+const total = document.createElement('span');
+total.className = 'total-price';
+total.innerText = 0;
+result.appendChild(total);
 
 const saveLocalStorage = localStorage.getItem('textoItem');
 cartItems.innerHTML = saveLocalStorage;
+
+const totalCartStorage = localStorage.getItem('totalcarrinho');
+total.innerHTML = totalCartStorage;
 
 // Este Requisito 4, foi feito com a ajuda do David Gonzaga
 
@@ -36,22 +54,30 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 // function getSkuFromProductItem(item) {
   //   return item.querySelector('span.item__sku').innerText;
   // }
-  
+
   function cartItemClickListener(event) { // Requisito 3 - remover item do carrinho
     cartItems.removeChild(event.target); 
     const textItem = cartItems.innerHTML;
+    const valueShop = event.target.innerText.split('|');
+    const numberPrice = parseFloat(valueShop[2].split('$')[1]);
+    sum -= numberPrice;
+    total.innerText = sum;
     localStorage.setItem('textoItem', textItem);
+    localStorage.setItem('totalcarrinho', sum);
   }
   
   Array.from(itemsCart).forEach((li) => { // Requisito 4
     li.addEventListener('click', cartItemClickListener);
   });
-  
+
   function createCartItemElement({ id: sku, title: name, price: salePrice }) {
     const li = document.createElement('li');
     li.className = 'cart__item';
     li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
     li.addEventListener('click', cartItemClickListener);
+    sum += salePrice;
+    total.innerText = sum;
+    localStorage.setItem('totalcarrinho', sum);
     return li;
   }
   
