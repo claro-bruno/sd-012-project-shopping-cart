@@ -26,8 +26,6 @@ cartItems.innerHTML = saveLocalStorage;
 const totalCartStorage = localStorage.getItem('totalcarrinho');
 total.innerHTML = totalCartStorage;
 
-// Este Requisito 4, foi feito com a ajuda do David Gonzaga
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -44,11 +42,12 @@ function createCustomElement(element, className, innerText) {
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) { // desestruturação do objeto para acessar as 3 propriedades
   const section = document.createElement('section');
+  const betterImg = image.replace(/-I.jpg/g, '-O.jpg'); // Thread criada pela Renata Nunes e respondida pelo Guilherme Dias
   section.className = 'item';
   
   section.appendChild(createCustomElement('span', 'item__sku', sku)); //  tipo:span classe:item conteudo:sku
   section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createProductImageElement(betterImg));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   
   return section;
@@ -117,12 +116,14 @@ const renderProduct = () => { //  Requisito 1 - feito
   .then(() => AddItemOnCart());
 };
 
-function clear() {
+function clear() { // Requisito 6
   cartItems.innerText = '';
   total.innerText = 0;
   localStorage.clear();
 }
 
 buttonClear.addEventListener('click', clear);
+
+// Recebi uma ajuda muito importante do meu colega David Gonzaga. Ele me orientou na resolução dos requisitos 4 - 5 - 6 e 7
 
 window.onload = function onload() { renderProduct(); AddItemOnCart(); };
