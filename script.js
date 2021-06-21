@@ -2,6 +2,8 @@ const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const itemsCart = document.getElementsByClassName('cart__item');
 const sectionItem = document.querySelector('.cart');
+const buttonClear = document.querySelector('.empty-cart');
+
 let sum = 0;
 const localString = localStorage.getItem('totalcarrinho');
 if (localString !== null) {
@@ -112,5 +114,13 @@ const renderProduct = () => { //  Requisito 1 - feito
   })
   .then(() => AddItemOnCart());
 };
+
+function clear() {
+  cartItems.innerText = '';
+  total.innerText = 0;
+  localStorage.clear();
+}
+
+buttonClear.addEventListener('click', clear);
 
 window.onload = function onload() { renderProduct(); AddItemOnCart(); };
