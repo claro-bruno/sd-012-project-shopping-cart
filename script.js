@@ -1,4 +1,12 @@
 const MercadoLivreURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const MLItemSearch = 'https://api.mercadolibre.com/items/';
+
+async function getRequest(url) {
+  const response = fetch(url).then((r) => r.json())
+  .catch((reject) => { throw new Error(`Could not find the url! ${reject.Error}`); });
+
+  return response;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,24 +22,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id, title, thumbnail }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', id));
-  section.appendChild(createCustomElement('span', 'item__title', title));
-  section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  console.log(event);
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -42,14 +34,34 @@ function createCartItemElement({ id, title, price }) {
   return li;
 }
 
-async function getRequest(url) {
-  const response = fetch(url).then((r) => r.json())
-  .catch((reject) => { throw new Error('Could not find the url!'); });
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-  return response;
+async function adicionaCarrinho(element, id) {
+  const carrinho = document.querySelector('.cart__items');
+  element.addEventListener('click', async function () {
+    const item = await getRequest(MLItemSearch + id);
+//    console.log(item);
+    carrinho.appendChild(createCartItemElement(item));
+  });
 }
 
-async function organizaElementos() {
+function createProductItemElement({ id, title, thumbnail }) {
+  const section = document.createElement('section');
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  section.className = 'item';
+  adicionaCarrinho(button, id);
+
+  section.appendChild(createCustomElement('span', 'item__sku', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
+  section.appendChild(button);
+
+  return section;
+}
+
+async function adicionaItens() {
   const MLlista = await getRequest(MercadoLivreURL);
   const listaItens = [];
   const itemsSection = document.querySelector('.items');
@@ -63,5 +75,5 @@ async function organizaElementos() {
 }
 
 window.onload = async function onload() { 
-  organizaElementos();
+  adicionaItens();
 };
