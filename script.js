@@ -22,8 +22,18 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function adicionaTotal(price) {
+  const total = document.querySelector('.total-price');
+  if (!total.innerText) { 
+    total.innerText = price; 
+   } else total.innerText = price + parseFloat(total.innerText);
+}
+
 function cartItemClickListener(event) {
   event.srcElement.remove();
+  let price = event.srcElement.innerText.toString().split('$');
+  price = parseFloat(price[1]);
+  adicionaTotal(price * (-1));
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -42,8 +52,8 @@ async function adicionaCarrinho(element, id) {
   const carrinho = document.querySelector('.cart__items');
   element.addEventListener('click', async function () {
     const item = await getRequest(MLItemSearch + id);
-//    console.log(item);
     carrinho.appendChild(createCartItemElement(item));
+    adicionaTotal(item.price);
   });
 }
 
