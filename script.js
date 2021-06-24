@@ -17,12 +17,6 @@ const saveCart = () => {
   }
 };
 
-const fetchList = async (link) => {
-  const response = await fetch(link);
-  const objetoJson = await response.json();
-  return objetoJson;
-};
-
 const fetchCartId = async (link) => {
   const response = await fetch(link);
   const objJson = await response.json();
@@ -88,12 +82,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   criaFilho(section);
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+const fetchList = async (link) => {
+  const response = await fetch(link);
+  const objetoJson = await response.json();
+  const { results } = objetoJson;
+  results.forEach((item) => createProductItemElement(item));
+};
 
-window.onload = async function onload() { 
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
+
+window.onload = function onload() { 
   loadCart();
-  await fetchList(API_URL).then((lista) => lista.results
-    .forEach((element) => createProductItemElement(element)));
+  fetchList(API_URL);
 };
