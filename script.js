@@ -1,6 +1,30 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ID_URL_BASE = 'https://api.mercadolibre.com/items/';
 
+const loading = () => {
+  const loadingTxt = document.querySelector('.loading');
+  if (loadingTxt !== null) {
+    loadingTxt.parentNode.removeChild(loadingTxt);
+  } else {
+    const loadingEle = document.createElement('p');
+    const pai = document.querySelector('.container');
+    loadingEle.className = 'loading';
+    loadingEle.innerHTML = 'loading...';
+    pai.appendChild(loadingEle);
+  }
+};
+
+const totalPrice = () => {
+  const list = JSON.parse(localStorage.getItem('cart'));
+  const total = document.querySelector('.total-price');
+  if (list !== null) {
+    const price = list.reduce(((acc, element) => acc + parseFloat(element.price)), 0);
+    total.innerHTML = price;
+  } else {
+    total.innerHTML = 0;
+  }
+};
+
 const saveCart = () => {
   const items = document.querySelectorAll('.cart__item');
   if (items.length > 0) {
@@ -12,14 +36,18 @@ const saveCart = () => {
       return [...acc, obj];
     }, []); 
     localStorage.setItem('cart', JSON.stringify(cartList));
+    totalPrice();
   } else {
     localStorage.setItem('cart', null);
+    totalPrice();
   }
 };
 
 const fetchCartId = async (link) => {
+  loading();
   const response = await fetch(link);
   const objJson = await response.json();
+  loading();
   return objJson;
 };
 
@@ -85,10 +113,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 const fetchList = async (link) => {
+  loading();
   const response = await fetch(link);
   const objetoJson = await response.json();
   const { results } = objetoJson;
   results.forEach((item) => createProductItemElement(item));
+  loading();
 };
 
 const clearCart = () => {
@@ -104,8 +134,9 @@ const clearCart = () => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-window.onload = function onload() { 
+window.onload = function onload() {
   loadCart();
+  totalPrice();
   fetchList(API_URL);
   clearCart();
 };
