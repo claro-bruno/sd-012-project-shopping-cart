@@ -1,6 +1,22 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ID_URL_BASE = 'https://api.mercadolibre.com/items/';
 
+const saveCart = () => {
+  const items = document.querySelectorAll('.cart__item');
+  if (items.length > 0) {
+    const cartList = Array.from(items).reduce((acc, element) => {
+      const id = element.innerText.split('|')[0].replace('SKU:', '').trim();
+      const title = element.innerText.split('|')[1].replace('NAME:', '').trim();
+      const price = element.innerText.split('|')[2].replace('PRICE: $', '').trim();
+      const obj = { id, title, price };
+      return [...acc, obj];
+    }, []); 
+    localStorage.setItem('cart', JSON.stringify(cartList));
+  } else {
+    localStorage.setItem('cart', null);
+  }
+};
+
 const fetchList = async (link) => {
   const response = await fetch(link);
   const objetoJson = await response.json();
@@ -15,6 +31,7 @@ const fetchCartId = async (link) => {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -23,7 +40,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   document.querySelector('.cart__items').appendChild(li);
+  saveCart();
 }
+
+const loadCart = () => {
+  const items = JSON.parse(localStorage.getItem('cart'));
+  items.forEach((item) => createCartItemElement(item));
+};
 
 const fullyLink = (id) => {
   const REAL_URL = `${ID_URL_BASE}${id}`;
@@ -65,11 +88,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   criaFilho(section);
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 window.onload = async function onload() { 
+  loadCart();
   await fetchList(API_URL).then((lista) => lista.results
     .forEach((element) => createProductItemElement(element)));
 };
