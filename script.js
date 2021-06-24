@@ -1,6 +1,10 @@
 const MercadoLivreURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const MLItemSearch = 'https://api.mercadolibre.com/items/';
 
+function getCarrinho() {
+  return document.querySelector('.cart__items');
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -46,6 +50,7 @@ function cartItemClickListener(event) {
   let price = event.srcElement.innerText.toString().split('$');
   price = parseFloat(price[1]);
   adicionaTotal(price * (-1));
+  localStorage.removeItem(event.srcElement);
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -60,12 +65,19 @@ function createCartItemElement({ id, title, price }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+async function adicionaItemCarrinho(id) {
+  const carrinho = getCarrinho();
+  const item = await getRequest(MLItemSearch + id);
+  const cartItem = createCartItemElement(item);
+  carrinho.appendChild(cartItem);
+  adicionaTotal(item.price);
+}
+
 async function adicionaCarrinho(element, id) {
-  const carrinho = document.querySelector('.cart__items');
+  const carrinho = getCarrinho();
   element.addEventListener('click', async function () {
-    const item = await getRequest(MLItemSearch + id);
-    carrinho.appendChild(createCartItemElement(item));
-    adicionaTotal(item.price);
+    adicionaItemCarrinho(id);
+    localStorage.setItem(`Item ${carrinho.children.length}`, id);
   });
 }
 
@@ -104,10 +116,27 @@ function esvaziaCarrinho() {
   emptyCart.addEventListener('click', () => {
     carrinho.innerHTML = '';
     total.innerText = '';
+    localStorage.clear();
+  });
+}
+
+function carregaCarrinho() {
+  const lista = [];
+  for (let index = 0; index <= localStorage.length; index += 1) {
+    const element = localStorage.getItem(`Item ${index}`);
+    if (element) {
+      lista.push(element);
+    }
+  }
+  console.log(lista);
+  lista.forEach((item) => {
+    console.log(item);
+    adicionaItemCarrinho(item);
   });
 }
 
 window.onload = async function onload() { 
   adicionaItens();
   esvaziaCarrinho();
+  carregaCarrinho();
 };
