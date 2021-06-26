@@ -82,3 +82,7 @@ function removeAllCartElementsListener() {
   }
 }
 
+const toLocalStorage = () => {
+  const localCartItems = document.getElementsByClassName('cart__items');
+  localStorage.setItem('item', localCartItems[0].innerHTML);
+};
