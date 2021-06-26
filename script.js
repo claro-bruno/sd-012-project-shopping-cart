@@ -1,19 +1,19 @@
-const PRICE_TOTAL = document.querySelector('.total-price');
+const totalValue = document.querySelector('.total-price');
 
 function toLocalStorage() {
-  const total = PRICE_TOTAL;
+  const total = totalValue;
   localStorage.setItem('teste', total.innerHTML);
   const localCartItems = document.getElementsByClassName('cart__items');
   localStorage.setItem('item', localCartItems[0].innerHTML);
 }
 
 function addTotalPrice(price) {
-  const addTotalPric = PRICE_TOTAL;
+  const addTotalPric = totalValue;
   addTotalPric.innerText = price + parseFloat(addTotalPric.innerText);
 }
 
 function subTotalPrice(price) {
-  const subTotalPric = PRICE_TOTAL;
+  const subTotalPric = totalValue;
   subTotalPric.innerText = parseFloat(subTotalPric.innerText) - price;
 }
 
@@ -72,7 +72,7 @@ function removeAllCartElementsListener() {
 
 function getItemsLocalStorage() {
   if (localStorage.getItem('teste')) {
-    const totalPrice = document.querySelector('.total-price');
+    const totalPrice = totalValue;
     totalPrice.innerHTML = localStorage.getItem('teste');
   }
   const listCart = document.querySelector('ol.cart__items');
