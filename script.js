@@ -22,7 +22,7 @@ function createItens() {
 }
 
 function addCart(event) {
-  const itemId = event.target.parentElement.firstElementChild.innerText;
+  const itemId = getSkuFromProductItem(event.target.parentElement);
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((resolve) => resolve.json())
     .then((resolve) => {
