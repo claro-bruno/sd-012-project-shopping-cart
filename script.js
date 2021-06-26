@@ -1,5 +1,8 @@
 window.onload = () => {
   document.querySelector('.empty-cart').addEventListener('click',removeAllCartElementsListener);
+  const listCart = document.querySelector('ol.cart__items');
+  listCart.innerHTML = localStorage.getItem('item');
+  listCart.childNodes.forEach((child) => child.addEventListener('click', cartItemClickListener));
   createItens(); 
 }
 
@@ -29,6 +32,7 @@ function addCart(event) {
       const { id:sku, title:name, price:salePrice} = resolve;
       const element = createCartItemElement({sku, name, salePrice});
       document.querySelector('.cart__items').appendChild(element);
+      toLocalStorage();
     })
 }
 
