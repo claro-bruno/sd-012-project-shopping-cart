@@ -1,4 +1,6 @@
 function toLocalStorage() {
+  const totalPrice = document.querySelector('.total-price');
+  localStorage.setItem('teste', totalPrice.innerHTML);
   const localCartItems = document.getElementsByClassName('cart__items');
   localStorage.setItem('item', localCartItems[0].innerHTML);
 }
@@ -34,13 +36,15 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  const value = event.target.querySelector('.price').innerText;
+  subTotalPrice(value);
   document.querySelector('ol.cart__items').removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span class='price'>${salePrice}</span>`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -51,9 +55,14 @@ function removeAllCartElementsListener() {
   for (let index = 0; index < cartLength; index += 1) {
     cartItems.removeChild(cartItems.children[0]);
   }
+  localStorage.clear();
 }
 
 function getItemsLocalStorage() {
+  if (localStorage.getItem('teste')) {
+    const totalPrice = document.querySelector('.total-price');
+    totalPrice.innerHTML = localStorage.getItem('teste');
+  }
   const listCart = document.querySelector('ol.cart__items');
   listCart.innerHTML = localStorage.getItem('item');
   listCart.childNodes.forEach((child) => child.addEventListener('click', cartItemClickListener));
@@ -67,6 +76,7 @@ function addCart(event) {
       const { id: sku, title: name, price: salePrice } = resolve;
       const element = createCartItemElement({ sku, name, salePrice });
       document.querySelector('.cart__items').appendChild(element);
+      addTotalPrice(salePrice);
       toLocalStorage();
     });
 }
@@ -88,6 +98,17 @@ function createItens() {
         button.addEventListener('click', addCart);
       });
     });
+}
+
+function addTotalPrice(price) {
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = price + parseFloat(totalPrice.innerText);
+}
+
+function subTotalPrice(price) {
+  const totalPrice = document.querySelector('.total-price');
+  console.log(price);
+  totalPrice.innerText = parseFloat(totalPrice.innerText) - price;
 }
 
 window.onload = () => {
