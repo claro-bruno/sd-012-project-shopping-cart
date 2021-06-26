@@ -72,7 +72,7 @@ function removeAllCartElementsListener() {
 
 function getItemsLocalStorage() {
   if (localStorage.getItem('teste')) {
-    const totalPrice = PRICE_TOTAL;
+    const totalPrice = document.querySelector('.total-price');
     totalPrice.innerHTML = localStorage.getItem('teste');
   }
   const listCart = document.querySelector('ol.cart__items');
