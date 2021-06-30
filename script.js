@@ -1,4 +1,17 @@
-window.onload = function onload() { };
+window.onload = function onload() { 
+  fetchURL(URL_MLB);
+};
+
+// codigo criado com a ajuda do aluno Thalles
+const URL_MLB = "https://api.mercadolibre.com/sites/MLB/search?q=computador";
+
+async function fetchURL(URL_MLB) {
+  const response = await fetch(URL_MLB);
+  const data = await response.json();
+  const arrayResults = data["results"];
+  arrayResults.forEach((product) => document.querySelector('.items').appendChild(createProductItemElement(product)));
+}
+
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,7 +27,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+// feito com a ajuda do aluno Thalles (renomear os parametro da desestruturacao)
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -42,3 +56,4 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+  
