@@ -9,7 +9,6 @@ function facilityKeysComputer(computer) {
     };
 }
 
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -46,10 +45,12 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  const listCart = document.querySelector('.cart__items');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+  listCart.appendChild(li);
+  /* li.addEventListener('click', cartItemClickListener);
+  return li; */
 }
 
 function renderNewComputers(newComputers) {
@@ -67,17 +68,22 @@ const fetchComputer = () => {
   .then((newComputers) => renderNewComputers(newComputers));
 };
 
-// https://pt.stackoverflow.com/questions/491680/converter-json-em-array
-
 const fetchItemID = (id) => {
   fetch(`${ITEM_URL}${id}`)
   .then((response) => response.json())
-  .then((result) => createCartItemElement(result) )
-  
-  
+  .then((results) => createCartItemElement(results));
+};
+
+const addToCart = () => {
+  document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('item__add')) {
+      const localId = event.target.parentElement.firstElementChild.innerText;
+      fetchItemID(localId);
+    }
+  });
 };
 
 window.onload = function onload() {
   fetchComputer();
-  fetchItemID('MLB1341706310');
+  addToCart();
  };
