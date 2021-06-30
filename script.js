@@ -1,4 +1,5 @@
 const COMPUTER_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const ITEM_URL = 'https://api.mercadolibre.com/items/';
 
 function facilityKeysComputer(computer) {
     return {
@@ -7,6 +8,7 @@ function facilityKeysComputer(computer) {
       image: computer.thumbnail,
     };
 }
+
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,7 +44,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -65,6 +67,17 @@ const fetchComputer = () => {
   .then((newComputers) => renderNewComputers(newComputers));
 };
 
+// https://pt.stackoverflow.com/questions/491680/converter-json-em-array
+
+const fetchItemID = (id) => {
+  fetch(`${ITEM_URL}${id}`)
+  .then((response) => response.json())
+  .then((result) => createCartItemElement(result) )
+  
+  
+};
+
 window.onload = function onload() {
   fetchComputer();
+  fetchItemID('MLB1341706310');
  };
