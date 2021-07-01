@@ -1,5 +1,14 @@
 const COMPUTER_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ITEM_URL = 'https://api.mercadolibre.com/items/';
+const stringCart = '.cart__items';
+
+function cartAddLocalStore() {
+  if (localStorage.length !== 0) {
+    localStorage.removeItem('cart');
+  }
+  const itemCart = document.querySelector(stringCart).innerHTML;
+  localStorage.setItem('cart', itemCart);  
+}
 
 function facilityKeysComputer(computer) {
     return {
@@ -42,8 +51,17 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
   const itemTarget = event.target;
-  const listCart = document.querySelector('.cart__items');
+  const listCart = document.querySelector(stringCart);
   listCart.removeChild(itemTarget);
+  }
+}
+
+function cartSavedLocalStore() {
+  const getCart = document.querySelector(stringCart);
+  if (localStorage.length !== 0) {
+    getCart.innerHTML = localStorage.getItem('cart');
+    const childrenGetCart = getCart.childNodes;
+    childrenGetCart.forEach((child) => child.addEventListener('click', cartItemClickListener));  
   }
 }
 
@@ -51,7 +69,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  const listCart = document.querySelector('.cart__items');
+  const listCart = document.querySelector(stringCart);
   listCart.appendChild(li);
   li.addEventListener('click', (event) => cartItemClickListener(event));
   return li; 
@@ -75,7 +93,8 @@ const fetchComputer = () => {
 const fetchItemID = (id) => {
   fetch(`${ITEM_URL}${id}`)
   .then((response) => response.json())
-  .then((results) => createCartItemElement(results));
+  .then((results) => createCartItemElement(results))
+  .then(() => cartAddLocalStore());
 };
 
 const addToCart = () => {
@@ -83,11 +102,12 @@ const addToCart = () => {
     if (event.target.classList.contains('item__add')) {
       const localId = event.target.parentElement.firstElementChild.innerText;
       fetchItemID(localId);
-    }
+    } 
   });
 };
 
 window.onload = function onload() {
   fetchComputer();
-  addToCart();  
+  addToCart(); 
+  cartSavedLocalStore(); 
  };
