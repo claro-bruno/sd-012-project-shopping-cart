@@ -1,4 +1,20 @@
-window.onload = function onload() { };
+function loadingScreen() {
+  const text = document.querySelector('.loading');
+  text.remove();
+}
+
+function productDisplay(array) {
+  const sectionItems = document.querySelector('.items');
+
+  array.results.forEach((current) => {
+    const { id: sku,
+      title: name,
+      thumbnail: image 
+    }
+
+    sectionsItems.appendChild(createProductItemElement({ sku, name, image }));
+  });
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,4 +56,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+
+
+window.onload = function onload() {
+  const url = "https://api.mercadolibre.com/sites/MLB/search?q=computer";
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((array) => {
+      productDisplay(array);
+      loadingScreen();
+    });
 }
