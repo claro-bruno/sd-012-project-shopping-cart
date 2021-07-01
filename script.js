@@ -1,9 +1,9 @@
 async function fetchAPIURL() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'
   const response = await fetch(url);
-  const result = await response.json();
+  const { results } = await response.json();
 
-  return result;
+  return results;
 }
 fetchAPIURL().then((data) => console.log(data));
 
