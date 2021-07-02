@@ -83,9 +83,9 @@ function renderNewComputers(newComputers) {
   });
 }
 
-function getTotalPrice() {
+/* function getTotalPrice() {
   const totalPrice = document.querySelector('.total-price');
-}
+} */
 
 const fetchComputer = () => {
   fetch(COMPUTER_URL)
@@ -99,8 +99,8 @@ const fetchItemID = (id) => {
   fetch(`${ITEM_URL}${id}`)
   .then((response) => response.json())
   .then((results) => createCartItemElement(results))
-  .then(() => cartAddLocalStore())
-  .then(() => getTotalPrice());
+  .then(() => cartAddLocalStore());
+  // .then(() => getTotalPrice());
 
 };
 
