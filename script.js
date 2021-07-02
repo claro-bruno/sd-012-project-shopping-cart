@@ -1,11 +1,17 @@
-async function fetchAPIURL() {
+const renderProducts = (arr) => {
+  const sectionItems = document.querySelector('.items');
+  
+  arr.map(({ id: sku, title: name, thumbnail: image }) => 
+    sectionItems.appendChild(createProductItemElement({ sku, name, image })));
+}
+
+const fetchAPIURL = async () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'
   const response = await fetch(url);
   const { results } = await response.json();
 
   return results;
 }
-fetchAPIURL().then((data) => console.log(data));
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -49,5 +55,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = function onload() {
-}
+window.onload = async () => {
+  const results = await fetchAPIURL();
+  console.log(results)
+  renderProducts(results); 
+};
