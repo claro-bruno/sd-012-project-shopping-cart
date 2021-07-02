@@ -83,18 +83,25 @@ function renderNewComputers(newComputers) {
   });
 }
 
+function getTotalPrice() {
+  const totalPrice = document.querySelector('.total-price');
+}
+
 const fetchComputer = () => {
   fetch(COMPUTER_URL)
   .then((response) => response.json())
   .then((computers) => computers.results.map((computer) => facilityKeysComputer(computer)))
-  .then((newComputers) => renderNewComputers(newComputers));
+  .then((newComputers) => renderNewComputers(newComputers))
+  .then(() => document.querySelector('.loading').remove());
 };
 
 const fetchItemID = (id) => {
   fetch(`${ITEM_URL}${id}`)
   .then((response) => response.json())
   .then((results) => createCartItemElement(results))
-  .then(() => cartAddLocalStore());
+  .then(() => cartAddLocalStore())
+  .then(() => getTotalPrice());
+
 };
 
 const addToCart = () => {
