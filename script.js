@@ -44,9 +44,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
@@ -101,7 +101,6 @@ const fetchItemID = (id) => {
   .then((results) => createCartItemElement(results))
   .then(() => cartAddLocalStore());
   // .then(() => getTotalPrice());
-
 };
 
 const addToCart = () => {
