@@ -1,7 +1,9 @@
 const BASE_API = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-
+const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
+const liItens = document.querySelector('.cart__items');
 
+// requisisto 1
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
   .then((response) => response.json())
   .then((items) => items.results)
@@ -31,23 +33,46 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
+// fim requisito 1
 
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
+// requisisto 2
+// capturar todos os botoes (cada botão for each)
+// pegar o id
+// fazer o fech no id daquele objeto
+// executar a função createCartItemElement passando o objeto
+// o retorno da função deve ser filho da ol, capturar a ol
 
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+const getItem = (id) => fetch(`${BASE_ITEM}/${id}`)
+  .then((response) => response.json())
+  .then((item) => item)
+  .catch((error) => error);
+
+function cartItemClickListener() {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((e) => {
+    e.addEventListener('click', async (ev) => {
+      try {
+        const id = ev.target.parentElement.querySelector('.item__sku').innerText;
+        const data = await getItem(id);
+        liItens.appendChild(createCartItemElement(data))
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  });
+}
 
 window.onload = function onload() {
   fetchApi('computador')
@@ -55,6 +80,8 @@ window.onload = function onload() {
       items.forEach((item) => {
         sectionItens.appendChild(createProductItemElement(item));
       });
+      cartItemClickListener();
     })
+
     .catch((error) => console.log(`o erro foi ${error}`));
 };
