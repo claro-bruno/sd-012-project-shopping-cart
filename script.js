@@ -29,7 +29,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const { target } = event;// lint pede que seja destructuring
+  target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -75,6 +76,7 @@ function generateItemsList() {
 //   });
 // }
 
+// REQ 2 visto no repositório de Laura Ramos https://github.com/tryber/sd-012-project-shopping-cart/tree/Laura-Ramos-Shopping-Cart-Project
 function addItemToCart(id) {
   const url = `https://api.mercadolibre.com/items/${id}`;
   fetch(url)
