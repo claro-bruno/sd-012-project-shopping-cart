@@ -2,7 +2,6 @@ const BASE_API = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
-const li = document.createElement('li');
 
 // requisisto 1
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
@@ -47,14 +46,16 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // executar a função createCartItemElement passando o objeto
 // o retorno da função deve ser filho da ol, capturar a ol
 function cartItemClickListener(event) {
-  console.log(event);
-  return event;
+  const targetClicked = event.target;
+  console.log(targetClicked);
+  targetClicked.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener(li));
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
