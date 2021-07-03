@@ -3,7 +3,6 @@ const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
 
-// requisisto 1
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
   .then((response) => response.json())
   .then((items) => items.results)
@@ -33,7 +32,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-// fim requisito 1 ------------------------------------------
 
 const setItemStorage = () => {
   localStorage.setItem('cart', liItens.innerHTML);
@@ -43,10 +41,12 @@ const getItemStorage = () => {
   liItens.innerHTML = localStorage.getItem('cart');
 };
 
-function cartItemClickListener() {
+function removeItemCart() {
   liItens.addEventListener('click', (event) => {
-    event.target.remove();
-    setItemStorage();
+    if (event.target.className === 'cart__item') {
+      event.target.remove();
+      setItemStorage();
+    }
   });
 }
 
@@ -62,7 +62,7 @@ const fetchItemById = (id) => fetch(`${BASE_ITEM}/${id}`)
   .then((item) => item)
   .catch((error) => error);
 
-function getSkuFromProductItem(item) {
+function getIdFormProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
@@ -71,7 +71,7 @@ const creatItemList = () => {
   buttons.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
       try {
-        const id = getSkuFromProductItem(event.target.parentElement);
+        const id = getIdFormProductItem(event.target.parentElement);
         const data = await fetchItemById(id);
         liItens.appendChild(createCartItemElement(data));
         setItemStorage();
@@ -81,7 +81,10 @@ const creatItemList = () => {
     });
   });
 };
-// finaliza requisito 2
+
+// const sumPriceItensCart = () => {
+
+// }
 
 window.onload = () => {
   fetchApi('computador')
@@ -94,5 +97,5 @@ window.onload = () => {
     .catch((error) => console.log(`o erro foi ${error}`));
 
   getItemStorage();
-  cartItemClickListener();
+  removeItemCart();
 };
