@@ -66,7 +66,7 @@ function cartItemClickListener() {
       try {
         const id = ev.target.parentElement.querySelector('.item__sku').innerText;
         const data = await getItem(id);
-        liItens.appendChild(createCartItemElement(data))
+        liItens.appendChild(createCartItemElement(data));
       } catch (error) {
         console.log(error);
       }
