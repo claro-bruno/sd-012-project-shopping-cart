@@ -34,30 +34,32 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 // fim requisito 1
+// ------------------------------------------
+// inicia requisisto 2
+const saveListCart = () => {
+  localStorage.setItem('cart', liItens.innerHTML);
+};
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-// requisisto 2
-// capturar todos os botoes (cada botão for each)
-// pegar o id
-// fazer o fech no id daquele objeto
-// executar a função createCartItemElement passando o objeto
-// o retorno da função deve ser filho da ol, capturar a ol
 function cartItemClickListener(event) {
+  const olItems = document.querySelectorAll('.cart__items');
+  console.log(olItems);
+
   const targetClicked = event.target;
-  console.log(targetClicked);
   targetClicked.remove();
+  saveListCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // liItens.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 const getItem = (id) => fetch(`${BASE_ITEM}/${id}`)
   .then((response) => response.json())
@@ -72,11 +74,17 @@ const creatItemList = () => {
         const id = ev.target.parentElement.querySelector('.item__sku').innerText;
         const data = await getItem(id);
         liItens.appendChild(createCartItemElement(data));
+        saveListCart();
       } catch (error) {
         console.log(error);
       }
     });
   });
+};
+// finaliza requisito 2
+
+const teste = () => {
+  liItens.addEventListener('click', cartItemClickListener);
 };
 
 window.onload = function onload() {
@@ -89,4 +97,8 @@ window.onload = function onload() {
     })
 
     .catch((error) => console.log(`o erro foi ${error}`));
+
+  const test = localStorage.getItem('cart');
+  liItens.innerHTML = test;
+  teste();
 };
