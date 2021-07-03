@@ -4,7 +4,8 @@ const sectionItens = document.querySelector('.items');
 
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
   .then((response) => response.json())
-  .then((items) => items.results);
+  .then((items) => items.results)
+  .catch((error) => error);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -51,9 +52,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 window.onload = function onload() {
   fetchApi('computador')
     .then((items) => {
-      console.log(items);
       items.forEach((item) => {
         sectionItens.appendChild(createProductItemElement(item));
       });
-    });
+    })
+    .catch((error) => console.log(`o erro foi ${error}`));
 };
