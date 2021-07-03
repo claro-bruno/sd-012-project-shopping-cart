@@ -33,61 +33,57 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-// fim requisito 1
-// ------------------------------------------
-// inicia requisisto 2
-const saveListCart = () => {
+// fim requisito 1 ------------------------------------------
+
+const setItemStorage = () => {
   localStorage.setItem('cart', liItens.innerHTML);
 };
 
-function cartItemClickListener(event) {
-  const olItems = document.querySelectorAll('.cart__items');
-  console.log(olItems);
+const getItemStorage = () => {
+  liItens.innerHTML = localStorage.getItem('cart');
+};
 
-  const targetClicked = event.target;
-  targetClicked.remove();
-  saveListCart();
+function cartItemClickListener() {
+  liItens.addEventListener('click', (event) => {
+    event.target.remove();
+    setItemStorage();
+  });
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // liItens.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-const getItem = (id) => fetch(`${BASE_ITEM}/${id}`)
+const fetchItemById = (id) => fetch(`${BASE_ITEM}/${id}`)
   .then((response) => response.json())
   .then((item) => item)
   .catch((error) => error);
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 const creatItemList = () => {
   const buttons = document.querySelectorAll('.item__add');
-  buttons.forEach((e) => {
-    e.addEventListener('click', async (ev) => {
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', async (event) => {
       try {
-        const id = ev.target.parentElement.querySelector('.item__sku').innerText;
-        const data = await getItem(id);
+        const id = getSkuFromProductItem(event.target.parentElement);
+        const data = await fetchItemById(id);
         liItens.appendChild(createCartItemElement(data));
-        saveListCart();
+        setItemStorage();
       } catch (error) {
-        console.log(error);
+        console.log(`o erro foi ${error}`);
       }
     });
   });
 };
 // finaliza requisito 2
 
-const teste = () => {
-  liItens.addEventListener('click', cartItemClickListener);
-};
-
-window.onload = function onload() {
+window.onload = () => {
   fetchApi('computador')
     .then((items) => {
       items.forEach((item) => {
@@ -95,10 +91,8 @@ window.onload = function onload() {
       });
       creatItemList();
     })
-
     .catch((error) => console.log(`o erro foi ${error}`));
 
-  const test = localStorage.getItem('cart');
-  liItens.innerHTML = test;
-  teste();
+  getItemStorage();
+  cartItemClickListener();
 };
