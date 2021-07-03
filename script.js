@@ -2,6 +2,7 @@ const BASE_API = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
+const li = document.createElement('li');
 
 // requisisto 1
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
@@ -45,12 +46,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // fazer o fech no id daquele objeto
 // executar a função createCartItemElement passando o objeto
 // o retorno da função deve ser filho da ol, capturar a ol
+function cartItemClickListener(event) {
+  console.log(event);
+  return event;
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener(li));
   return li;
 }
 
@@ -59,7 +63,7 @@ const getItem = (id) => fetch(`${BASE_ITEM}/${id}`)
   .then((item) => item)
   .catch((error) => error);
 
-function cartItemClickListener() {
+const creatItemList = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((e) => {
     e.addEventListener('click', async (ev) => {
@@ -72,7 +76,7 @@ function cartItemClickListener() {
       }
     });
   });
-}
+};
 
 window.onload = function onload() {
   fetchApi('computador')
@@ -80,7 +84,7 @@ window.onload = function onload() {
       items.forEach((item) => {
         sectionItens.appendChild(createProductItemElement(item));
       });
-      cartItemClickListener();
+      creatItemList();
     })
 
     .catch((error) => console.log(`o erro foi ${error}`));
