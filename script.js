@@ -1,10 +1,21 @@
+// Requisito 5
+function totalPrice() {
+  const totalItems = document.querySelectorAll('.cart__item');
+  let total = 0;
+  totalItems.forEach((item) => {
+    total += parseFloat(item.innerHTML.split('$')[1]);
+  });
+  document.querySelector('.total-price').innerHTML = Math.round(total * 100) / 100;
+}
 // Requisito 4 - Referência: https://github.com/tryber/sd-012-project-shopping-cart/blob/Laura-Ramos-Shopping-Cart-Project/script.js
 function updateLocalStorage() {
   localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+  totalPrice();
 }
 // Requisito 4
 function loadLocalStorage() {
   document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+  totalPrice();
 }
 
 function createProductImageElement(imageSource) {
@@ -40,6 +51,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   const { target } = event;// lint pede que seja destructuring
   target.remove();
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -63,6 +75,7 @@ function generateItemsList() {
       // console.log(objeto);
       // // o objeto está buscando os dados da api: a ID ( sku), o title e o thumbnail. Esta explicação está no plantão da T08 pelo slack.
        document.querySelector('.items').appendChild(createProductItemElement(objeto));
+       totalPrice();
     }));
 }
 
@@ -108,4 +121,5 @@ document.addEventListener('click', (event) => {
 window.onload = function onload() {
   generateItemsList();
   loadLocalStorage();
+  totalPrice();
 };
