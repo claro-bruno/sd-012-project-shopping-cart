@@ -1,10 +1,5 @@
 let total = 0;
 
-function updateLocalStorage() {
-  localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
-  localStorage.setItem('total', total);
-}
-
 function loadLocalStorage() {
   document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
   document.querySelector('.total-price').innerHTML = localStorage.getItem('total');
