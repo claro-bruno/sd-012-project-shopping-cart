@@ -10,7 +10,10 @@ const addCartItem = async (event) => {
   const itemID = event.target.parentElement.firstChild.innerHTML;
   const itemData = await fetchAPIitemsURL(itemID)
   const { id: sku, title: name, price: salePrice } = itemData;
+
   cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
+
+  saveLocalStorage();
 }
 
 const fetchAPIcomputerURL = async () => {
@@ -19,6 +22,31 @@ const fetchAPIcomputerURL = async () => {
   const { results } = await response.json();
 
   return results;
+}
+
+const removeAllCartItems = () => {
+  const cartSection = document.querySelector('.cart__items');
+  while(cartSection.firstChild) {
+    cartSection.removeChild(cartSection.firstChild);
+  };
+  saveLocalStorage();
+}
+
+const saveLocalStorage = () => {
+  const cartItems = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+}
+
+const getLocalStorageItems = () => {
+  const localStorageItems = JSON.parse(localStorage.getItem('cartItems'));
+  const cartSection = document.querySelector('.cart__items');
+
+  cartSection.innerHTML = localStorageItems;
+
+  const cartItems = document.querySelectorAll('li');
+
+  cartItems.forEach((current) => addEventListener('click', cartItemClickListener))
 }
 
 const addButtonEvent = () => {
@@ -65,9 +93,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+const cartItemClickListener = (event) => {
   const cartItems = document.querySelector('.cart__items');
   cartItems.removeChild(event.target)
+  saveLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -83,4 +112,6 @@ window.onload = async () => {
   const results = await fetchAPIcomputerURL();
   renderProducts(results);
   addButtonEvent();
+  getLocalStorageItems();
+  document.querySelector('.empty-cart').addEventListener('click', removeAllCartItems);
 };
