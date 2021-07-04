@@ -1,3 +1,12 @@
+// Requisito 4 - Referência: https://github.com/tryber/sd-012-project-shopping-cart/blob/Laura-Ramos-Shopping-Cart-Project/script.js
+function updateLocalStorage() {
+  localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+}
+// Requisito 4
+function loadLocalStorage() {
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -84,6 +93,7 @@ function addItemToCart(id) {
       response.json().then((itemList) => {
         const section = document.getElementsByClassName('cart__items')[0];
         section.appendChild(createCartItemElement(itemList));
+        updateLocalStorage();
     }); 
   });
 }
@@ -91,9 +101,11 @@ function addItemToCart(id) {
 document.addEventListener('click', (event) => {
   if (event.target.className === 'item__add') {
     addItemToCart(getSkuFromProductItem(event.target.parentElement));
+    updateLocalStorage();
   }
 });
 
 window.onload = function onload() {
   generateItemsList();
+  loadLocalStorage();
 };
