@@ -2,6 +2,8 @@ const BASE_API = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
+const spanTotalPrice = document.querySelector('.total_price');
+console.log(spanTotalPrice);
 
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
   .then((response) => response.json())
@@ -35,10 +37,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 const setItemStorage = () => {
   localStorage.setItem('cart', liItens.innerHTML);
+  localStorage.setItem('total_price', spanTotalPrice.innerHTML);
 };
 
 const getItemStorage = () => {
   liItens.innerHTML = localStorage.getItem('cart');
+  const totalPrice = localStorage.getItem('total_price');
+  if (!totalPrice) {
+    spanTotalPrice.innerHTML = 0;
+  } else {
+    spanTotalPrice.innerHTML = totalPrice;
+  }
 };
 
 function removeItemCart() {
@@ -66,6 +75,32 @@ function getIdFormProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const sumPriceItensCart = (price = 0) => {
+  let totalPrice = localStorage.getItem('total_price');
+  if (typeof (totalPrice) !== 'string') {
+    console.log('ops');
+    totalPrice = '0';
+  }
+  const sum = parseInt(totalPrice, 10) + price;
+  localStorage.setItem('total_price', sum);
+  spanTotalPrice.innerText = `${sum}`;
+};
+
+sumPriceItensCart();
+
+const subPriceItensCart = (price = 0) => {
+  let totalPrice = localStorage.getItem('total_price');
+  if (typeof (totalPrice) !== 'string') {
+    console.log('ops');
+    totalPrice = '0';
+  }
+  const sub = parseInt(totalPrice, 10) - price;
+  localStorage.setItem('total_price', sub);
+  spanTotalPrice.innerText = `${sub}`;
+};
+
+subPriceItensCart(1000);
+
 const creatItemList = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((btn) => {
@@ -74,6 +109,8 @@ const creatItemList = () => {
         const id = getIdFormProductItem(event.target.parentElement);
         const data = await fetchItemById(id);
         liItens.appendChild(createCartItemElement(data));
+        const { price } = data;
+        sumPriceItensCart(price);
         setItemStorage();
       } catch (error) {
         console.log(`o erro foi ${error}`);
@@ -81,10 +118,6 @@ const creatItemList = () => {
     });
   });
 };
-
-// const sumPriceItensCart = () => {
-
-// }
 
 window.onload = () => {
   fetchApi('computador')
