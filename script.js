@@ -70,7 +70,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 function generateItemsList() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
-  .then((data) =>
+  .then((data) => {
+    document.querySelector('.loading').remove();   
     data.results.forEach((item) => {
       const objeto = {
         sku: item.id,
@@ -81,7 +82,8 @@ function generateItemsList() {
       // // o objeto está buscando os dados da api: a ID ( sku), o title e o thumbnail. Esta explicação está no plantão da T08 pelo slack.
        document.querySelector('.items').appendChild(createProductItemElement(objeto));
        totalPrice();
-    }));
+    });
+  });
 }
 
 // function addItemToCart() {
