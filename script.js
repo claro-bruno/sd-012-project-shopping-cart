@@ -2,8 +2,7 @@ const BASE_API = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const BASE_ITEM = 'https://api.mercadolibre.com/items';
 const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
-const spanTotalPrice = document.querySelector('.total_price');
-console.log(spanTotalPrice);
+const spanTotalPrice = document.querySelector('.total-price');
 
 const fetchApi = (item) => fetch(`${BASE_API}${item}`)
   .then((response) => response.json())
@@ -51,8 +50,15 @@ const getItemStorage = () => {
 };
 
 function removeItemCart() {
+  // consultei o repositório do Andre Moreno para resolver parte desta função https://github.com/tryber/sd-012-project-shopping-cart/pull/37
   liItens.addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') {
+      const arrSplit = event.target.innerText.split('$');
+      const priceItemList = arrSplit[arrSplit.length - 1];
+      const totalPrice = document.querySelector('.total-price').innerText;
+      const sub = parseFloat(totalPrice) - priceItemList;
+      const subRound = Math.round(sub * 100) / 100;
+      spanTotalPrice.innerText = subRound;
       event.target.remove();
       setItemStorage();
     }
@@ -71,43 +77,31 @@ const fetchItemById = (id) => fetch(`${BASE_ITEM}/${id}`)
   .then((item) => item)
   .catch((error) => error);
 
-function getIdFormProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 const sumPriceItensCart = (price = 0) => {
   let totalPrice = localStorage.getItem('total_price');
   if (typeof (totalPrice) !== 'string') {
     console.log('ops');
     totalPrice = '0';
   }
-  const sum = parseInt(totalPrice, 10) + price;
+
+  const sum = Math.round((parseFloat(totalPrice) + price) * 100) / 100;
+  console.log(sum);
+
   localStorage.setItem('total_price', sum);
   spanTotalPrice.innerText = `${sum}`;
 };
 
-sumPriceItensCart();
-
-const subPriceItensCart = (price = 0) => {
-  let totalPrice = localStorage.getItem('total_price');
-  if (typeof (totalPrice) !== 'string') {
-    console.log('ops');
-    totalPrice = '0';
-  }
-  const sub = parseInt(totalPrice, 10) - price;
-  localStorage.setItem('total_price', sub);
-  spanTotalPrice.innerText = `${sub}`;
-};
-
-subPriceItensCart(1000);
+function getIdFormProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 const creatItemList = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
       try {
-        const id = getIdFormProductItem(event.target.parentElement);
-        const data = await fetchItemById(id);
+        const idProduct = getIdFormProductItem(event.target.parentElement);
+        const data = await fetchItemById(idProduct);
         liItens.appendChild(createCartItemElement(data));
         const { price } = data;
         sumPriceItensCart(price);
