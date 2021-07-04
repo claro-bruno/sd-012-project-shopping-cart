@@ -5,12 +5,34 @@ const renderProducts = (arr) => {
     sectionItems.appendChild(createProductItemElement({ sku, name, image })));
 }
 
-const fetchAPIURL = async () => {
+const addCartItem = async (event) => {
+  const cartSection = document.querySelector('.cart__items');
+  const itemID = event.target.parentElement.firstChild.innerHTML;
+  const itemData = await fetchAPIitemsURL(itemID)
+  const { id: sku, title: name, price: salePrice } = itemData;
+  cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
+}
+
+const fetchAPIcomputerURL = async () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'
   const response = await fetch(url);
   const { results } = await response.json();
 
   return results;
+}
+
+const addButtonEvent = () => {
+  const addButton = document.querySelectorAll('.item__add');
+  
+  addButton.forEach((current) => current.addEventListener('click', addCartItem));
+}
+
+const fetchAPIitemsURL = async (id) => {
+  const url = `https://api.mercadolibre.com/items/${id}`;
+  const response = await fetch(url);
+  const result = await response.json();
+
+  return result;
 }
 
 function createProductImageElement(imageSource) {
@@ -44,7 +66,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -56,7 +78,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = async () => {
-  const results = await fetchAPIURL();
-  console.log(results)
-  renderProducts(results); 
+  // Foi colocado o retorno de fetchAPIcomputerURL em constante devido a dica dada pelo colega Eric Kreis!!!
+  const results = await fetchAPIcomputerURL();
+  renderProducts(results);
+  addButtonEvent();
 };
