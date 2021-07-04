@@ -4,10 +4,18 @@ const sectionItens = document.querySelector('.items');
 const liItens = document.querySelector('.cart__items');
 const spanTotalPrice = document.querySelector('.total-price');
 
-const fetchApi = (item) => fetch(`${BASE_API}${item}`)
-  .then((response) => response.json())
-  .then((items) => items.results)
-  .catch((error) => error);
+const fetchApi = (item) => {
+  // Consultei o repositório do Cristiano lima como inspiração para resolução do requisito 7 sobre o loading antes do fetch https://github.com/tryber/sd-012-project-shopping-cart/pull/116
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'Loading...';
+  return fetch(`${BASE_API}${item}`)
+    .then((response) => response.json())
+    .then((items) => {
+      loading.parentElement.removeChild(loading);
+      return items.results;
+    })
+    .catch((error) => error);
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -78,9 +86,10 @@ const fetchItemById = (id) => fetch(`${BASE_ITEM}/${id}`)
   .catch((error) => error);
 
 const sumPriceItensCart = (price = 0) => {
+  // Consultei documentaçãoo para entender sobre o Math.round https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Math/round
   let totalPrice = localStorage.getItem('total_price');
   if (typeof (totalPrice) !== 'string') {
-    console.log('ops');
+    console.log('ops, algum erro no local storage');
     totalPrice = '0';
   }
   const sum = Math.round((parseFloat(totalPrice) + price) * 100) / 100;
@@ -112,22 +121,15 @@ const creatItemList = () => {
 
 const emptyCart = () => {
   const btnEmptyCart = document.querySelector('.empty-cart');
-  btnEmptyCart.addEventListener('click', (event) => {
-    // capturar todos ítens da lista pela classe
-    // fazer um foreach
-    // acessar o elemento pai e dar o comando para remover cada um dos seus filhos..
+  btnEmptyCart.addEventListener('click', () => {
     const itemsCart = document.querySelectorAll('.cart__item');
-    console.log(itemsCart);
     itemsCart.forEach((item) => {
       item.parentNode.removeChild(item);
-      // console.log(item);
       spanTotalPrice.innerText = 0;
       setItemStorage();
     });
   });
 };
-
-emptyCart();
 
 window.onload = () => {
   fetchApi('computador')
@@ -141,4 +143,5 @@ window.onload = () => {
 
   getItemStorage();
   removeItemCart();
+  emptyCart();
 };
