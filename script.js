@@ -83,10 +83,7 @@ const sumPriceItensCart = (price = 0) => {
     console.log('ops');
     totalPrice = '0';
   }
-
   const sum = Math.round((parseFloat(totalPrice) + price) * 100) / 100;
-  console.log(sum);
-
   localStorage.setItem('total_price', sum);
   spanTotalPrice.innerText = `${sum}`;
 };
@@ -112,6 +109,25 @@ const creatItemList = () => {
     });
   });
 };
+
+const emptyCart = () => {
+  const btnEmptyCart = document.querySelector('.empty-cart');
+  btnEmptyCart.addEventListener('click', (event) => {
+    // capturar todos ítens da lista pela classe
+    // fazer um foreach
+    // acessar o elemento pai e dar o comando para remover cada um dos seus filhos..
+    const itemsCart = document.querySelectorAll('.cart__item');
+    console.log(itemsCart);
+    itemsCart.forEach((item) => {
+      item.parentNode.removeChild(item);
+      // console.log(item);
+      spanTotalPrice.innerText = 0;
+      setItemStorage();
+    });
+  });
+};
+
+emptyCart();
 
 window.onload = () => {
   fetchApi('computador')
