@@ -12,8 +12,24 @@ const addCartItem = async (event) => {
   const { id: sku, title: name, price: salePrice } = itemData;
 
   cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
-
+  setTotalPrice();
   saveLocalStorage();
+}
+
+const loadingEnd = () => {
+  document.querySelector('.loading').remove();
+}
+
+const setTotalPrice = () => {
+  const cartItems = document.querySelectorAll('li');
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerHTML = 0;
+
+  cartItems.forEach((current) => {
+    const salePrice = parseFloat(current.innerText.split('$')[1]);
+
+     totalPrice.innerHTML = parseFloat(totalPrice.innerHTML) + salePrice;
+  })
 }
 
 const fetchAPIcomputerURL = async () => {
@@ -30,6 +46,7 @@ const removeAllCartItems = () => {
     cartSection.removeChild(cartSection.firstChild);
   };
   saveLocalStorage();
+  setTotalPrice();
 }
 
 const saveLocalStorage = () => {
@@ -47,6 +64,7 @@ const getLocalStorageItems = () => {
   const cartItems = document.querySelectorAll('li');
 
   cartItems.forEach((current) => addEventListener('click', cartItemClickListener))
+  setTotalPrice();
 }
 
 const addButtonEvent = () => {
@@ -95,7 +113,8 @@ function getSkuFromProductItem(item) {
 
 const cartItemClickListener = (event) => {
   const cartItems = document.querySelector('.cart__items');
-  cartItems.removeChild(event.target)
+  cartItems.removeChild(event.target);
+  setTotalPrice();
   saveLocalStorage();
 }
 
@@ -111,6 +130,7 @@ window.onload = async () => {
   // Foi colocado o retorno de fetchAPIcomputerURL em constante devido a dica dada pelo colega Eric Kreis!!!
   const results = await fetchAPIcomputerURL();
   renderProducts(results);
+  loadingEnd();
   addButtonEvent();
   getLocalStorageItems();
   document.querySelector('.empty-cart').addEventListener('click', removeAllCartItems);
