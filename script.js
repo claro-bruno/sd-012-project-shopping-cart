@@ -7,14 +7,19 @@ function totalPrice() {
   });
   document.querySelector('.total-price').innerHTML = Math.round(total * 100) / 100;
 }
+
+function teste() {
+  const vamos = document.querySelector('.cart__items');
+  return vamos;
+}
 // Requisito 4 - Referência: https://github.com/tryber/sd-012-project-shopping-cart/blob/Laura-Ramos-Shopping-Cart-Project/script.js
-function updateLocalStorage() {
-  localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+function updateStorage() {
+  localStorage.setItem('cart', teste().innerHTML);
   totalPrice();
 }
 // Requisito 4
-function loadLocalStorage() {
-  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+function loadStorage() {
+  teste().innerHTML = localStorage.getItem('cart');
   totalPrice();
 }
 
@@ -106,7 +111,7 @@ function addItemToCart(id) {
       response.json().then((itemList) => {
         const section = document.getElementsByClassName('cart__items')[0];
         section.appendChild(createCartItemElement(itemList));
-        updateLocalStorage();
+        updateStorage();
     }); 
   });
 }
@@ -114,12 +119,21 @@ function addItemToCart(id) {
 document.addEventListener('click', (event) => {
   if (event.target.className === 'item__add') {
     addItemToCart(getSkuFromProductItem(event.target.parentElement));
-    updateLocalStorage();
+    updateStorage();
   }
 });
 
+function clearShop() {
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = '';
+    totalPrice();
+    updateStorage();
+  });
+}
+
 window.onload = function onload() {
   generateItemsList();
-  loadLocalStorage();
+  loadStorage();
   totalPrice();
+  clearShop();
 };
