@@ -12,6 +12,10 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }, callback) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -58,10 +62,6 @@ async function requisitionProduct(product) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  event.target.remove();
 }
 
 window.onload = function onload() {
