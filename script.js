@@ -28,6 +28,7 @@ function renderItems() {
   }
 }
 
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }, callback) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -68,13 +69,10 @@ async function requisitionProduct(product) {
   );
   const responseJson = await response.json();
   const { results } = responseJson;
+  document.querySelector('.loading').remove();
   results.forEach((value) => {
     createProductItemElement(value, requisitionIdIProduct);
   });
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
 }
 
 function removeAllItems() {
