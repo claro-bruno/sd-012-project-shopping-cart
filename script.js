@@ -99,12 +99,26 @@ const mostrarProdutos = (arrayResult) => {
     intensExibidos.appendChild(createProductItemElement(item));
   });
  };
-
+// requisito 7 feito com suporte do colega Julio Barros
+function loading() {
+  const container = document.querySelector('.container');
+  const loadingSpan = document.createElement('span');
+  loadingSpan.className = 'loading';
+  loadingSpan.innerHTML = 'Loading..';
+  container.appendChild(loadingSpan);
+}
+function removeLoading() {
+  const loadingSpan = document.querySelector('.loading');
+  loadingSpan.parentNode.removeChild(loadingSpan);
+}
+ // Requisito 1
 async function listadeProdutos() {
+  loading();
     try {
     const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const { results } = await api.json();
     mostrarProdutos(results);
+    removeLoading();
     } catch (error) {
     return error;
   }
@@ -120,6 +134,7 @@ function limparCarrinho() {
   });
 }
 limparCarrinho();
+
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
