@@ -1,10 +1,15 @@
-const listadeProdutos = async (item) => {
-  const ApiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=${item}';
+const listadeProdutos = async () => {
+  const ApiUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const api = await fetch(ApiUrl);
   const apiJson = await api.json();
   const arrayResults = apiJson.results;
   await arrayResults.forEach((item) => items[0].appendChild(createProductItemElement(item)));
 };
+
+// requisito 3
+function cartItemClickListener(event) {
+  event.target.remove();
+  sumPrice();
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
