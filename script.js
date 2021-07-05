@@ -14,6 +14,8 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  const sub = document.querySelector('.total-price');
+  sub.innerText = 3312.6;
 }
 
 function storeItems() {
@@ -27,7 +29,6 @@ function renderItems() {
     containerItems.innerHTML = localStorage.getItem('items');
   }
 }
-
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }, callback) {
   const section = document.createElement('section');
@@ -46,6 +47,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }, ca
   return section;
 }
 
+let itemValue = [];
+
+function totalSum() {
+  const reducer = (accumulator, currentValue) => accumulator + currentValue;
+  const p = document.querySelector('.total-price');
+  p.innerText = itemValue.reduce(reducer);
+  return p;
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -54,6 +64,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   containerItems.appendChild(li);
   li.addEventListener('click', cartItemClickListener);
   storeItems();
+  itemValue.push(salePrice);
+  totalSum();
   return li;
 }
 
@@ -78,13 +90,17 @@ async function requisitionProduct(product) {
 function removeAllItems() {
   const buttonRemoveAllItems = document.querySelector('.empty-cart');
   const containerItems = document.querySelector('ol');
+  const p = document.querySelector('.total-price');
   buttonRemoveAllItems.addEventListener('click', () => {
     containerItems.innerHTML = '';
+    p.innerHTML = '';
+    itemValue = [];
+    
   });
 }
 
 window.onload = function onload() {
   requisitionProduct('computador');
   renderItems();
-  removeAllItems();
+  removeAllItems();  
 };
