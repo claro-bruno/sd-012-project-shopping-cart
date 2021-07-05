@@ -15,6 +15,11 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// requisito 3
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
 // requisito 2 feito com suporte do colega Julio Barros
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
@@ -24,25 +29,15 @@ function createCartItemElement({ id, title, price }) {
   return li;
 }
 
-function cartItemClickListener(event) {
-  const text = event.target.innerText;
-  const valor = parseFloat(text.split('$')[1]);
-  const total = document.querySelector('.total-price').innerText;
-  const totalF = total - valor;
-  document.querySelector('.total-price').innerText = totalF;
-  event.target.remove();
-  saveCartItemToLocalStorage();
-}// coloque seu código aqui
-
+//  requisito 2
 async function adicionaCarrinho(event) {
   const elementoPai = event.target.parentNode;
   const nomeProduto = elementoPai.firstChild.innerText;
   const linkApi = 'https://api.mercadolibre.com/items/';
-  const listaDeCompras =  document.querySelector('.cart__items')
-  try{
+  const listaDeCompras = document.querySelector('.cart__items');
+  try {
     const retorno = await fetch(`${linkApi}${nomeProduto}`);
     const result = await retorno.json();
-    console.log(nomeProduto)
     listaDeCompras.appendChild(createCartItemElement(result))
       .addEventListener('click', cartItemClickListener);
   } catch (error) {
@@ -58,7 +53,8 @@ function createProductItemElement({ id, title, thumbnail }) {
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!')) .addEventListener('click', adicionaCarrinho);
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'))
+    .addEventListener('click', adicionaCarrinho);
 
   return section;
 }
@@ -73,9 +69,8 @@ async function listadeProdutos() {
     try {
     const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const { results } = await api.json();
-    console.log(results)
     mostrarProdutos(results);
-     } catch (error) {
+    } catch (error) {
     return error;
   }
 }
