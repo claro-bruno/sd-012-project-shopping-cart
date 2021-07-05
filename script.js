@@ -1,24 +1,7 @@
-const renderProducts = (arr) => {
-  const sectionItems = document.querySelector('.items');
-  
-  arr.map(({ id: sku, title: name, thumbnail: image }) => 
-    sectionItems.appendChild(createProductItemElement({ sku, name, image })));
-}
-
-const addCartItem = async (event) => {
-  const cartSection = document.querySelector('.cart__items');
-  const itemID = event.target.parentElement.firstChild.innerHTML;
-  const itemData = await fetchAPIitemsURL(itemID)
-  const { id: sku, title: name, price: salePrice } = itemData;
-
-  cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
-  setTotalPrice();
-  saveLocalStorage();
-}
-
-const loadingEnd = () => {
-  document.querySelector('.loading').remove();
-}
+const saveLocalStorage = (storageItem) => {
+  const cartItems = storageItem.innerHTML;
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+};
 
 const setTotalPrice = () => {
   const cartItems = document.querySelectorAll('li');
@@ -29,48 +12,22 @@ const setTotalPrice = () => {
     const salePrice = parseFloat(current.innerText.split('$')[1]);
 
      totalPrice.innerHTML = parseFloat(totalPrice.innerHTML) + salePrice;
-  })
-}
+  });
+};
 
-const fetchAPIcomputerURL = async () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'
-  const response = await fetch(url);
-  const { results } = await response.json();
-
-  return results;
-}
-
-const removeAllCartItems = () => {
-  const cartSection = document.querySelector('.cart__items');
-  while(cartSection.firstChild) {
-    cartSection.removeChild(cartSection.firstChild);
-  };
-  saveLocalStorage();
+const cartItemClickListener = (event) => {
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.removeChild(event.target);
   setTotalPrice();
-}
+  saveLocalStorage(cartItems);
+};
 
-const saveLocalStorage = () => {
-  const cartItems = document.querySelector('.cart__items').innerHTML;
-  localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-}
-
-const getLocalStorageItems = () => {
-  const localStorageItems = JSON.parse(localStorage.getItem('cartItems'));
-  const cartSection = document.querySelector('.cart__items');
-
-  cartSection.innerHTML = localStorageItems;
-
-  const cartItems = document.querySelectorAll('li');
-
-  cartItems.forEach((current) => addEventListener('click', cartItemClickListener))
-  setTotalPrice();
-}
-
-const addButtonEvent = () => {
-  const addButton = document.querySelectorAll('.item__add');
-  
-  addButton.forEach((current) => current.addEventListener('click', addCartItem));
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
 }
 
 const fetchAPIitemsURL = async (id) => {
@@ -79,6 +36,13 @@ const fetchAPIitemsURL = async (id) => {
   const result = await response.json();
 
   return result;
+};
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
 }
 
 function createProductImageElement(imageSource) {
@@ -86,13 +50,6 @@ function createProductImageElement(imageSource) {
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-}
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -107,31 +64,71 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+const renderProducts = (arr) => {
+  const sectionItems = document.querySelector('.items');
+  
+  arr.map(({ id: sku, title: name, thumbnail: image }) => 
+    sectionItems.appendChild(createProductItemElement({ sku, name, image })));
+};
 
-const cartItemClickListener = (event) => {
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.removeChild(event.target);
+const addCartItem = async (event, cartSection) => {
+  const itemID = event.target.parentElement.firstChild.innerHTML;
+  const itemData = await fetchAPIitemsURL(itemID);
+  const { id: sku, title: name, price: salePrice } = itemData;
+
+  cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
   setTotalPrice();
-  saveLocalStorage();
-}
+  saveLocalStorage(cartSection);
+};
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+const loadingEnd = () => {
+  document.querySelector('.loading').remove();
+};
+
+const fetchAPIcomputerURL = async () => {
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const response = await fetch(url);
+  const { results } = await response.json();
+
+  return results;
+};
+
+const removeAllCartItems = (cartSection) => {
+  while (cartSection.firstChild) {
+    cartSection.removeChild(cartSection.firstChild);
+  }
+  saveLocalStorage(cartSection);
+  setTotalPrice();
+};
+
+const getLocalStorageItems = (cartItem) => {
+  const localStorageItems = JSON.parse(localStorage.getItem('cartItems'));
+  const cartSection = cartItem;
+  cartSection.innerHTML = localStorageItems;
+
+  const cartItems = document.querySelectorAll('li');
+
+  cartItems.forEach((current) => current.addEventListener('click', cartItemClickListener));
+  setTotalPrice();
+};
+
+const addButtonEvent = (cartItem) => {
+  const addButton = document.querySelectorAll('.item__add');
+  
+  addButton.forEach((current) => {
+    current.addEventListener('click', (event) => addCartItem(event, cartItem));
+  });
+};
 
 window.onload = async () => {
   // Foi colocado o retorno de fetchAPIcomputerURL em constante devido a dica dada pelo colega Eric Kreis!!!
+  const cartSection = document.querySelector('.cart__items');
   const results = await fetchAPIcomputerURL();
   renderProducts(results);
   loadingEnd();
-  addButtonEvent();
-  getLocalStorageItems();
-  document.querySelector('.empty-cart').addEventListener('click', removeAllCartItems);
+  addButtonEvent(cartSection);
+  getLocalStorageItems(cartSection);
+  document
+    .querySelector('.empty-cart')
+    .addEventListener('click', () => removeAllCartItems(cartSection));
 };
