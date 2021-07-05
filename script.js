@@ -109,7 +109,17 @@ async function listadeProdutos() {
     return error;
   }
 }
-
+// requisito 6 feito com ajudo do colega Julio Barros
+function limparCarrinho() {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const elementoFilho = document.querySelectorAll('li');
+    elementoFilho.forEach((item) => item.parentNode.removeChild(item));
+    totalPrices();
+    localStorage.clear();
+  });
+}
+limparCarrinho();
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
