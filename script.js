@@ -70,7 +70,7 @@ function addToCart(event) {
   .then((converted) => cart.appendChild(createCartItemElement(converted)))
   .then((outros) => outros.innerText.split('$')[1])
   .then((value) => sum(value))
-  .then(() => localStorage.setItem('currentCart', cart.innerHTML) );
+  .then(() => localStorage.setItem('currentCart', cart.innerHTML));
 }
 
 const addButton = document.getElementsByClassName('item__add');
