@@ -1,3 +1,6 @@
+const priceClass = '.total-price';
+let itemValue = [];
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -14,8 +17,7 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  const sub = document.querySelector('.total-price');
-  sub.innerText = 3312.6;
+  document.querySelector(priceClass).innerText = 3312.6;
 }
 
 function storeItems() {
@@ -47,11 +49,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }, ca
   return section;
 }
 
-let itemValue = [];
-
 function totalSum() {
   const reducer = (accumulator, currentValue) => accumulator + currentValue;
-  const p = document.querySelector('.total-price');
+  const p = document.querySelector(priceClass);
   p.innerText = itemValue.reduce(reducer);
   return p;
 }
@@ -95,8 +95,7 @@ function removeAllItems() {
     containerItems.innerHTML = '';
     p.innerHTML = '';
     itemValue = [];
-    
-  });
+});
 }
 
 window.onload = function onload() {
